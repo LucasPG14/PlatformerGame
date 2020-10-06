@@ -55,6 +55,11 @@ bool Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
+	volumeMusic = config.child("music").attribute("volume").as_int(0);
+	volumeFx = config.child("fx").attribute("volume").as_int(0);
+
+	Mix_VolumeMusic(volumeMusic);
+
 	return ret;
 }
 
@@ -156,6 +161,7 @@ unsigned int Audio::LoadFx(const char* path)
 	{
 		fx.add(chunk);
 		ret = fx.count();
+		Mix_VolumeChunk(chunk, volumeFx);
 	}
 
 	return ret;
