@@ -56,6 +56,16 @@ public:
 		return true;
 	}
 
+	virtual bool Load(pugi::xml_node&)
+	{
+		return true;
+	}
+
+	virtual bool Save(pugi::xml_node&) 
+	{
+		return true;
+	}
+
 public:
 
 	SString name;

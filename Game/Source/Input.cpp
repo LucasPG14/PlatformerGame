@@ -158,3 +158,17 @@ void Input::GetMouseMotion(int& x, int& y)
 	x = mouseMotionX;
 	y = mouseMotionY;
 }
+
+bool Input::Load(pugi::xml_node& load)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool Input::Save(pugi::xml_node& save)
+{
+	bool ret = true;
+
+	return ret;
+}

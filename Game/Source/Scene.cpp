@@ -56,6 +56,18 @@ bool Scene::Update(float dt)
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x += 1;
 
+	if (app->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+		app->LoadRequest();
+
+	if (app->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+		app->SaveRequest();
+	
+	if (app->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN)
+		app->audio->MoreVolume();
+
+	if (app->input->GetKey(SDL_SCANCODE_KP_MINUS) == KEY_DOWN)
+		app->audio->LessVolume();
+
 	app->render->DrawTexture(img, 380, 100);
 
 	return true;
@@ -78,4 +90,18 @@ bool Scene::CleanUp()
 	LOG("Freeing scene");
 
 	return true;
+}
+
+bool Scene::Load(pugi::xml_node& load)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool Scene::Save(pugi::xml_node& save)
+{
+	bool ret = true;
+	
+	return ret;
 }

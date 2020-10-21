@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<save>
+<save_state>
   <input />
   <window />
   <textures />
   <audio>
-    <music volume="0" />
+    <music volume="128" />
   </audio>
   <scene />
   <renderer>
     <camera x="0" y="0" />
   </renderer>
-</save>
+</save_state>

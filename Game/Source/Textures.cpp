@@ -119,3 +119,17 @@ void Textures::GetSize(const SDL_Texture* texture, uint& width, uint& height) co
 {
 	SDL_QueryTexture((SDL_Texture*)texture, NULL, NULL, (int*) &width, (int*) &height);
 }
+
+bool Textures::Load(pugi::xml_node& load)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool Textures::Save(pugi::xml_node& save)
+{
+	bool ret = true;
+
+	return ret;
+}

@@ -45,6 +45,14 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
+	bool SaveGame();
+
+	bool LoadGame();
+
+	void LoadRequest();
+
+	void SaveRequest();
+
 private:
 
 	// Load config file
@@ -91,8 +99,17 @@ private:
 	pugi::xml_node config;
 	pugi::xml_node configApp;
 
+	pugi::xml_document loadgame;
+	pugi::xml_node load;
+
 	uint frames;
 	float dt;
+
+
+	mutable bool saveGameRequested;
+	bool loadGameRequested;
+	SString loadedGame;
+	mutable SString savedGame;
 };
 
 extern App* app;
