@@ -65,10 +65,6 @@ public:
 	void GetMousePosition(int &x, int &y);
 	void GetMouseMotion(int& x, int& y);
 
-	bool Load(pugi::xml_node& load);
-
-	bool Save(pugi::xml_node& save);
-
 private:
 	bool windowEvents[WE_COUNT];
 	KeyState*	keyboard;

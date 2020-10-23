@@ -32,10 +32,6 @@ public:
 	bool UnLoad(SDL_Texture* texture);
 	void GetSize(const SDL_Texture* texture, uint& width, uint& height) const;
 
-	bool Load(pugi::xml_node& load);
-
-	bool Save(pugi::xml_node& save);
-
 public:
 
 	List<SDL_Texture*> textures;

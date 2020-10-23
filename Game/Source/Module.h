@@ -20,7 +20,7 @@ public:
 	}
 
 	// Called before render is available
-	// TODO 5: Sending config file to all modules
+	// L01: DONE 5: Sending config file to all modules
 	virtual bool Awake(pugi::xml_node&)
 	{
 		return true;
@@ -56,12 +56,13 @@ public:
 		return true;
 	}
 
-	virtual bool Load(pugi::xml_node&)
+    // L02: DONE 2: Create new virtual methods to Load / Save state
+	virtual bool LoadState(pugi::xml_node&)
 	{
 		return true;
 	}
 
-	virtual bool Save(pugi::xml_node&) 
+	virtual bool SaveState(pugi::xml_node&) const
 	{
 		return true;
 	}

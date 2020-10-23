@@ -15,7 +15,7 @@
 Audio::Audio() : Module()
 {
 	music = NULL;
-	name.create("audio");
+	name.Create("audio");
 }
 
 // Destructor
@@ -54,9 +54,6 @@ bool Audio::Awake(pugi::xml_node& config)
 		active = false;
 		ret = true;
 	}
-
-	volumeMusic = config.child("music").attribute("volume").as_int(0);
-	volumeFx = config.child("fx").attribute("volume").as_int(0);
 
 	return ret;
 }
@@ -137,8 +134,6 @@ bool Audio::PlayMusic(const char* path, float fade_time)
 		}
 	}
 
-	Mix_VolumeMusic(volumeMusic);
-
 	LOG("Successfully playing %s", path);
 	return ret;
 }
@@ -161,7 +156,6 @@ unsigned int Audio::LoadFx(const char* path)
 	{
 		fx.add(chunk);
 		ret = fx.count();
-		Mix_VolumeChunk(chunk, volumeFx);
 	}
 
 	return ret;
@@ -181,56 +175,4 @@ bool Audio::PlayFx(unsigned int id, int repeat)
 	}
 
 	return ret;
-}
-
-bool Audio::Load(pugi::xml_node& load)
-{
-	bool ret = true;
-
-	volumeMusic = load.child("music").attribute("volume").as_int(0);
-	Mix_VolumeMusic(volumeMusic);
-
-	LOG("Audio volume loaded");
-
-	return ret;
-}
-
-bool Audio::Save(pugi::xml_node& save)
-{
-	bool ret = true;
-
-	pugi::xml_node vol = save.append_child("music");
-
-	vol.append_attribute("volume").set_value(volumeMusic);
-
-	LOG("Audio volume saved");
-
-	return ret;
-}
-
-void Audio::MoreVolume()
-{
-	if (volumeMusic > 123)
-	{
-		volumeMusic = 128;
-	}
-	else
-	{
-		volumeMusic += 5;
-		Mix_VolumeMusic(volumeMusic);
-	}
-}
-
-void Audio::LessVolume()
-{
-	if (volumeMusic < 5)
-	{
-		volumeMusic = 0;
-		Mix_VolumeMusic(volumeMusic);
-	}
-	else
-	{
-		volumeMusic -= 5;
-		Mix_VolumeMusic(volumeMusic);
-	}
 }
