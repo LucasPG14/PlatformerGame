@@ -94,12 +94,18 @@
     <ClCompile Include="Source\Audio.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Map.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\Render.cpp" />
     <ClCompile Include="Source\Textures.cpp" />
     <ClCompile Include="Source\Window.cpp" />
+<<<<<<< HEAD
+    <ClInclude Include="Source\Animation.h" />
+=======
     <ClInclude Include="Animation.h" />
+>>>>>>> 8007c3afd32679fd595c9a70b763e0a1fec0c1ef
     <ClInclude Include="Source\Map.h" />
+    <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\Audio.h" />
     <ClInclude Include="Source\Input.h" />
