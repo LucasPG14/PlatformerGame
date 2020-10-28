@@ -406,9 +406,10 @@ bool Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 {
 	bool ret = true;
 
+	Properties::Property* prop = new Properties::Property;
+
 	for (pugi::xml_node proper = node.child("properties").first_child(); proper; proper = proper.next_sibling("property"))
 	{
-		Properties::Property* prop = new Properties::Property;
 		prop->name = proper.attribute("name").as_string();
 		prop->value = proper.attribute("value").as_bool();
 

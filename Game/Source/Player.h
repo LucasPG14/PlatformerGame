@@ -11,7 +11,7 @@ struct SDL_Rect;
 struct SDL_Texture;
 struct SDL_Renderer;
 
-class Position
+class position
 {
 public:
 	int x, y;
@@ -26,24 +26,21 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 
-	int CollisionVertical();
-	int CollisionHorizontal();
-
 	//PLAYER VARIABLES
 
 	//PLAYER JUMP
 	//void JumpMove();
 
 	//PLAYER POSITION
-	Position position;
+	position Position;
 	//PLAYER ANIMATIONS
-	Animation* lastAnimation = nullptr;
+	Animation* lastanimation = nullptr;
 	Animation* currentAnimation = nullptr;
 
-	Animation idle;
-	Animation jump;
-	Animation run;
-	Animation dead;
+	Animation Static;
+	Animation Jump;
+	Animation Run;
+	Animation Dead;
 
 private:
 	//PLAYER TEXTURE
