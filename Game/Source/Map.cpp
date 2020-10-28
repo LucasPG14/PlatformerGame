@@ -18,6 +18,22 @@ Map::Map() : Module(), mapLoaded(false)
 Map::~Map()
 {}
 
+// L06: TODO 7: Ask for the value of a custom property
+int Properties::GetProperty(const char* value, int defaultValue) const
+{
+	ListItem<Property*>* prop = list.start;
+
+	while(prop !=NULL)
+	{
+		if (strcmp(value, prop->data->name.GetString()) == 0)
+		{
+			return prop->data->value;
+		}
+		prop = prop->next;
+	}
+
+	return defaultValue;
+}
 // Called before render is available
 bool Map::Awake(pugi::xml_node& config)
 {
@@ -34,23 +50,30 @@ void Map::Draw()
 {
 	if (mapLoaded == false) return;
 
-	// L04: DONE 5: Prepare the loop to draw all tilesets + DrawTexture()
-	MapLayer* layer = data.layers.start->data;
+// L04: DONE 5: Prepare the loop to draw all tilesets + DrawTexture()
+	ListItem<MapLayer*> *layer = data.layers.start;
+	// L06: TODO 4: Make sure we draw all the layers and not just the first one
 
-	for (int y = 0; y < data.height; ++y)
+	while (layer != NULL)
 	{
-		for (int x = 0; x < data.width; ++x)
+
+		for (int y = 0; y < data.height; ++y)
 		{
-			int tileId = layer->Get(x, y);
-			if (tileId > 0)
+			for (int x = 0; x < data.width; ++x)
 			{
-				// L04: TODO 9: Complete the draw function
-				SDL_Rect rect = data.tilesets.start->data->GetTileRect(tileId);
-				iPoint coords = MapToWorld(x, y);
-				app->render->DrawTexture(data.tilesets.start->data->texture, coords.x, coords.y, &rect);
+				int tileId = layer->data->Get(x, y);
+				if (tileId > 0)
+				{
+					// L04: TODO 9: Complete the draw function
+					iPoint ret = MapToWorld(x, y);
+					TileSet* set = GetTilesetFromTileId(tileId);
+					app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
+				}
 			}
 		}
+		layer = layer->next;
 	}
+
 }
 
 // L04: DONE 8: Create a method that translates x,y coordinates from map positions to world positions
@@ -58,15 +81,20 @@ iPoint Map::MapToWorld(int x, int y) const
 {
 	iPoint ret;
 
-	if (data.type == MapTypes::MAPTYPE_ORTHOGONAL)
+		if (data.type == MAPTYPE_ORTHOGONAL)
 	{
 		ret.x = x * data.tileWidth;
 		ret.y = y * data.tileHeight;
 	}
+	else if (data.type == MAPTYPE_ISOMETRIC)
+	{
+		ret.x = (x - y) * (data.tileWidth / 2);
+		ret.y = (x + y) * (data.tileHeight / 2);
+	}
 	else
 	{
-		ret.x = (x - y) * (data.tileWidth * 0.5f);
-		ret.y = (x + y) * (data.tileWidth * 0.5f);
+		LOG("Unknown map type");
+		ret.x = x; ret.y = y;
 	}
 
 	// L05: TODO 1: Add isometric map to world coordinates
@@ -79,20 +107,45 @@ iPoint Map::WorldToMap(int x, int y) const
 {
 	iPoint ret(0, 0);
 
-	 if (data.type == MapTypes::MAPTYPE_ORTHOGONAL)
-    {
-        ret.x = x / data.tileWidth;
-        ret.y = y / data.tileHeight;
-    }
-    else
-    {
-        ret.x = (x + y) / (data.tileWidth / 0.5f);
-        ret.y = (x - y) / (data.tileWidth / 0.5f);
-    }
+// L05: DONE 3: Add the case for isometric maps to WorldToMap
+	if (data.type == MAPTYPE_ORTHOGONAL)
+	{
+		ret.x = x / data.tileWidth;
+		ret.y = y / data.tileHeight;
+	}
+	else if (data.type == MAPTYPE_ISOMETRIC)
+	{
 
-	// L05: TODO 3: Add the case for isometric maps to WorldToMap
+		float half_width = data.tileWidth * 0.5f;
+		float half_height = data.tileHeight * 0.5f;
+		ret.x = int((x / half_width + y / half_height) / 2);
+		ret.y = int((y / half_height - (x / half_width)) / 2);
+	}
+	else
+	{
+		LOG("Unknown map type");
+		ret.x = x; ret.y = y;
+	}
+
 
 	return ret;
+}
+// L06: TODO 3: Pick the right Tileset based on a tile id
+TileSet* Map::GetTilesetFromTileId(int id) const
+{
+	ListItem<TileSet*>* item = data.tilesets.start;
+	TileSet* set = item->data;
+
+	while (item != NULL)
+	{
+		if (item->data->firstgid == id - 1)
+		{
+			set = item->data;
+		}
+		item = item->next;
+	}
+
+	return set;
 }
 
 // Get relative Tile rectangle
@@ -241,10 +294,28 @@ bool Map::LoadMap()
 		// L03: TODO: Load map general properties
 		LOG("Filling Map info");
 
-		data.height = map.attribute("height").as_int();
-		data.width = map.attribute("width").as_int();
-		data.tileHeight = map.attribute("tileheight").as_int();
-		data.tileWidth = map.attribute("tilewidth").as_int();
+		data.width = map.attribute("width").as_int(0);
+		data.height = map.attribute("height").as_int(0);
+		data.tileWidth = map.attribute("tilewidth").as_int(0);
+		data.tileHeight = map.attribute("tileheight").as_int(0);
+
+		SString tmp("%s", map.attribute("orientation").as_string());
+		if (tmp == "orthogonal")
+		{
+			data.type = MAPTYPE_ORTHOGONAL;
+		}
+		else if (tmp == "isometric")
+		{
+			data.type = MAPTYPE_ISOMETRIC;
+		}
+		else if (tmp == "staggered")
+		{
+			data.type = MAPTYPE_STAGGERED;
+		}
+		else
+		{
+			data.type = MAPTYPE_UNKNOWN;
+		}
 	}
 
 	return ret;
@@ -258,12 +329,16 @@ bool Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 	// L03: TODO: Load Tileset attributes
 
 	LOG("Filling TilesetDetails");
-	set->firstgid = tileset_node.attribute("firstgid").as_int();
-	set->name = tileset_node.attribute("name").value();
-	set->tileWidth = tileset_node.attribute("tilewidth").as_int();
-	set->tileHeight = tileset_node.attribute("tileheight").as_int();
-	set->spacing = tileset_node.attribute("spacing").as_int();
-	set->margin = tileset_node.attribute("margin").as_int();
+set->firstgid = tileset_node.attribute("firstgid").as_int(0);
+	set->name = tileset_node.attribute("name").as_string("no");
+	set->tileWidth = tileset_node.attribute("tilewidth").as_int(0);
+	set->tileHeight = tileset_node.attribute("tileheight").as_int(0);
+	set->spacing = tileset_node.attribute("spacing").as_int(0);
+	set->margin = tileset_node.attribute("margin").as_int(0);
+	set->texWidth = tileset_node.child("image").attribute("width").as_int(0);
+	set->texHeight = tileset_node.child("image").attribute("height").as_int(0);
+	set->numTilesWidth = set->texWidth / set->tileWidth;
+	set->numTilesHeight = set->texHeight / set->tileHeight;
 
 	return ret;
 }
@@ -282,13 +357,10 @@ bool Map::LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set)
 	else
 	{
 		// L03: TODO: Load Tileset image
-		SString imgSource;
-		imgSource.Create("%s%s", folder.GetString(), tileset_node.child("image").attribute("source").value());
-		set->texture = app->tex->Load(imgSource.GetString());
-		set->texWidth = tileset_node.child("image").attribute("width").as_int();
-		set->texHeight = tileset_node.child("image").attribute("height").as_int();
-		set->numTilesWidth = set->texWidth / set->tileWidth;
-		set->numTilesHeight = set->texHeight / set->tileHeight;
+		
+	
+		SString tmp("%s%s", folder.GetString(), image.attribute("source").as_string("s"));
+		set->texture = app->tex->Load(tmp.GetString());
 	}
 
 	return ret;
@@ -300,21 +372,42 @@ bool Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	bool ret = true;
 
 	// L04: TODO 3: Load a single layer
-	layer->height = node.attribute("height").as_int();
-	layer->width = node.attribute("width").as_int();
-	layer->name = node.attribute("name").value();
+	layer->name = node.attribute("name").as_string("no");
+	layer->width = node.attribute("width").as_int(0);
+	layer->height = node.attribute("height").as_int(0);
 
-	int newSize = layer->width * layer->height;
+	layer->data = new unsigned int[layer->width * layer->height];
 
-	layer->data = new uint[newSize];
+	memset(layer->data, 0, layer->width * layer->height * sizeof(unsigned int));
 
-	pugi::xml_node sibling = node.child("data").child("tile");
+	int i = 0;
 
-	for (int i = 0; i < newSize; i++)
+	for (pugi::xml_node tile = node.child("data").first_child(); tile; tile = tile.next_sibling("tile"))
 	{
-		layer->data[i] = sibling.attribute("gid").as_int();
-		sibling = sibling.next_sibling("tile");
-
-		return ret;
+		layer->data[i] = tile.attribute("gid").as_uint(0);
+		i++;
 	}
+
+	LoadProperties(node, layer->properties);
+
+	return ret;
+}
+
+
+// L06: TODO 6: Load a group of properties from a node and fill a list with it
+bool Map::LoadProperties(pugi::xml_node& node, Properties& properties)
+{
+	bool ret = true;
+
+	Properties::Property* prop = new Properties::Property;
+
+	for (pugi::xml_node proper = node.child("properties").first_child(); proper; proper = proper.next_sibling("property"))
+	{
+		prop->name = proper.attribute("name").as_string();
+		prop->value = proper.attribute("value").as_int();
+
+		properties.list.add(prop);
+	}
+
+	return ret;
 }
