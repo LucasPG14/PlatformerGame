@@ -52,14 +52,10 @@
       <Filter>External\PugiXml</Filter>
     </ClInclude>
     <ClInclude Include="Source\Map.h" />
-<<<<<<< HEAD
-    <ClInclude Include="Source\Animation.h" />
-    <ClInclude Include="Source\Player.h" />
-=======
     <ClInclude Include="Animation.h">
       <Filter>Utils</Filter>
     </ClInclude>
->>>>>>> 8007c3afd32679fd595c9a70b763e0a1fec0c1ef
+    <ClInclude Include="Source\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
