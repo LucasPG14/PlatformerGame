@@ -33,8 +33,10 @@ bool Scene::Start()
 {
 	// L03: DONE: Load map
 	//app->map->Load("hello2.tmx");
-	app->map->Load("hello2.tmx");
+	app->map->Load("SnowMap.tmx");
 	
+	background = app->tex->Load("Assets/tiles/SnowBackground.png");
+
 	// Load music
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
 
@@ -71,9 +73,6 @@ bool Scene::Update(float dt)
 
 	//app->render->DrawTexture(img, 380, 100); // Placeholder not needed any more
 
-	// Draw map
-	app->map->Draw();
-
 	// L03: DONE 7: Set the window title with map/tileset info
 	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d",
 				   app->map->data.width, app->map->data.height,
@@ -92,6 +91,10 @@ bool Scene::PostUpdate()
 
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
+
+	app->render->DrawTexture(background, 0, 0, NULL, 1.0f);
+	// Draw map
+	app->map->Draw();
 
 	return ret;
 }

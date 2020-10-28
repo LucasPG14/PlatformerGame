@@ -46,7 +46,7 @@ struct Properties
 	struct Property
 	{
 		SString name;
-		int value;
+		bool value;
 	};
 	
 	~Properties()
@@ -67,7 +67,7 @@ struct MapLayer
 	int height;
 	uint* data;
 // L06: DONE 1: Support custom properties
-Properties properties;
+	Properties properties;
 
 	MapLayer() : data(NULL)
 	{}

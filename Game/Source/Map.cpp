@@ -67,7 +67,10 @@ void Map::Draw()
 					// L04: TODO 9: Complete the draw function
 					iPoint ret = MapToWorld(x, y);
 					TileSet* set = GetTilesetFromTileId(tileId);
-					app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
+					if (layer->data->properties.GetProperty("Drawable") == 1)
+					{
+						app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
+					}
 				}
 			}
 		}
@@ -136,13 +139,17 @@ TileSet* Map::GetTilesetFromTileId(int id) const
 	ListItem<TileSet*>* item = data.tilesets.start;
 	TileSet* set = item->data;
 
-	while (item != NULL)
+	while (item->next != nullptr)
 	{
-		if (item->data->firstgid == id - 1)
+		if (id <= (set->numTilesWidth * set->numTilesHeight))
 		{
+			break;
+		}
+		else
+		{
+			item = item->next;
 			set = item->data;
 		}
-		item = item->next;
 	}
 
 	return set;
@@ -404,7 +411,7 @@ bool Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 	for (pugi::xml_node proper = node.child("properties").first_child(); proper; proper = proper.next_sibling("property"))
 	{
 		prop->name = proper.attribute("name").as_string();
-		prop->value = proper.attribute("value").as_int();
+		prop->value = proper.attribute("value").as_bool();
 
 		properties.list.add(prop);
 	}
