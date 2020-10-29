@@ -15,9 +15,12 @@ class Input;
 class Render;
 class Textures;
 class Audio;
+class Player;
+class FadeToBlack;
+class SceneIntro;
 class Scene;
 class Map;
-class Player;
+
 
 class App
 {
@@ -87,9 +90,13 @@ public:
 	Render* render;
 	Textures* tex;
 	Audio* audio;
+	Player* player;
+	FadeToBlack* fade;
+	SceneIntro* sceneIntro;
 	Scene* scene;
 	Map* map;
-	Player* player;
+	
+
 
 private:
 

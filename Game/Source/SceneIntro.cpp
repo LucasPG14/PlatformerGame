@@ -1,7 +1,6 @@
 #include "SceneIntro.h"
 #include "App.h"
 #include "Textures.h"
-
 #include "Player.h"
 #include "Render.h"
 #include "Input.h"
@@ -34,9 +33,6 @@ bool SceneIntro::Start()
 	//bgTexture = App->textures->Load("Assets/sprites/menu/menuinicial_1.png");
 	//App->audio->PlayMusic("Assets/music/Build/music/opening.ogg", 1.0f);
 
-	//App->render->camera.x = 0;
-	//App->render->camera.y = 0;
-
 	
 
 	return ret;
@@ -45,48 +41,15 @@ bool SceneIntro::Start()
 bool SceneIntro::Update()
 {
 
-	//GamePad& pad = App->input->pads[0];
-
-	//if (App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN || pad.a == KEY_STATE::KEY_DOWN)
-	//{
-
-	//	App->transition->FadeToBlack(this, (Module*)App->shop, 60.0f);
-	//}
-
-	//if (App->input->keys[SDL_SCANCODE_F6] == KEY_STATE::KEY_DOWN) {
-	//	App->transition->FadeToBlack(this, (Module*)App->sceneWin, 90);
-
-	//}
-
-	//if (App->input->keys[SDL_SCANCODE_F7] == KEY_STATE::KEY_DOWN) {
-	//	//App->audio->StopMusic();
-	//	App->transition->FadeToBlack(this, (Module*)App->loose);
-	//}
-
-	//if (App->input->keys[SDL_SCANCODE_F8] == KEY_STATE::KEY_DOWN) {
-	//	//App->audio->StopMusic();
-	//	App->transition->FadeToBlack(this, (Module*)App->shop);
-	//}
-
-
-	//if (App->input->keys[SDL_SCANCODE_F5] == KEY_STATE::KEY_DOWN) {
-	//	App->transition->FadeToBlack(this, (Module*)App->initialScreen, 90);
-
-	//}
-
-	//if (App->input->keys[SDL_SCANCODE_F10] == KEY_STATE::KEY_DOWN) {
-	//	App->transition->FadeToBlack(this, (Module*)App->scene, 90);
-	//}
-
-	//if (App->input->keys[SDL_SCANCODE_F11] == KEY_STATE::KEY_DOWN) {
-	//	App->transition->FadeToBlack(this, (Module*)App->scene2, 90);
-	//}
-
-
-	//if (menuAnim != nullptr)
-	//{
-	//	menuAnim->Update();
-	//}
+	if (app->input->GetKey(SDLK_KP_ENTER) == KEY_DOWN)
+	{
+		app->fade->Fade(this, (Module*)app->scene, 90);
+	}
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
+		exit(0);
+	}
+	
 
 	return true;
 }
@@ -104,11 +67,7 @@ bool SceneIntro::PostUpdate()
 bool SceneIntro::CleanUp() {
 	bool ret = true;
 
-	/*if (!App->textures->Unload(bgTexture)) {
-		LOG("Start Screen -> Error unloading the texture.");
-		ret = false;
-	}
-	App->textures->Unload(bgTexture);
-	App->audio->StopMusic();*/
+	//app->tex->UnLoad(bgTexture);
+	//app->audio->CleanUp();
 	return true;
 }

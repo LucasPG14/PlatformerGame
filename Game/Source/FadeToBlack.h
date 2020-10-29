@@ -8,7 +8,7 @@ class FadeToBlack : public Module
 {
 public:
 	//Constructor
-	FadeToBlack();
+	FadeToBlack(bool startEnabled);
 
 	//Destructor
 	~FadeToBlack();
@@ -28,7 +28,7 @@ public:
 	// Called from another module
 	// Starts the fade process which has two steps, fade_out and fade_in
 	// After the first step, the modules should be switched
-	bool fFadeToBlack(Module* toDisable, Module* toEnable, float frames = 60);
+	bool Fade(Module* toDisable, Module* toEnable, float frames = 60);
 
 private:
 
@@ -51,4 +51,4 @@ private:
 	Module* moduleToDisable = nullptr;
 };
 
-#endif //__FADETOBLACK_H__ 
+#endif //__FADETOBLACK_H__

@@ -7,7 +7,8 @@
 #include "Scene.h"
 #include "Map.h"
 #include "Player.h"
-
+#include "SceneIntro.h"
+#include "FadeToBlack.h"
 #include "Defs.h"
 #include "Log.h"
 
@@ -24,9 +25,12 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	render = new Render();
 	tex = new Textures();
 	audio = new Audio();
+	fade = new FadeToBlack(true);
 	scene = new Scene();
 	map = new Map();
 	player = new Player();
+	sceneIntro = new SceneIntro();
+
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
