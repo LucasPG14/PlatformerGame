@@ -13,9 +13,27 @@ Player::Player() : Module()
 {
 	//ANIMATION WHEN PLAYER IS STATIC
 	idle.PushBack({ 411, 238, 58, 92 });
-	idle.speed = 0.1f;
+
+
+	idle.speed = 0.0007f;
+
 	//ANIMATION WHEN PLAYER IS RUNNING
-	//ANIMATION WHEN PLAYER IS JUMPING
+	run.PushBack({ 9, 18, 63, 92 });
+	run.PushBack({ 3, 127, 72, 93 });
+
+	run.speed = 0.01f;
+	run.loop = true;
+
+	//ANIMATION WHEN PLAYER IS JUMPING 
+	jump.PushBack({ 9, 18, 63, 92 });
+	jump.PushBack({ 84, 13, 71, 97 });
+	jump.PushBack({ 321, 12, 79, 95 });
+	jump.PushBack({ 162, 15, 78, 93 });
+	jump.PushBack({ 248, 30, 66, 80 });
+
+	jump.speed = 0.075f;
+	jump.loop = false;
+
 	//ANIMATION WHEN PLAYER DIES
 
 }
@@ -33,10 +51,14 @@ bool Player::Start()
 bool Player::Update(float dt)
 {
 	//INPUT TO MOVE THE PLAYER
-	if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 	{
-		//currentAnimation = &Run_Right;
+		if (currentAnimation != &run)
+		{
+			run.Reset();
+			currentAnimation = &run;
 
+		}
 		if (CollisionHorizontal() == 0 || CollisionHorizontal() == 2)
 		{
 			position.x += 2;
@@ -44,7 +66,12 @@ bool Player::Update(float dt)
 	}
 	else if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		//currentAnimation = &Run_Left;
+		if (currentAnimation != &run)
+		{
+			run.Reset();
+			currentAnimation = &run;
+
+		}
 
 		if (CollisionHorizontal() == 0 || CollisionHorizontal() == 1)
 		{
@@ -65,11 +92,27 @@ bool Player::Update(float dt)
 	//		position.y += 2;
 	//	}
 	//}
-	else if (app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	else if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN)
 	{
-		//currentAnimation = &Jump;
-		//JumpMove();
+		if (currentAnimation != &jump) {
+
+			run.Reset();
+			currentAnimation = &run;
+		}
+		
 	}
+
+
+	if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
+		app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE)
+	{
+		if (currentAnimation != &idle)
+		{
+			idle.Reset();
+			currentAnimation = &idle;
+		}
+	}
+
 
 	currentAnimation->Update();
 
@@ -165,3 +208,4 @@ int Player::CollisionHorizontal()
 
 	return ret;
 }
+

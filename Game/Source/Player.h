@@ -49,6 +49,15 @@ private:
 	//PLAYER TEXTURE
 	SDL_Texture* player = nullptr;
 
+	//Player gravity
+	float gravity = 0.3f;
+
+	// Jump mechanic
+	bool Jump = false;
+
+	// Speed to run
+	float speedX = 0.1f;
+	float speedY = 10.0f;
 };
 #endif
 
