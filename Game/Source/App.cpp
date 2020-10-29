@@ -308,7 +308,7 @@ bool App::LoadGame()
 	}
 	else
 	{
-		saveState = saveLoadFile.child("save_state");
+		saveState = saveLoadFile.child("save_status");
 
 		ListItem<Module*>* item;
 		item = modules.start;

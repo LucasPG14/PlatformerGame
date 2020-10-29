@@ -14,7 +14,7 @@ struct SDL_Renderer;
 class Position
 {
 public:
-	int x, y;
+	float x, y;
 };
 
 class Player : public Module
@@ -29,6 +29,9 @@ public:
 	int CollisionVertical();
 	int CollisionHorizontal();
 
+	void Gravity();
+	void Jump();
+
 	//PLAYER VARIABLES
 
 	//PLAYER JUMP
@@ -41,7 +44,7 @@ public:
 	Animation* currentAnimation = nullptr;
 
 	Animation idle;
-	Animation jump;
+	Animation jumpAnim;
 	Animation run;
 	Animation dead;
 
@@ -50,14 +53,14 @@ private:
 	SDL_Texture* player = nullptr;
 
 	//Player gravity
-	float gravity = 0.3f;
+	float gravity = 0.015f;
 
 	// Jump mechanic
-	bool Jump = false;
+	bool jump = false;
 
 	// Speed to run
 	float speedX = 0.1f;
-	float speedY = 10.0f;
+	float speedY = 0.0f;
 };
 #endif
 
