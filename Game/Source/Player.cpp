@@ -12,27 +12,37 @@
 Player::Player() : Module()
 {
 	//ANIMATION WHEN PLAYER IS STATIC
-	idle.PushBack({ 411, 238, 58, 92 });
+	rightIdleAnim.PushBack({ 11, 18, 59, 92 });
 
+	rightIdleAnim.speed = 0.01f;
 
-	idle.speed = 0.0007f;
+	leftIdleAnim.PushBack({ 213, 18, 59, 92 });
+
+	leftIdleAnim.speed = 0.01f;
 
 	//ANIMATION WHEN PLAYER IS RUNNING
-	run.PushBack({ 9, 18, 63, 92 });
-	run.PushBack({ 3, 127, 72, 93 });
+	rightRunAnim.PushBack({ 216, 122, 71, 93 });
+	rightRunAnim.PushBack({ 303, 121, 54, 94 });
 
-	run.speed = 0.01f;
-	run.loop = true;
+	rightRunAnim.speed = 0.01f;
+	rightRunAnim.loop = true;
+
+	leftRunAnim.PushBack({ 219, 234, 71, 93 });
+	leftRunAnim.PushBack({ 301, 233, 54, 94 });
+
+	leftRunAnim.speed = 0.01f;
+	leftRunAnim.loop = true;
 
 	//ANIMATION WHEN PLAYER IS JUMPING 
-	jumpAnim.PushBack({ 10, 18, 63, 92 });
-	jumpAnim.PushBack({ 84, 13, 71, 97 });
-	jumpAnim.PushBack({ 321, 12, 79, 95 });
-	jumpAnim.PushBack({ 162, 15, 78, 93 });
-	jumpAnim.PushBack({ 248, 30, 66, 80 });
+	rightJumpAnim.PushBack({ 9, 118, 71, 96 });
 
-	jumpAnim.speed = 1.0f;
-	jumpAnim.loop = false;
+	rightJumpAnim.speed = 1.0f;
+	rightJumpAnim.loop = false;
+
+	leftJumpAnim.PushBack({ 95, 118, 71, 96 });
+
+	leftJumpAnim.speed = 1.0f;
+	leftJumpAnim.loop = false;
 
 	//ANIMATION WHEN PLAYER DIES
 
@@ -40,11 +50,11 @@ Player::Player() : Module()
 bool Player::Start()
 {
 
-	player = app->tex->Load("Assets/textures/Characters/Adventurer/adventurer_tilesheet.png");
+	player = app->tex->Load("Assets/textures/Characters/Adventurer/adventurer_tilesheet2.png");
 	//SET POSITION
 	position.x = 15;
 	position.y = 608;
-	currentAnimation = &idle;
+	currentAnimation = &rightIdleAnim;
 
 	return true;
 }
@@ -53,53 +63,101 @@ bool Player::Update(float dt)
 	//INPUT TO MOVE THE PLAYER
 	if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 	{
-		if (currentAnimation != &run)
+		if (currentAnimation == &leftJumpAnim)
 		{
-			run.Reset();
-			currentAnimation = &run;
-
+			rightJumpAnim.Reset();
+			currentAnimation = &rightJumpAnim;
+			lastAnimation = currentAnimation;
 		}
-		if (CollisionHorizontal() == 0 || CollisionHorizontal() == 2)
+
+		else if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision() == 1))
+		{
+			rightRunAnim.Reset();
+			currentAnimation = &rightRunAnim;
+			lastAnimation = currentAnimation;
+		}
+
+		if (Collision() != 3)
 		{
 			position.x += 1;
 		}
+		else
+		{
+			app->render->camera.x += 1;
+		}
 		app->render->camera.x -= 1;
 	}
+
 	else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
 	{
-		if (currentAnimation != &run)
+		if (currentAnimation == &rightJumpAnim)
 		{
-			run.Reset();
-			currentAnimation = &run;
+			leftJumpAnim.Reset();
+			currentAnimation = &leftJumpAnim;
+			lastAnimation = currentAnimation;
 		}
 
-		if (CollisionHorizontal() == 0 || CollisionHorizontal() == 1)
+		else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision() == 1))
+		{
+			leftRunAnim.Reset();
+			currentAnimation = &leftRunAnim;
+			lastAnimation = currentAnimation;
+		}
+
+		if (Collision() != 4)
 		{
 			position.x -= 1;
 		}
+		else
+		{
+			app->render->camera.x -= 1;
+		}
 		app->render->camera.x += 1;
 	}
-	//else if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT)
-	//{
-	//	if (CollisionVertical() == 0 || CollisionVertical() == 1)
-	//	{
-	//		position.y -= 2;
-	//	}
-	//}
-	//else if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT)
-	//{
-	//	if (CollisionVertical() == 0 || CollisionVertical() == 2)
-	//	{
-	//		position.y += 2;
-	//	}
-	//}
-	else if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && CollisionVertical() == 1)
+
+	if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT)
 	{
-		if (currentAnimation != &jumpAnim) 
+		position.y -= 2;
+	}
+
+	if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT)
+	{
+			position.y += 2;
+	}
+
+	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision() == 1)
+	{
+		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 		{
-			jumpAnim.Reset();
-			currentAnimation = &jumpAnim;
+			if (currentAnimation != &rightJumpAnim)
+			{
+				rightJumpAnim.Reset();
+				currentAnimation = &rightJumpAnim;
+				lastAnimation = currentAnimation;
+			}
 		}
+		if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
+		{
+			if (currentAnimation != &leftJumpAnim)
+			{
+				leftJumpAnim.Reset();
+				currentAnimation = &leftJumpAnim;
+				lastAnimation = currentAnimation;
+			}
+		}
+		if (currentAnimation == &rightIdleAnim)
+		{
+			rightJumpAnim.Reset();
+			currentAnimation = &rightJumpAnim;
+			lastAnimation = currentAnimation;
+		}
+		if (currentAnimation == &leftIdleAnim)
+		{
+			leftJumpAnim.Reset();
+			currentAnimation = &leftJumpAnim;
+			lastAnimation = currentAnimation;
+		}
+
 		jump = true;
 		speedY = 2.0f;
 	}
@@ -109,24 +167,18 @@ bool Player::Update(float dt)
 		app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
 		app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE)
 	{
-		if (currentAnimation != &idle)
+		if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim)
 		{
-			idle.Reset();
-			currentAnimation = &idle;
+			rightIdleAnim.Reset();
+			currentAnimation = &rightIdleAnim;
+			lastAnimation = currentAnimation;
 		}
-	}
-
-	if ((app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT ||
-		app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT) &&
-		app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN)
-	{
-		if (currentAnimation != &jumpAnim)
+		if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim)
 		{
-			jumpAnim.Reset();
-			currentAnimation = &jumpAnim;
+			leftIdleAnim.Reset();
+			currentAnimation = &leftIdleAnim;
+			lastAnimation = currentAnimation;
 		}
-		jump = true;
-		speedY = 2.0f;
 	}
 
 	currentAnimation->Update();
@@ -141,6 +193,7 @@ bool Player::Update(float dt)
 
 	return true;
 }
+
 bool Player::PostUpdate() {
 
 	SDL_Rect rect = currentAnimation->GetCurrentFrame();
@@ -148,6 +201,7 @@ bool Player::PostUpdate() {
 
 	return true;
 }
+
 bool Player::CleanUp() {
 
 	//Unload textures
@@ -156,72 +210,55 @@ bool Player::CleanUp() {
 	return true;
 }
 
-int Player::CollisionVertical()
+int Player::Collision()
 {
 	int ret = 0;
 
-	iPoint mapPos1;
-	iPoint mapPos2;
+	iPoint playerTileDown;
+	iPoint playerTileUp;
+	iPoint playerTileRight;
+	iPoint playerTileLeft;
 
-	mapPos1 = app->map->WorldToMap(position.x + 29, position.y + 93);
-	mapPos2 = app->map->WorldToMap(position.x + 29, position.y - 1);
+	playerTileDown = app->map->WorldToMap(position.x + 29, position.y + 93);
+	playerTileUp = app->map->WorldToMap(position.x + 29, position.y - 1);
+	playerTileRight = app->map->WorldToMap(position.x + 59, position.y + 46);
+	playerTileLeft = app->map->WorldToMap(position.x - 1, position.y + 46);
 
 	ListItem<MapLayer*>* lay = app->map->data.layers.start;
 
-	int id1;
-	int id2;
+	int idDown;
+	int idUp;
+	int idRight;
+	int idLeft;
 
 	while (lay != NULL)
 	{
 		if (lay->data->properties.GetProperty("Collision") == 1)
 		{
-			id1 = lay->data->Get(mapPos1.x, mapPos1.y);
-			id2 = lay->data->Get(mapPos2.x, mapPos2.y);
+			idDown = lay->data->Get(playerTileDown.x, playerTileDown.y);
+			idUp = lay->data->Get(playerTileUp.x, playerTileUp.y);
+			idRight = lay->data->Get(playerTileRight.x, playerTileRight.y);
+			idLeft = lay->data->Get(playerTileLeft.x, playerTileLeft.y);
 
-			if (id1 == 50 || id1 == 51)
+			//Tile Down
+			if (idDown == 50 || idDown == 51)
 			{
 				return 1;
 			}
-			if (id2 == 50 || id2 == 51)
+			//Tile Up
+			if (idUp == 50 || idUp == 51)
 			{
 				return 2;
 			}
-		}
-		lay = lay->next;
-	}
-
-	return ret;
-}
-
-int Player::CollisionHorizontal()
-{
-	int ret = 0;
-
-	iPoint mapPos1;
-	iPoint mapPos2;
-
-	mapPos1 = app->map->WorldToMap(position.x + 59, position.y + 46);
-	mapPos2 = app->map->WorldToMap(position.x - 1, position.y + 46);
-
-	ListItem<MapLayer*>* lay = app->map->data.layers.start;
-
-	int id1;
-	int id2;
-
-	while (lay != NULL)
-	{
-		if (lay->data->properties.GetProperty("Collision") == 1)
-		{
-			id1 = lay->data->Get(mapPos1.x, mapPos1.y);
-			id2 = lay->data->Get(mapPos2.x, mapPos2.y);
-
-			if (id1 == 50 || id1 == 51)
+			//Tile Right
+			if (idRight == 50 || idRight == 51)
 			{
-				return 1;
+				return 3;
 			}
-			if (id2 == 50 || id2 == 51)
+			//Tile Left
+			if (idLeft == 50 || idLeft == 51)
 			{
-				return 2;
+				return 4;
 			}
 		}
 		lay = lay->next;
@@ -232,7 +269,7 @@ int Player::CollisionHorizontal()
 
 void Player::Gravity()
 {
-	if(CollisionVertical() != 1)
+	if(Collision() != 1)
 	{
 		speedY -= gravity;
 		position.y -= speedY;
@@ -249,4 +286,3 @@ void Player::Jump()
 	position.y -= speedY;
 	jump = false;
 }
-

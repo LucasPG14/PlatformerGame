@@ -26,8 +26,7 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 
-	int CollisionVertical();
-	int CollisionHorizontal();
+	int Collision();
 
 	void Gravity();
 	void Jump();
@@ -43,10 +42,13 @@ public:
 	Animation* lastAnimation = nullptr;
 	Animation* currentAnimation = nullptr;
 
-	Animation idle;
-	Animation jumpAnim;
-	Animation run;
-	Animation dead;
+	Animation leftIdleAnim;
+	Animation rightIdleAnim;
+	Animation leftJumpAnim;
+	Animation rightJumpAnim;
+	Animation leftRunAnim;
+	Animation rightRunAnim;
+	Animation deadAnim;
 
 private:
 	//PLAYER TEXTURE
