@@ -4,6 +4,7 @@
 #include"Textures.h"
 #include"Module.h"
 #include"Input.h"
+#include"Scene.h"
 #include"Animation.h"
 #include"Audio.h"
 #include "Map.h"
@@ -180,6 +181,35 @@ bool Player::Update(float dt)
 			lastAnimation = currentAnimation;
 		}
 	}
+
+	//DEBUG KEYS
+
+	//RESTART GAME (f1 && f3)
+
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		app->player->CleanUp();
+		app->scene->CleanUp();
+		app->player->Start();
+		app->scene->Start();
+	}
+
+	//SAVE GAME (f5)
+	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	{
+		app->SaveGameRequest();
+	}
+
+	//LOAD GAME (f6)
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	{
+		app->LoadGameRequest();
+	}
+
+	//VIEW COLLIDERS (f9)
+
+
+	//GODMODE (f10)
 
 	currentAnimation->Update();
 	
