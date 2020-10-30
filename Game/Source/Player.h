@@ -31,14 +31,15 @@ public:
 	void Gravity();
 	void Jump();
 
-	//PLAYER VARIABLES
+	// Load and Save
+	bool LoadState(pugi::xml_node& load);
+	bool SaveState(pugi::xml_node& save) const;
 
-	//PLAYER JUMP
-	//void JumpMove();
+	// Player position
 
-	//PLAYER POSITION
+	// Player position
 	Position position;
-	//PLAYER ANIMATIONS
+	// Player animations
 	Animation* lastAnimation = nullptr;
 	Animation* currentAnimation = nullptr;
 
@@ -51,10 +52,10 @@ public:
 	Animation deadAnim;
 
 private:
-	//PLAYER TEXTURE
+	// Player texture
 	SDL_Texture* player = nullptr;
 
-	//Player gravity
+	// Player gravity
 	float gravity = 0.015f;
 
 	// Jump mechanic

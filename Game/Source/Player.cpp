@@ -1,18 +1,20 @@
-#include"App.h"
-#include"Player.h"
-#include"Render.h"
-#include"Textures.h"
-#include"Module.h"
-#include"Input.h"
-#include"Scene.h"
-#include"Animation.h"
-#include"Audio.h"
+#include "App.h"
+#include "Player.h"
+#include "Render.h"
+#include "Textures.h"
+#include "Module.h"
+#include "Input.h"
+#include "Scene.h"
+#include "Animation.h"
+#include "Audio.h"
 #include "Map.h"
-#include"SDL/include/SDL_scancode.h"
+#include "FadeToBlack.h"
 
 Player::Player() : Module()
 {
-	//ANIMATION WHEN PLAYER IS STATIC
+	name.Create("player");
+
+	// ANIMATION WHEN PLAYER IS STATIC
 	rightIdleAnim.PushBack({ 11, 18, 59, 92 });
 
 	rightIdleAnim.speed = 0.01f;
@@ -21,7 +23,7 @@ Player::Player() : Module()
 
 	leftIdleAnim.speed = 0.01f;
 
-	//ANIMATION WHEN PLAYER IS RUNNING
+	// ANIMATION WHEN PLAYER IS RUNNING
 	rightRunAnim.PushBack({ 216, 122, 71, 93 });
 	rightRunAnim.PushBack({ 303, 121, 54, 94 });
 
@@ -34,7 +36,7 @@ Player::Player() : Module()
 	leftRunAnim.speed = 0.01f;
 	leftRunAnim.loop = true;
 
-	//ANIMATION WHEN PLAYER IS JUMPING 
+	// ANIMATION WHEN PLAYER IS JUMPING 
 	rightJumpAnim.PushBack({ 9, 118, 71, 96 });
 
 	rightJumpAnim.speed = 1.0f;
@@ -45,15 +47,15 @@ Player::Player() : Module()
 	leftJumpAnim.speed = 1.0f;
 	leftJumpAnim.loop = false;
 
-	//ANIMATION WHEN PLAYER DIES
+	// ANIMATION WHEN PLAYER DIES
 
 }
 bool Player::Start()
 {
 
 	player = app->tex->Load("Assets/textures/Characters/Adventurer/adventurer_tilesheet2.png");
-	//SET POSITION
-	position.x = 15;
+	// SET POSITION
+	position.x = 200;
 	position.y = 608;
 	currentAnimation = &rightIdleAnim;
 
@@ -61,7 +63,7 @@ bool Player::Start()
 }
 bool Player::Update(float dt)
 {
-	//INPUT TO MOVE THE PLAYER
+	// INPUT TO MOVE THE PLAYER
 	if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 	{
 		if (currentAnimation == &leftJumpAnim)
@@ -182,9 +184,9 @@ bool Player::Update(float dt)
 		}
 	}
 
-	//DEBUG KEYS
+	// DEBUG KEYS
 
-	//RESTART GAME (f1 && f3)
+	// RESTART GAME (F1 && F3)
 
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
@@ -194,22 +196,22 @@ bool Player::Update(float dt)
 		app->scene->Start();
 	}
 
-	//SAVE GAME (f5)
+	// SAVE GAME (F5)
 	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
 		app->SaveGameRequest();
 	}
 
-	//LOAD GAME (f6)
+	// LOAD GAME (F6)
 	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{
 		app->LoadGameRequest();
 	}
 
-	//VIEW COLLIDERS (f9)
+	// VIEW COLLIDERS (F9)
 
 
-	//GODMODE (f10)
+	// GODMODE (F10)
 
 	currentAnimation->Update();
 	
@@ -315,4 +317,26 @@ void Player::Jump()
 	speedY -= gravity;
 	position.y -= speedY;
 	jump = false;
+}
+
+bool Player::LoadState(pugi::xml_node& load)
+{
+	bool ret = true;
+
+	position.x = load.child("position").attribute("x").as_float();
+	position.y = load.child("position").attribute("y").as_float();
+
+	return ret;
+}
+
+bool Player::SaveState(pugi::xml_node& save) const
+{
+	bool ret = true;
+
+	pugi::xml_node pos = save.append_child("position");
+
+	pos.append_attribute("x") = position.x;
+	pos.append_attribute("y") = position.y;
+
+	return ret;
 }
