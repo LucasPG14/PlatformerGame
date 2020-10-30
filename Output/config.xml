@@ -22,14 +22,15 @@
     <folder>Assets/tiles/</folder>
   </map>
   <scene>
-    <background>
-      <folder>Assets/textures/Backgrounds</folder>
-      <image source ="SnowBackground"/>
-    </background>
+      <folder>Assets/textures/Backgrounds/</folder>
+      <image source ="SnowBackground.png"/>
   </scene>
   <player>
-    <characters>
-      
-    </characters>
+    <folder>Assets/textures/Characters/Adventurer/</folder>
+    <image source ="AdventurerTilesheet.png"/>
+    <godmode value ="false"/>
+    <speed x="0.1f" y="0.0f"/>
+    <gravity value="0.015f"/>
+    <jump value="false"/>
   </player>
 </config>

@@ -1,6 +1,7 @@
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
+#include "Map.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -70,6 +71,15 @@ bool Render::PreUpdate()
 
 bool Render::Update(float dt)
 {
+	if (camera.x < -(app->map->data.width * app->map->data.tileWidth) + camera.w)
+	{
+		camera.x = -(app->map->data.width * app->map->data.tileWidth) + camera.w;
+	}
+	else if (camera.x > 0)
+	{
+		camera.x = 0;
+	}
+
 	return true;
 }
 

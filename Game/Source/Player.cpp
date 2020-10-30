@@ -9,6 +9,7 @@
 #include "Audio.h"
 #include "Map.h"
 #include "FadeToBlack.h"
+#include "Log.h"
 
 Player::Player() : Module()
 {
@@ -50,10 +51,27 @@ Player::Player() : Module()
 	// ANIMATION WHEN PLAYER DIES
 
 }
+bool Player::Awake(pugi::xml_node& config)
+{
+	LOG("Loading Player");
+	bool ret = true;
+
+	folder.Create(config.child("folder").child_value());
+
+	playerString.Create(config.child("image").attribute("source").as_string(""));
+
+	godMode = config.child("godmode").attribute("value").as_bool();
+	gravity = config.child("gravity").attribute("value").as_float();
+	jump = config.child("jump").attribute("value").as_bool();
+	speedX = config.child("speed").attribute("x").as_float();
+	speedY = config.child("speed").attribute("y").as_float();
+
+	return true;
+}
 bool Player::Start()
 {
-
-	player = app->tex->Load("Assets/textures/Characters/Adventurer/adventurer_tilesheet2.png");
+	SString tmp("%s%s", folder.GetString(), playerString.GetString());
+	player = app->tex->Load(tmp.GetString());
 	// SET POSITION
 	position.x = 200;
 	position.y = 608;
@@ -118,12 +136,12 @@ bool Player::Update(float dt)
 		app->render->camera.x += 1;
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT)
+	if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
 	{
 		position.y -= 2;
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT)
+	if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 	{
 			position.y += 2;
 	}
@@ -188,7 +206,7 @@ bool Player::Update(float dt)
 
 	// RESTART GAME (F1 && F3)
 
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KeyState::KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KeyState::KEY_DOWN)
 	{
 		app->player->CleanUp();
 		app->scene->CleanUp();
@@ -197,13 +215,13 @@ bool Player::Update(float dt)
 	}
 
 	// SAVE GAME (F5)
-	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
 	{
 		app->SaveGameRequest();
 	}
 
 	// LOAD GAME (F6)
-	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KeyState::KEY_DOWN)
 	{
 		app->LoadGameRequest();
 	}
@@ -212,6 +230,10 @@ bool Player::Update(float dt)
 
 
 	// GODMODE (F10)
+	if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
+	{
+		godMode = true;
+	}
 
 	currentAnimation->Update();
 	
@@ -244,64 +266,69 @@ bool Player::CleanUp() {
 
 int Player::Collision()
 {
-	int ret = 0;
-
-	iPoint playerTileDown;
-	iPoint playerTileUp;
-	iPoint playerTileRight;
-	iPoint playerTileLeft;
-
-	playerTileDown = app->map->WorldToMap(position.x + 29, position.y + 93);
-	playerTileUp = app->map->WorldToMap(position.x + 29, position.y - 1);
-	playerTileRight = app->map->WorldToMap(position.x + 59, position.y + 46);
-	playerTileLeft = app->map->WorldToMap(position.x - 1, position.y + 46);
-
-	ListItem<MapLayer*>* lay = app->map->data.layers.start;
-
-	int idDown;
-	int idUp;
-	int idRight;
-	int idLeft;
-
-	while (lay != NULL)
+	if (godMode == false)
 	{
-		if (lay->data->properties.GetProperty("Collision") == 1)
-		{
-			idDown = lay->data->Get(playerTileDown.x, playerTileDown.y);
-			idUp = lay->data->Get(playerTileUp.x, playerTileUp.y);
-			idRight = lay->data->Get(playerTileRight.x, playerTileRight.y);
-			idLeft = lay->data->Get(playerTileLeft.x, playerTileLeft.y);
+		int ret = 0;
 
-			//Tile Down
-			if (idDown == 50 || idDown == 51)
+		iPoint playerTileDown;
+		iPoint playerTileUp;
+		iPoint playerTileRight;
+		iPoint playerTileLeft;
+
+		playerTileDown = app->map->WorldToMap(position.x + 29, position.y + 93);
+		playerTileUp = app->map->WorldToMap(position.x + 29, position.y - 1);
+		playerTileRight = app->map->WorldToMap(position.x + 59, position.y + 46);
+		playerTileLeft = app->map->WorldToMap(position.x - 1, position.y + 46);
+
+		ListItem<MapLayer*>* lay = app->map->data.layers.start;
+
+		int idDown;
+		int idUp;
+		int idRight;
+		int idLeft;
+
+		while (lay != NULL)
+		{
+			if (lay->data->properties.GetProperty("Collision") == 1)
 			{
-				return 1;
+				idDown = lay->data->Get(playerTileDown.x, playerTileDown.y);
+				idUp = lay->data->Get(playerTileUp.x, playerTileUp.y);
+				idRight = lay->data->Get(playerTileRight.x, playerTileRight.y);
+				idLeft = lay->data->Get(playerTileLeft.x, playerTileLeft.y);
+
+				//Tile Down
+				if (idDown == 50 || idDown == 51)
+				{
+					return 1;
+				}
+				//Tile Up
+				if (idUp == 50 || idUp == 51)
+				{
+					return 2;
+				}
+				//Tile Right
+				if (idRight == 50 || idRight == 51)
+				{
+					return 3;
+				}
+				//Tile Left
+				if (idLeft == 50 || idLeft == 51)
+				{
+					return 4;
+				}
 			}
-			//Tile Up
-			if (idUp == 50 || idUp == 51)
-			{
-				return 2;
-			}
-			//Tile Right
-			if (idRight == 50 || idRight == 51)
-			{
-				return 3;
-			}
-			//Tile Left
-			if (idLeft == 50 || idLeft == 51)
-			{
-				return 4;
-			}
+			lay = lay->next;
 		}
-		lay = lay->next;
+
+		return ret;
+
 	}
 
-	return ret;
 }
 
 void Player::Gravity()
 {
-	if(Collision() != 1)
+	if(Collision() != 1 && godMode == false)
 	{
 		speedY -= gravity;
 		position.y -= speedY;

@@ -20,10 +20,14 @@ Scene::~Scene()
 {}
 
 // Called before render is available
-bool Scene::Awake()
+bool Scene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
+
+	folder.Create(config.child("folder").child_value());
+
+	stringBackground.Create(config.child("image").attribute("source").as_string(""));
 
 	return ret;
 }
@@ -34,8 +38,9 @@ bool Scene::Start()
 	// L03: DONE: Load map
 	//app->map->Load("hello2.tmx");
 	app->map->Load("SnowMap.tmx");
-	
-	background = app->tex->Load("Assets/tiles/SnowBackground.png");
+
+	SString tmp("%s%s", folder.GetString(), stringBackground.GetString());
+	bg = app->tex->Load(tmp.GetString());
 
 	// Load music
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
@@ -72,6 +77,9 @@ bool Scene::Update(float dt)
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x -= 1;
 
+	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+		app->map->viewCollisions = !app->map->viewCollisions;
+
 	//app->render->DrawTexture(img, 380, 100); // Placeholder not needed any more
 
 	// L03: DONE 7: Set the window title with map/tileset info
@@ -93,7 +101,7 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-	app->render->DrawTexture(background, 0, 0, NULL, 1.0f);
+	app->render->DrawTexture(bg, 0, 0, NULL, 1.0f);
 	// Draw map
 	app->map->Draw();
 
@@ -106,7 +114,7 @@ bool Scene::CleanUp()
 	LOG("Freeing scene");
 
 	//Unload the background
-	app->tex->UnLoad(background);
+	app->tex->UnLoad(bg);
 
 	return true;
 }

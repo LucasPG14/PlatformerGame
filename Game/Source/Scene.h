@@ -3,6 +3,8 @@
 
 #include "Module.h"
 
+#include "PugiXml\src\pugixml.hpp"
+
 struct SDL_Texture;
 
 class Scene : public Module
@@ -15,7 +17,7 @@ public:
 	virtual ~Scene();
 
 	// Called before render is available
-	bool Awake();
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -33,7 +35,10 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* background;
+	SDL_Texture* bg;
+	pugi::xml_node node;
+	SString folder;
+	SString stringBackground;
 };
 
 #endif // __SCENE_H__

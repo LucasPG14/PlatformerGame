@@ -1,8 +1,8 @@
-
 #include "App.h"
 #include "Render.h"
 #include "Textures.h"
 #include "Map.h"
+#include "Player.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -67,7 +67,7 @@ void Map::Draw()
 					// L04: TODO 9: Complete the draw function
 					iPoint ret = MapToWorld(x, y);
 					TileSet* set = GetTilesetFromTileId(tileId);
-					if (layer->data->properties.GetProperty("Drawable") == 1)
+					if (layer->data->properties.GetProperty("Drawable") == 1 || viewCollisions == true)
 					{
 						app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
 					}
