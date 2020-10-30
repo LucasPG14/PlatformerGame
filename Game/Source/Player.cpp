@@ -92,6 +92,12 @@ bool Player::Update(float dt)
 			lastAnimation = currentAnimation;
 		}
 
+		if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
+		{
+			position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
+		}
+
+
 		else if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
 		{
 			rightRunAnim.Reset();
@@ -124,6 +130,10 @@ bool Player::Update(float dt)
 			leftRunAnim.Reset();
 			currentAnimation = &leftRunAnim;
 			lastAnimation = currentAnimation;
+		}
+		if (position.x<=0)
+		{
+			position.x = 0;
 		}
 
 		if (Collision("left") == false)
@@ -210,9 +220,10 @@ bool Player::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KeyState::KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KeyState::KEY_DOWN)
 	{
 		app->player->CleanUp();
-		app->scene->CleanUp();
 		app->player->Start();
-		app->scene->Start();
+		app->render->cameraStartPosition();
+
+
 	}
 
 	// SAVE GAME (F5)
