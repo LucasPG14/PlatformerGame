@@ -32,6 +32,9 @@ public:
 	void Gravity();
 	void Jump();
 
+	bool checkCollisionType(int idTile);
+
+	void Dead();
 	// Load and Save
 	bool LoadState(pugi::xml_node& load);
 	bool SaveState(pugi::xml_node& save) const;

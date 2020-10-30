@@ -11,7 +11,7 @@ class Module
 {
 public:
 
-	Module() : active(false)
+	Module() : active(true)
 	{}
 
 	void Init()

@@ -20,7 +20,7 @@ class FadeToBlack;
 class SceneIntro;
 class Scene;
 class Map;
-
+class SceneDie;
 
 class App
 {
@@ -95,7 +95,7 @@ public:
 	SceneIntro* sceneIntro;
 	Scene* scene;
 	Map* map;
-	
+	SceneDie* sceneDie;
 
 
 private:

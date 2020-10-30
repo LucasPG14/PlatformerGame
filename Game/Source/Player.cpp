@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Scene.h"
 #include "Animation.h"
+#include "SceneDie.h"
 #include "Audio.h"
 #include "Map.h"
 #include "FadeToBlack.h"
@@ -293,7 +294,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 94);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (idTile == 50)
+						if (checkCollisionType(idTile))
 						{
 							return true;
 						}
@@ -305,7 +306,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 3);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (idTile == 50)
+						if (checkCollisionType(idTile))
 						{
 							return true;
 						}
@@ -317,7 +318,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + 51, position.y + (2 + (45 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (idTile == 50)
+						if (checkCollisionType(idTile))
 						{
 							return true;
 						}
@@ -329,7 +330,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + 9, position.y + (2 + (45 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (idTile == 50)
+						if (checkCollisionType(idTile))
 						{
 							return true;
 						}
@@ -383,4 +384,31 @@ bool Player::SaveState(pugi::xml_node& save) const
 	pos.append_attribute("y") = position.y;
 
 	return ret;
+}
+
+void Player::Dead() 
+{
+	app->sceneDie->active = true;
+	app->scene->active = false;
+	active = false;
+	app->render->cameraStartPosition();
+}
+
+
+bool Player::checkCollisionType(int idTile)
+{
+	switch (idTile)
+	{
+		case 50:
+
+			return true;
+			break;
+
+		case 51:
+			Dead();
+			return true;
+			break;
+	}
+
+	return false;
 }
