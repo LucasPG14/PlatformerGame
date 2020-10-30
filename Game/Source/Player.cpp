@@ -74,7 +74,7 @@ bool Player::Start()
 	player = app->tex->Load(tmp.GetString());
 	// SET POSITION
 	position.x = 200;
-	position.y = 608;
+	position.y = 607;
 	currentAnimation = &rightIdleAnim;
 
 	return true;
@@ -91,14 +91,14 @@ bool Player::Update(float dt)
 			lastAnimation = currentAnimation;
 		}
 
-		else if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision() == 1))
+		else if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
 		{
 			rightRunAnim.Reset();
 			currentAnimation = &rightRunAnim;
 			lastAnimation = currentAnimation;
 		}
 
-		if (Collision() != 3)
+		if (Collision("right") == false)
 		{
 			position.x += 1;
 		}
@@ -118,14 +118,14 @@ bool Player::Update(float dt)
 			lastAnimation = currentAnimation;
 		}
 
-		else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision() == 1))
+		else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
 		{
 			leftRunAnim.Reset();
 			currentAnimation = &leftRunAnim;
 			lastAnimation = currentAnimation;
 		}
 
-		if (Collision() != 4)
+		if (Collision("left") == false)
 		{
 			position.x -= 1;
 		}
@@ -146,7 +146,7 @@ bool Player::Update(float dt)
 			position.y += 2;
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision() == 1)
+	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 	{
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 		{
@@ -232,7 +232,7 @@ bool Player::Update(float dt)
 	// GODMODE (F10)
 	if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
 	{
-		godMode = true;
+		godMode = !godMode;
 	}
 
 	currentAnimation->Update();
@@ -241,6 +241,11 @@ bool Player::Update(float dt)
 	if (jump == true)
 	{
 		Jump();
+	}
+
+	if (Collision("top") == true)
+	{
+		speedY = 0.0f;
 	}
 
 	Gravity();
@@ -264,71 +269,83 @@ bool Player::CleanUp() {
 	return true;
 }
 
-int Player::Collision()
+bool Player::Collision(const char* side)
 {
+	bool ret = false;
+
 	if (godMode == false)
 	{
-		int ret = 0;
-
-		iPoint playerTileDown;
-		iPoint playerTileUp;
-		iPoint playerTileRight;
-		iPoint playerTileLeft;
-
-		playerTileDown = app->map->WorldToMap(position.x + 29, position.y + 93);
-		playerTileUp = app->map->WorldToMap(position.x + 29, position.y - 1);
-		playerTileRight = app->map->WorldToMap(position.x + 59, position.y + 46);
-		playerTileLeft = app->map->WorldToMap(position.x - 1, position.y + 46);
 
 		ListItem<MapLayer*>* lay = app->map->data.layers.start;
 
-		int idDown;
-		int idUp;
-		int idRight;
-		int idLeft;
+		iPoint tilePos;
+
+		int idTile;
+
 
 		while (lay != NULL)
 		{
 			if (lay->data->properties.GetProperty("Collision") == 1)
 			{
-				idDown = lay->data->Get(playerTileDown.x, playerTileDown.y);
-				idUp = lay->data->Get(playerTileUp.x, playerTileUp.y);
-				idRight = lay->data->Get(playerTileRight.x, playerTileRight.y);
-				idLeft = lay->data->Get(playerTileLeft.x, playerTileLeft.y);
-
-				//Tile Down
-				if (idDown == 50 || idDown == 51)
+				if (side == "bottom")
 				{
-					return 1;
+					for (uint i = 0; i < 3; i++)
+					{
+						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 94);
+						idTile = lay->data->Get(tilePos.x, tilePos.y);
+						if (idTile == 50)
+						{
+							return true;
+						}
+					}
 				}
-				//Tile Up
-				if (idUp == 50 || idUp == 51)
+				else if (side == "top")
 				{
-					return 2;
+					for (uint i = 0; i < 3; i++)
+					{
+						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 3);
+						idTile = lay->data->Get(tilePos.x, tilePos.y);
+						if (idTile == 50)
+						{
+							return true;
+						}
+					}
 				}
-				//Tile Right
-				if (idRight == 50 || idRight == 51)
+				else if (side == "right")
 				{
-					return 3;
+					for (uint i = 0; i < 3; i++)
+					{
+						tilePos = app->map->WorldToMap(position.x + 51, position.y + (2 + (45 * i)));
+						idTile = lay->data->Get(tilePos.x, tilePos.y);
+						if (idTile == 50)
+						{
+							return true;
+						}
+					}
 				}
-				//Tile Left
-				if (idLeft == 50 || idLeft == 51)
+				else if (side == "left")
 				{
-					return 4;
+					for (uint i = 0; i < 3; i++)
+					{
+						tilePos = app->map->WorldToMap(position.x + 9, position.y + (2 + (45 * i)));
+						idTile = lay->data->Get(tilePos.x, tilePos.y);
+						if (idTile == 50)
+						{
+							return true;
+						}
+					}
 				}
 			}
 			lay = lay->next;
 		}
-
-		return ret;
-
 	}
 
+	return ret;
 }
 
 void Player::Gravity()
 {
-	if(Collision() != 1 && godMode == false)
+	if(Collision("bottom") == false && godMode == false)
 	{
 		speedY -= gravity;
 		position.y -= speedY;

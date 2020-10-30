@@ -27,7 +27,7 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 
-	int Collision();
+	bool Collision(const char* side);
 
 	void Gravity();
 	void Jump();
