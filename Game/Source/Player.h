@@ -31,7 +31,7 @@ public:
 
 	void Gravity();
 	void Jump();
-
+	bool jumping;
 	bool checkCollisionType(int idTile, std::string direction);
 
 	void changeLevel(int level);

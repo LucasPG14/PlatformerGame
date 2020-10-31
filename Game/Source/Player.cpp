@@ -197,6 +197,7 @@ bool Player::Update(float dt)
 				lastAnimation = currentAnimation;
 			}
 
+			jumping = true;
 			jump = true;
 			speedY = 7.0f;
 		}
@@ -441,31 +442,72 @@ void Player::changeLevel(int level)
 }
 
 
+int x = 0;
+bool touched = false;
+bool top = false;
+bool bottom = false;
+bool canpass = false;
+bool z = false;
 bool Player::checkCollisionType(int idTile, std::string direction)
 {
 	switch (idTile)
 	{
-		case 50:
+	case 50:
+		x = 0;
+		touched = false;
+		z = false;
+		return true;
+		break;
 
+
+	case 51:
+		Dead();
+		return true;
+		break;
+
+	case 52:
+		if (direction == "bottom" && z == false)
 			return true;
-			break;
 
-		case 51:
-			Dead();
+		if (direction == "bottom" && jumping) {
+ 			x++;
+			if (x > 3 && x < 62)
+				jumping = true;
+			if (x >= 62)
+				jumping = false;
+			if (x == 0)
+				jumping = false;
+
+
+		}
+		if (direction == "top") {
+
+			z = true;
+			return false;
+
+
+		}
+		else if (direction == "bottom" && jumping && !touched) {
+
+			return false;
+
+		}
+
+		else if (direction == "bottom" && !jumping) {
+
+			touched = true;
+			x = 0;
 			return true;
-			break;
-
-		case 52:
-			if (direction != "bottom") 
-				return false;
-			else
-				return true;
-			break;
-		case 53:
-			changeLevel(1);
-			break;
+		}
+		else {
+			return true;
+		}
+		break;
+	case 53:
+		changeLevel(1);
+		break;
 	}
-	
+
 
 	return false;
 }
