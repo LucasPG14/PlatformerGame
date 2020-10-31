@@ -35,6 +35,7 @@ public:
 	bool checkCollisionType(int idTile, std::string direction);
 
 	void Dead();
+	void resetPlayer();
 	// Load and Save
 	bool LoadState(pugi::xml_node& load);
 	bool SaveState(pugi::xml_node& save) const;

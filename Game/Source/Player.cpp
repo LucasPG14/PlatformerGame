@@ -75,8 +75,7 @@ bool Player::Start()
 	SString tmp("%s%s", folder.GetString(), playerString.GetString());
 	player = app->tex->Load(tmp.GetString());
 	// SET POSITION
-	position.x = 200;
-	position.y = 607;
+	resetPlayer();
 	currentAnimation = &rightIdleAnim;
 
 	return true;
@@ -427,4 +426,11 @@ bool Player::checkCollisionType(int idTile, std::string direction)
 	
 
 	return false;
+}
+
+void Player::resetPlayer()
+{
+	position.x = 200;
+	position.y = 607;
+	active = true;
 }

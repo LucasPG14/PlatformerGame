@@ -3,6 +3,8 @@
 #include "Textures.h"
 #include "Player.h"
 #include "Render.h"
+#include "Scene.h"
+
 #include "Input.h"
 #include "Audio.h"
 
@@ -41,11 +43,8 @@ bool SceneDie::Start()
 bool SceneDie::Update()
 {
 
-	if (app->input->GetKey(SDLK_KP_ENTER) == KEY_DOWN)
-	{
-		app->fade->Fade(this, (Module*)app->scene, 90);
-	}
 
+	
 	
 
 
@@ -60,6 +59,15 @@ bool SceneDie::PostUpdate()
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
+
+	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN)
+	{
+		app->scene->active = true;
+		app->player->resetPlayer();
+
+		active = false;
+	}
+
 
 	return true;
 }
