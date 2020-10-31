@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Render.h"
 #include "Textures.h"
+#include "Window.h"
 #include "Module.h"
 #include "Input.h"
 #include "Scene.h"
@@ -97,8 +98,7 @@ bool Player::Update(float dt)
 			position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
 		}
 
-
-		else if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
+		if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
 		{
 			rightRunAnim.Reset();
 			currentAnimation = &rightRunAnim;
@@ -107,13 +107,12 @@ bool Player::Update(float dt)
 
 		if (Collision("right") == false)
 		{
+			if (position.x >= app->render->camera.w / 2)
+			{
+				app->render->camera.x -= 1;
+			}
 			position.x += 1;
 		}
-		else
-		{
-			app->render->camera.x += 1;
-		}
-		app->render->camera.x -= 1;
 	}
 
 	else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
@@ -131,6 +130,7 @@ bool Player::Update(float dt)
 			currentAnimation = &leftRunAnim;
 			lastAnimation = currentAnimation;
 		}
+		
 		if (position.x<=0)
 		{
 			position.x = 0;
@@ -138,13 +138,12 @@ bool Player::Update(float dt)
 
 		if (Collision("left") == false)
 		{
+			if (position.x <= app->render->camera.w / 2)
+			{
+				app->render->camera.x += 1;
+			}
 			position.x -= 1;
 		}
-		else
-		{
-			app->render->camera.x -= 1;
-		}
-		app->render->camera.x += 1;
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
@@ -222,8 +221,6 @@ bool Player::Update(float dt)
 		app->player->CleanUp();
 		app->player->Start();
 		app->render->cameraStartPosition();
-
-
 	}
 
 	// SAVE GAME (F5)

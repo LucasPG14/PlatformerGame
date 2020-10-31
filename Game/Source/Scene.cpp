@@ -6,6 +6,8 @@
 #include "Window.h"
 #include "Scene.h"
 #include "Map.h"
+#include "Player.h"
+#include "FadeToBlack.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -13,6 +15,7 @@
 Scene::Scene() : Module()
 {
 	name.Create("scene");
+	//IsActive(false);
 }
 
 // Destructor
@@ -44,6 +47,8 @@ bool Scene::Start()
 
 	// Load music
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
+
+	//app->player->active = true;
 
 	return true;
 }
@@ -77,6 +82,7 @@ bool Scene::Update(float dt)
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x -= 1;
 
+	// VIEW COLLIDERS(F9)
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		app->map->viewCollisions = !app->map->viewCollisions;
 
@@ -89,6 +95,11 @@ bool Scene::Update(float dt)
 				   app->map->data.tilesets.count());
 
 	app->win->SetTitle(title.GetString());
+
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		app->fade->Fade(this, (Module*)app->scene, 60);
+	}
 
 	return true;
 }

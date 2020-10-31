@@ -32,5 +32,6 @@
     <speed x="0.1f" y="0.0f"/>
     <gravity value="0.015f"/>
     <jump value="false"/>
+    <position x="200" y="607"/>
   </player>
 </config>

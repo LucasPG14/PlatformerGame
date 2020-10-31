@@ -7,9 +7,6 @@
 #include "Audio.h"
 
 #include "FadeToBlack.h"
-
-
-
 #include "SDL/include/SDL_scancode.h"
 
 
@@ -26,42 +23,38 @@ SceneIntro::~SceneIntro()
 // Load assets
 bool SceneIntro::Start()
 {
-
-
 	bool ret = true;
-
-	//bgTexture = App->textures->Load("Assets/sprites/menu/menuinicial_1.png");
+	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
 	//App->audio->PlayMusic("Assets/music/Build/music/opening.ogg", 1.0f);
-
-	
 
 	return ret;
 }
 
-bool SceneIntro::Update()
+bool SceneIntro::Update(float dt)
 {
+	bool ret = true;
 
-	if (app->input->GetKey(SDLK_KP_ENTER) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F7) == KeyState::KEY_DOWN)
 	{
-		app->fade->Fade(this, (Module*)app->scene, 90);
+		app->fade->Fade(this, (Module*)app->scene, 60);
 	}
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-	{
-		exit(0);
-	}
-	
 
-	return true;
+	return ret;
 }
 
 // Update: draw background
 bool SceneIntro::PostUpdate()
 {
+	bool ret = true;
 	// Draw everything --------------------------------------
-	/*App->render->Blit(bgTexture, 0, 0, NULL);
-	App->render->Blit(bgTexture, 0, 0, &(menuAnim->GetCurrentFrame()));*/
+	app->render->DrawTexture(bgTexture, 0, 0, NULL);
 
-	return true;
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN)
+	{
+		ret = false;
+	}
+
+	return ret;
 }
 
 bool SceneIntro::CleanUp() {

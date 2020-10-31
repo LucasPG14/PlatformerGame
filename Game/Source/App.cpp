@@ -26,26 +26,28 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	render = new Render();
 	tex = new Textures();
 	audio = new Audio();
-	fade = new FadeToBlack(true);
+	fade = new FadeToBlack();
+	sceneIntro = new SceneIntro();
 	scene = new Scene();
 	map = new Map();
 	player = new Player();
-	sceneIntro = new SceneIntro();
 	sceneDie = new SceneDie();
-	sceneDie->active = false;
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
-	AddModule(win);
-	AddModule(input);
-	AddModule(tex);
-	AddModule(audio);
-	AddModule(scene);
-	AddModule(map);
-	AddModule(player);
-	AddModule(sceneDie);
+	AddModule(win, true);
+	AddModule(input, true);
+	AddModule(tex, true);
+	AddModule(audio, true);
+	AddModule(fade, true);
+	AddModule(sceneIntro, false);
+	AddModule(scene, true);
+	AddModule(map, false);
+	AddModule(player, true);
+	AddModule(sceneDie, false);
+	
 	// Render last to swap buffer
-	AddModule(render);
+	AddModule(render, true);
 }
 
 // Destructor
@@ -63,10 +65,9 @@ App::~App()
 	modules.clear();
 }
 
-void App::AddModule(Module* module)
+void App::AddModule(Module* module, bool active)
 {
-
-	//module->Init();
+	module->Init(active);
 	modules.add(module);
 }
 

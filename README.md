@@ -13,7 +13,8 @@
  
 ## Controls
 
- - {ControlsScheme}
+ - A: moves the player to the left.
+ - D: moves the player to the right.
 
 ## Developers
 

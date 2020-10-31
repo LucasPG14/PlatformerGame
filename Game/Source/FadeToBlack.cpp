@@ -2,12 +2,13 @@
 
 #include "App.h"
 #include "Render.h"
+#include "Window.h"
 
 #include "SDL/include/SDL_render.h"
 
-FadeToBlack::FadeToBlack(bool startEnabled) : Module()
+FadeToBlack::FadeToBlack() : Module()
 {
-
+	name.Create("fade");
 }
 
 FadeToBlack::~FadeToBlack()
@@ -17,14 +18,16 @@ FadeToBlack::~FadeToBlack()
 
 bool FadeToBlack::Start()
 {
-
-
 	// Enable blending mode for transparency
+	uint w;
+	uint h;
+	app->win->GetWindowSize(w, h);
+	screenRect = { 0, 0, (int)w * (int)app->win->GetScale(), (int)h * (int)app->win->GetScale() };
 	SDL_SetRenderDrawBlendMode(app->render->renderer, SDL_BLENDMODE_BLEND);
 	return true;
 }
 
-bool FadeToBlack::Update()
+bool FadeToBlack::Update(float dt)
 {
 	// Exit this function if we are not performing a fade
 	if (currentStep == Fade_Step::NONE) return true;
@@ -35,6 +38,9 @@ bool FadeToBlack::Update()
 		if (frameCount >= maxFadeFrames)
 		{
 			// TODO 1: Enable / Disable the modules received when FadeToBlacks(...) gets called
+			moduleToDisable->IsActive(false);
+			moduleToEnable->IsActive(true);
+
 			currentStep = Fade_Step::FROM_BLACK;
 		}
 	}
@@ -83,4 +89,9 @@ bool FadeToBlack::Fade(Module* moduleToDisable, Module* moduleToEnable, float fr
 	}
 
 	return ret;
+}
+
+bool FadeToBlack::CleanUp()
+{
+	return true;
 }

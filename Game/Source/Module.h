@@ -14,9 +14,9 @@ public:
 	Module() : active(true)
 	{}
 
-	void Init()
+	void Init(bool activeModule)
 	{
-		active = true;
+		active = activeModule;
 	}
 
 	// Called before render is available
@@ -65,6 +65,11 @@ public:
 	virtual bool SaveState(pugi::xml_node&) const
 	{
 		return true;
+	}
+
+	void IsActive(bool activeModule)
+	{
+		active = activeModule;
 	}
 
 public:

@@ -8,7 +8,7 @@ class FadeToBlack : public Module
 {
 public:
 	//Constructor
-	FadeToBlack(bool startEnabled);
+	FadeToBlack();
 
 	//Destructor
 	~FadeToBlack();
@@ -19,7 +19,7 @@ public:
 
 	// Called at the middle of the application loop
 	// Updates the fade logic
-	bool Update();
+	bool Update(float dt);
 
 	// Called at the end of the application loop
 	// Performs the render call of a black rectangle with transparency
@@ -29,6 +29,8 @@ public:
 	// Starts the fade process which has two steps, fade_out and fade_in
 	// After the first step, the modules should be switched
 	bool Fade(Module* toDisable, Module* toEnable, float frames = 60);
+
+	bool CleanUp();
 
 private:
 
