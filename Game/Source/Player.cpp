@@ -72,11 +72,14 @@ bool Player::Awake(pugi::xml_node& config)
 }
 bool Player::Start()
 {
-	SString tmp("%s%s", folder.GetString(), playerString.GetString());
-	player = app->tex->Load(tmp.GetString());
-	// SET POSITION
-	resetPlayer();
-	currentAnimation = &rightIdleAnim;
+	if (this->active == true)
+	{
+		SString tmp("%s%s", folder.GetString(), playerString.GetString());
+		player = app->tex->Load(tmp.GetString());
+		// SET POSITION
+		resetPlayer();
+		currentAnimation = &rightIdleAnim;
+	}
 
 	return true;
 }
@@ -130,7 +133,7 @@ bool Player::Update(float dt)
 			lastAnimation = currentAnimation;
 		}
 		
-		if (position.x<=0)
+		if (position.x <= 0)
 		{
 			position.x = 0;
 		}

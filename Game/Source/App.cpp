@@ -39,12 +39,12 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(input, true);
 	AddModule(tex, true);
 	AddModule(audio, true);
-	AddModule(fade, true);
-	AddModule(sceneIntro, false);
-	AddModule(scene, true);
+	AddModule(sceneIntro, true);
+	AddModule(scene, false);
 	AddModule(map, false);
-	AddModule(player, true);
+	AddModule(player, false);
 	AddModule(sceneDie, false);
+	AddModule(fade, true);
 	
 	// Render last to swap buffer
 	AddModule(render, true);
@@ -167,6 +167,7 @@ pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 // ---------------------------------------------
 void App::PrepareUpdate()
 {
+
 }
 
 // ---------------------------------------------
