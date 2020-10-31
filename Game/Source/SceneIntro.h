@@ -26,7 +26,6 @@ public:
 public:
 	// The scene sprite sheet loaded into an SDL_Texture
 	SDL_Texture* bgTexture = nullptr;
-	Animation introAnim;
 	//Animation fAnim;
 	//Animation* menuAnim = nullptr;
 

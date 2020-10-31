@@ -48,8 +48,7 @@ bool Scene::Start()
 	// Load music
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
 
-	app->player->active = true;
-
+	//app->player->active = true;
 
 	return true;
 }
