@@ -45,13 +45,10 @@ bool Scene::Start()
 
 		// Load music
 		app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
-
-		//app->map->Load("hello2.tmx");
-		app->map->Load("SnowMap.tmx");
 	}
-
 	// L03: DONE: Load map
-
+	//app->map->Load("hello2.tmx");
+	app->map->Load("SnowMap.tmx");
 
 	SString tmp("%s%s", folder.GetString(), stringBackground.GetString());
 	bg = app->tex->Load(tmp.GetString());

@@ -23,10 +23,13 @@ public:
 
 	bool CleanUp();
 
-public:
+private:
 	// The scene sprite sheet loaded into an SDL_Texture
 	SDL_Texture* bgTexture = nullptr;
+	SDL_Texture* logoTexture = nullptr;
 	Animation introAnim;
+
+	int time = 0;
 	//Animation fAnim;
 	//Animation* menuAnim = nullptr;
 

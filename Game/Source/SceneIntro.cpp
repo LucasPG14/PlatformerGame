@@ -35,6 +35,8 @@ bool SceneIntro::Start()
 	bool ret = true;
 	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
 
+	logoTexture = app->tex->Load("Assets/textures/Backgrounds/LogoRealAmbient2.png");
+
 	return ret;
 }
 
@@ -42,12 +44,21 @@ bool SceneIntro::Update(float dt)
 {
 	bool ret = true;
 
+	time++;
+
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		app->fade->Fade(this, (Module*)app->scene, 1200);
+		app->fade->Fade(this, (Module*)app->scene, 600);
 	}
 
-	introAnim.Update();
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN)
+	{
+		ret = false;
+	}
+	if (time > 10000)
+	{
+		introAnim.Update();
+	}
 
 	return ret;
 }
@@ -57,11 +68,13 @@ bool SceneIntro::PostUpdate()
 {
 	bool ret = true;
 	// Draw everything --------------------------------------
-	app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
-
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN)
+	if (time > 10000)
 	{
-		ret = false;
+		app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
+	}
+	else
+	{
+		app->render->DrawTexture(logoTexture, 250, 10, NULL);
 	}
 
 	return ret;
@@ -71,6 +84,8 @@ bool SceneIntro::CleanUp() {
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);
+	app->tex->UnLoad(logoTexture);
+	active = false;
 
 	return true;
 }

@@ -66,7 +66,7 @@ bool SceneWin::PostUpdate()
 		app->player->resetPlayer();
 		app->player->Disable();
 		app->map->Disable();
-		app->fade->Fade(this, (Module*)app->sceneIntro);
+		app->fade->Fade(this, (Module*)app->sceneIntro, 1200);
 
 		active = false;
 	}
