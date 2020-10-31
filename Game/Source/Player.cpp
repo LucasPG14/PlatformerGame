@@ -12,6 +12,7 @@
 #include "Map.h"
 #include "FadeToBlack.h"
 #include "Log.h"
+#include "SceneWin.h"
 
 Player::Player() : Module()
 {
@@ -401,6 +402,22 @@ void Player::Dead()
 	app->render->cameraStartPosition();
 }
 
+void Player::changeLevel(int level)
+{
+	switch (level)
+	{
+	case 1:
+		app->scene->active = false;
+		app->sceneWin->active = true;
+		active = false;
+		app->render->cameraStartPosition();
+
+		break;
+	}
+
+
+}
+
 
 bool Player::checkCollisionType(int idTile, std::string direction)
 {
@@ -421,6 +438,9 @@ bool Player::checkCollisionType(int idTile, std::string direction)
 				return false;
 			else
 				return true;
+			break;
+		case 53:
+			changeLevel(1);
 			break;
 	}
 	

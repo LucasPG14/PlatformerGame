@@ -21,6 +21,7 @@ class SceneIntro;
 class Scene;
 class Map;
 class SceneDie;
+class SceneWin;
 
 class App
 {
@@ -96,6 +97,7 @@ public:
 	Scene* scene;
 	Map* map;
 	SceneDie* sceneDie;
+	SceneWin* sceneWin;
 
 
 private:

@@ -12,6 +12,7 @@
 #include "Defs.h"
 #include "Log.h"
 #include "SceneDie.h"
+#include "SceneWin.h"
 
 #include <iostream>
 #include <sstream>
@@ -32,6 +33,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	map = new Map();
 	player = new Player();
 	sceneDie = new SceneDie();
+	sceneWin = new SceneWin();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -45,7 +47,8 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(map, false);
 	AddModule(player, false);
 	AddModule(sceneDie, false);
-	
+	AddModule(sceneWin, false);
+
 	// Render last to swap buffer
 	AddModule(render, true);
 }

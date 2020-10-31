@@ -34,6 +34,8 @@ public:
 
 	bool checkCollisionType(int idTile, std::string direction);
 
+	void changeLevel(int level);
+
 	void Dead();
 	void resetPlayer();
 	// Load and Save

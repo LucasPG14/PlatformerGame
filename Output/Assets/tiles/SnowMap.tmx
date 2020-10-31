@@ -3,8 +3,8 @@
  <tileset firstgid="1" name="SnowSheet" tilewidth="70" tileheight="70" tilecount="49" columns="7">
   <image source="PNG Snow/sheet.png" width="512" height="512"/>
  </tileset>
- <tileset firstgid="50" name="Collisions" tilewidth="70" tileheight="70" tilecount="3" columns="3">
-  <image source="Collisions.png" width="210" height="70"/>
+ <tileset firstgid="50" name="Collisions" tilewidth="70" tileheight="70" tilecount="4" columns="4">
+  <image source="Collisions.png" width="280" height="70"/>
   <tile id="1">
    <properties>
     <property name="Death" type="bool" value="true"/>
@@ -2419,7 +2419,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -2569,7 +2569,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -2719,7 +2719,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -2869,7 +2869,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3019,7 +3019,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3169,7 +3169,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3319,7 +3319,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3469,7 +3469,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3619,7 +3619,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3769,7 +3769,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="53"/>
    <tile/>
    <tile/>
    <tile/>
