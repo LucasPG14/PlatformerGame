@@ -31,13 +31,13 @@ Player::Player() : Module()
 	rightRunAnim.PushBack({ 216, 122, 71, 93 });
 	rightRunAnim.PushBack({ 303, 121, 54, 94 });
 
-	rightRunAnim.speed = 0.01f;
+	rightRunAnim.speed = 0.05f;
 	rightRunAnim.loop = true;
 
 	leftRunAnim.PushBack({ 219, 234, 71, 93 });
 	leftRunAnim.PushBack({ 301, 233, 54, 94 });
 
-	leftRunAnim.speed = 0.01f;
+	leftRunAnim.speed = 0.05f;
 	leftRunAnim.loop = true;
 
 	// ANIMATION WHEN PLAYER IS JUMPING 
@@ -146,7 +146,7 @@ bool Player::Update(float dt)
 
 			if (Collision("left") == false)
 			{
-				if (position.x < app->render->camera.w / 2)
+				if (position.x > app->render->camera.w / 2)
 				{
 					app->render->camera.x += 2;
 				}
