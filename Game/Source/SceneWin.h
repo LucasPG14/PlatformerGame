@@ -17,7 +17,7 @@ public:
 
 	bool Start();
 
-	bool Update();
+	bool Update(float dt);
 
 	bool PostUpdate();
 
@@ -26,6 +26,9 @@ public:
 public:
 	// The scene sprite sheet loaded into an SDL_Texture
 	SDL_Texture* bgTexture = nullptr;
+
+	Animation winAnim;
+
 	//Animation fAnim;
 	//Animation* menuAnim = nullptr;
 

@@ -18,7 +18,13 @@
 
 SceneWin::SceneWin() : Module()
 {
+	for (int i = 0; i < 5; i++)
+	{
+		winAnim.PushBack({ 1500 * i, 0, 1500, 1020 });
+	}
 
+	winAnim.loop = true;
+	winAnim.speed = 0.0006f;
 }
 
 SceneWin::~SceneWin()
@@ -33,35 +39,18 @@ bool SceneWin::Start()
 
 	bool ret = true;
 
-	bgTexture = app->tex->Load("Assets/Vaqueta.jpg");
+	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundWin.png");
 	//App->audio->PlayMusic("Assets/music/Build/music/opening.ogg", 1.0f);
-
-
 
 	return ret;
 }
 
-bool SceneWin::Update()
+bool SceneWin::Update(float dt)
 {
-
-
-
-
-
-
-	return true;
-}
-
-// Update: draw background
-bool SceneWin::PostUpdate()
-{
-	// Draw everything --------------------------------------
-	app->render->DrawTexture(bgTexture, 0, 0, NULL);
-
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
 
-	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
 		app->player->resetPlayer();
 		app->player->Disable();
@@ -71,6 +60,16 @@ bool SceneWin::PostUpdate()
 		active = false;
 	}
 
+	winAnim.Update();
+
+	return true;
+}
+
+// Update: draw background
+bool SceneWin::PostUpdate()
+{
+	// Draw everything --------------------------------------
+	app->render->DrawTexture(bgTexture, 0, 0, &winAnim.GetCurrentFrame());
 
 	return true;
 }

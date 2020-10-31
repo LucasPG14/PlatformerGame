@@ -34,8 +34,7 @@ bool SceneIntro::Start()
 {
 	bool ret = true;
 	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
-
-	logoTexture = app->tex->Load("Assets/textures/Backgrounds/LogoRealAmbient2.png");
+	logoTexture = app->tex->Load("Assets/textures/Backgrounds/LogoRealAmbient.png");
 
 	return ret;
 }
