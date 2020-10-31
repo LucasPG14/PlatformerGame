@@ -67,17 +67,27 @@ public:
 		return true;
 	}
 
-	void IsActive(bool activeModule)
+	//void IsActive(bool activeModule)
+	//{
+	//	active = activeModule;
+	//}
+
+	void Enable()
 	{
-		if (activeModule == true)
+		if (!this->active)
 		{
+			this->active = true;
 			Start();
 		}
-		else
+	}
+
+	void Disable()
+	{
+		if (this->active)
 		{
+			this->active = false;
 			CleanUp();
 		}
-		active = activeModule;
 	}
 
 public:

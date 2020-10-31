@@ -38,6 +38,11 @@ bool Scene::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool Scene::Start()
 {
+	if (this->active)
+	{
+		app->player->Enable();
+		app->map->Enable();
+	}
 	// L03: DONE: Load map
 	//app->map->Load("hello2.tmx");
 	app->map->Load("SnowMap.tmx");
@@ -47,9 +52,6 @@ bool Scene::Start()
 
 	// Load music
 	app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
-
-	app->player->active = true;
-
 
 	return true;
 }
@@ -127,6 +129,9 @@ bool Scene::CleanUp()
 
 	//Unload the background
 	app->tex->UnLoad(bg);
+
+	app->player->Disable();
+	app->map->Disable();
 
 	return true;
 }

@@ -5,6 +5,7 @@
 #include "Render.h"
 #include "Input.h"
 #include "Audio.h"
+#include "Animation.h"
 
 #include "FadeToBlack.h"
 #include "SDL/include/SDL_scancode.h"
@@ -16,10 +17,9 @@ SceneIntro::SceneIntro() : Module()
 	{
 		for (int j = 0; j < 6; j++)
 		{
-			introAnim.PushBack({ 1500 * j, 1020 * i, 1500, 1020 });
+			introAnim.PushBack({1500 * j,1020 * i,1500,1020 });
 		}
 	}
-
 	introAnim.loop = false;
 	introAnim.speed = 0.0005f;
 }
@@ -34,7 +34,6 @@ bool SceneIntro::Start()
 {
 	bool ret = true;
 	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
-	//App->audio->PlayMusic("Assets/music/Build/music/opening.ogg", 1.0f);
 
 	return ret;
 }
@@ -45,7 +44,7 @@ bool SceneIntro::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		app->fade->Fade(this, (Module*)app->scene, 60);
+		app->fade->Fade(this, (Module*)app->scene, 1200);
 	}
 
 	introAnim.Update();
@@ -71,7 +70,7 @@ bool SceneIntro::PostUpdate()
 bool SceneIntro::CleanUp() {
 	bool ret = true;
 
-	//app->tex->UnLoad(bgTexture);
-	//app->audio->CleanUp();
+	app->tex->UnLoad(bgTexture);
+
 	return true;
 }
