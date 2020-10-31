@@ -69,6 +69,14 @@ public:
 
 	void IsActive(bool activeModule)
 	{
+		if (activeModule == true)
+		{
+			Start();
+		}
+		else
+		{
+			CleanUp();
+		}
 		active = activeModule;
 	}
 

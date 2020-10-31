@@ -40,10 +40,10 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex, true);
 	AddModule(audio, true);
 	AddModule(fade, true);
-	AddModule(sceneIntro, false);
-	AddModule(scene, true);
+	AddModule(sceneIntro, true);
+	AddModule(scene, false);
 	AddModule(map, false);
-	AddModule(player, true);
+	AddModule(player, false);
 	AddModule(sceneDie, false);
 	
 	// Render last to swap buffer

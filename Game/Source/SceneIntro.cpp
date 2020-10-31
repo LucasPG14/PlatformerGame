@@ -12,7 +12,16 @@
 
 SceneIntro::SceneIntro() : Module()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			introAnim.PushBack({ 1500 * j, 1020 * i, 1500, 1020 });
+		}
+	}
 
+	introAnim.loop = false;
+	introAnim.speed = 0.0005f;
 }
 
 SceneIntro::~SceneIntro()
@@ -34,10 +43,12 @@ bool SceneIntro::Update(float dt)
 {
 	bool ret = true;
 
-	if (app->input->GetKey(SDL_SCANCODE_F7) == KeyState::KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
 		app->fade->Fade(this, (Module*)app->scene, 60);
 	}
+
+	introAnim.Update();
 
 	return ret;
 }
@@ -47,7 +58,7 @@ bool SceneIntro::PostUpdate()
 {
 	bool ret = true;
 	// Draw everything --------------------------------------
-	app->render->DrawTexture(bgTexture, 0, 0, NULL);
+	app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN)
 	{
