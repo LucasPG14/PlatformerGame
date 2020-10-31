@@ -77,7 +77,7 @@ public:
 		if (!this->active)
 		{
 			this->active = true;
-			Start();
+			this->Start();
 		}
 	}
 
@@ -86,7 +86,7 @@ public:
 		if (this->active)
 		{
 			this->active = false;
-			CleanUp();
+			this->CleanUp();
 		}
 	}
 

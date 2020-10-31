@@ -21,7 +21,7 @@ SceneIntro::SceneIntro() : Module()
 		}
 	}
 	introAnim.loop = false;
-	introAnim.speed = 0.0005f;
+	introAnim.speed = 0.005f;
 }
 
 SceneIntro::~SceneIntro()

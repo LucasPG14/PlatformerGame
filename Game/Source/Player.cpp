@@ -52,7 +52,11 @@ Player::Player() : Module()
 	leftJumpAnim.loop = false;
 
 	// ANIMATION WHEN PLAYER DIES
+	deadAnim.PushBack({ 449, 27, 75,92 });
+	deadAnim.PushBack({ 447,127,75,92 });
+	deadAnim.PushBack({ 447,224,79,95 });
 
+	deadAnim.speed = 0.05f;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -68,6 +72,8 @@ bool Player::Awake(pugi::xml_node& config)
 	jump = config.child("jump").attribute("value").as_bool();
 	speedX = config.child("speed").attribute("x").as_float();
 	speedY = config.child("speed").attribute("y").as_float();
+	time = 0;
+	deadPlayer = false;
 
 	return true;
 }
@@ -86,181 +92,186 @@ bool Player::Start()
 }
 bool Player::Update(float dt)
 {
-	// INPUT TO MOVE THE PLAYER
-	if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
+	if (deadPlayer == false)
 	{
-		if (currentAnimation == &leftJumpAnim)
-		{
-			rightJumpAnim.Reset();
-			currentAnimation = &rightJumpAnim;
-			lastAnimation = currentAnimation;
-		}
+		if (lastAnimation == &deadAnim) currentAnimation = &rightIdleAnim;
 
-		if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
-		{
-			position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
-		}
-
-		if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
-		{
-			rightRunAnim.Reset();
-			currentAnimation = &rightRunAnim;
-			lastAnimation = currentAnimation;
-		}
-
-		if (Collision("right") == false)
-		{
-			if (position.x >= app->render->camera.w / 2)
-			{
-				app->render->camera.x -= 1;
-			}
-			position.x += 1;
-		}
-	}
-
-	else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
-	{
-		if (currentAnimation == &rightJumpAnim)
-		{
-			leftJumpAnim.Reset();
-			currentAnimation = &leftJumpAnim;
-			lastAnimation = currentAnimation;
-		}
-
-		else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
-		{
-			leftRunAnim.Reset();
-			currentAnimation = &leftRunAnim;
-			lastAnimation = currentAnimation;
-		}
-		
-		if (position.x <= 0)
-		{
-			position.x = 0;
-		}
-
-		if (Collision("left") == false)
-		{
-			if (position.x <= app->render->camera.w / 2)
-			{
-				app->render->camera.x += 1;
-			}
-			position.x -= 1;
-		}
-	}
-
-	if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
-	{
-		position.y -= 2;
-	}
-
-	if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
-	{
-			position.y += 2;
-	}
-
-	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
-	{
+		// INPUT TO MOVE THE PLAYER
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 		{
-			if (currentAnimation != &rightJumpAnim)
+			if (currentAnimation == &leftJumpAnim)
 			{
 				rightJumpAnim.Reset();
 				currentAnimation = &rightJumpAnim;
 				lastAnimation = currentAnimation;
 			}
+
+			if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
+			{
+				position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
+			}
+
+			if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
+			{
+				rightRunAnim.Reset();
+				currentAnimation = &rightRunAnim;
+				lastAnimation = currentAnimation;
+			}
+
+			if (Collision("right") == false)
+			{
+				if (position.x >= app->render->camera.w / 2)
+				{
+					app->render->camera.x -= 2;
+				}
+				position.x += 2;
+			}
 		}
-		if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
+
+		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
 		{
-			if (currentAnimation != &leftJumpAnim)
+			if (currentAnimation == &rightJumpAnim)
 			{
 				leftJumpAnim.Reset();
 				currentAnimation = &leftJumpAnim;
 				lastAnimation = currentAnimation;
 			}
+
+			else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
+			{
+				leftRunAnim.Reset();
+				currentAnimation = &leftRunAnim;
+				lastAnimation = currentAnimation;
+			}
+
+			if (Collision("left") == false)
+			{
+				if (position.x < app->render->camera.w / 2)
+				{
+					app->render->camera.x += 2;
+				}
+				position.x -= 2;
+			}
 		}
-		if (currentAnimation == &rightIdleAnim)
+
+		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
 		{
-			rightJumpAnim.Reset();
-			currentAnimation = &rightJumpAnim;
-			lastAnimation = currentAnimation;
+			position.y -= 2;
 		}
-		if (currentAnimation == &leftIdleAnim)
+
+		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 		{
-			leftJumpAnim.Reset();
-			currentAnimation = &leftJumpAnim;
-			lastAnimation = currentAnimation;
+			position.y += 2;
 		}
 
-		jump = true;
-		speedY = 2.0f;
-	}
-
-
-	if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
-		app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
-		app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE)
-	{
-		if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim)
+		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
-			rightIdleAnim.Reset();
-			currentAnimation = &rightIdleAnim;
-			lastAnimation = currentAnimation;
+			if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
+			{
+				if (currentAnimation != &rightJumpAnim)
+				{
+					rightJumpAnim.Reset();
+					currentAnimation = &rightJumpAnim;
+					lastAnimation = currentAnimation;
+				}
+			}
+			if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
+			{
+				if (currentAnimation != &leftJumpAnim)
+				{
+					leftJumpAnim.Reset();
+					currentAnimation = &leftJumpAnim;
+					lastAnimation = currentAnimation;
+				}
+			}
+			if (currentAnimation == &rightIdleAnim)
+			{
+				rightJumpAnim.Reset();
+				currentAnimation = &rightJumpAnim;
+				lastAnimation = currentAnimation;
+			}
+			if (currentAnimation == &leftIdleAnim)
+			{
+				leftJumpAnim.Reset();
+				currentAnimation = &leftJumpAnim;
+				lastAnimation = currentAnimation;
+			}
+
+			jump = true;
+			speedY = 7.0f;
 		}
-		if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim)
+
+
+		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
+			app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
+			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE)
 		{
-			leftIdleAnim.Reset();
-			currentAnimation = &leftIdleAnim;
-			lastAnimation = currentAnimation;
+			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim)
+			{
+				rightIdleAnim.Reset();
+				currentAnimation = &rightIdleAnim;
+				lastAnimation = currentAnimation;
+			}
+			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim)
+			{
+				leftIdleAnim.Reset();
+				currentAnimation = &leftIdleAnim;
+				lastAnimation = currentAnimation;
+			}
 		}
+
+		// DEBUG KEYS
+
+		// RESTART GAME (F1 && F3)
+
+		if (app->input->GetKey(SDL_SCANCODE_F1) == KeyState::KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KeyState::KEY_DOWN)
+		{
+			app->player->CleanUp();
+			app->player->Start();
+			app->render->cameraStartPosition();
+		}
+
+		// SAVE GAME (F5)
+		if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
+		{
+			app->SaveGameRequest();
+		}
+
+		// LOAD GAME (F6)
+		if (app->input->GetKey(SDL_SCANCODE_F6) == KeyState::KEY_DOWN)
+		{
+			app->LoadGameRequest();
+		}
+
+		// VIEW COLLIDERS (F9)
+
+
+		// GODMODE (F10)
+		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
+		{
+			godMode = !godMode;
+		}
+
+
+		if (jump == true)
+		{
+			Jump();
+		}
+
+		if (Collision("top") == true)
+		{
+			speedY = 0.0f;
+		}
+
+		Gravity();
 	}
-
-	// DEBUG KEYS
-
-	// RESTART GAME (F1 && F3)
-
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KeyState::KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KeyState::KEY_DOWN)
+	else
 	{
-		app->player->CleanUp();
-		app->player->Start();
-		app->render->cameraStartPosition();
-	}
-
-	// SAVE GAME (F5)
-	if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
-	{
-		app->SaveGameRequest();
-	}
-
-	// LOAD GAME (F6)
-	if (app->input->GetKey(SDL_SCANCODE_F6) == KeyState::KEY_DOWN)
-	{
-		app->LoadGameRequest();
-	}
-
-	// VIEW COLLIDERS (F9)
-
-
-	// GODMODE (F10)
-	if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
-	{
-		godMode = !godMode;
+		time++;
+		Dead();
 	}
 
 	currentAnimation->Update();
-	
-
-	if (jump == true)
-	{
-		Jump();
-	}
-
-	if (Collision("top") == true)
-	{
-		speedY = 0.0f;
-	}
-
-	Gravity();
 
 	return true;
 }
@@ -303,7 +314,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 94);
+						tilePos = app->map->WorldToMap(position.x + (10 + (14 * i)), position.y + 94);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (checkCollisionType(idTile,"bottom"))
 						{
@@ -315,7 +326,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 3);
+						tilePos = app->map->WorldToMap(position.x + (10 + (14 * i)), position.y + 3);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (checkCollisionType(idTile,"top"))
 						{
@@ -327,7 +338,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + 51, position.y + (2 + (45 * i)));
+						tilePos = app->map->WorldToMap(position.x + 51, position.y + (45 * i));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (checkCollisionType(idTile,"right"))
 						{
@@ -339,7 +350,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + 9, position.y + (2 + (45 * i)));
+						tilePos = app->map->WorldToMap(position.x + 9, position.y + (45 * i));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (checkCollisionType(idTile,"left"))
 						{
@@ -361,9 +372,9 @@ void Player::Gravity()
 	{
 		speedY -= gravity;
 		position.y -= speedY;
-		if (speedY < -1.5f)
+		if (speedY < -3.0f)
 		{
-			speedY = -1.5f;
+			speedY = -1.0f;
 		}
 	}
 }
@@ -399,10 +410,18 @@ bool Player::SaveState(pugi::xml_node& save) const
 
 void Player::Dead() 
 {
-	app->sceneDie->active = true;
-	app->scene->active = false;
-	active = false;
-	app->render->cameraStartPosition();
+	currentAnimation = &deadAnim;
+	lastAnimation = currentAnimation;
+	deadPlayer = true;
+	if (time == 60)
+	{
+		time = 0;
+		deadPlayer = false;
+		app->sceneDie->active = true;
+		app->scene->active = false;
+		active = false;
+		app->render->cameraStartPosition();
+	}
 }
 
 void Player::changeLevel(int level)
@@ -437,7 +456,7 @@ bool Player::checkCollisionType(int idTile, std::string direction)
 			break;
 
 		case 52:
-			if (direction == "top") 
+			if (direction != "bottom") 
 				return false;
 			else
 				return true;

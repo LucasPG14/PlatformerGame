@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Render.h"
 #include "Scene.h"
+#include "Map.h"
 
 #include "Input.h"
 #include "Audio.h"
@@ -62,8 +63,10 @@ bool SceneDie::PostUpdate()
 
 	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN)
 	{
-		app->scene->active = true;
 		app->player->resetPlayer();
+		app->player->Disable();
+		app->map->Disable();
+		app->fade->Fade(this, (Module*)app->sceneIntro);
 
 		active = false;
 	}
@@ -75,7 +78,7 @@ bool SceneDie::PostUpdate()
 bool SceneDie::CleanUp() {
 	bool ret = true;
 
-	//app->tex->UnLoad(bgTexture);
+	app->tex->UnLoad(bgTexture);
 	//app->audio->CleanUp();
 	return true;
 }

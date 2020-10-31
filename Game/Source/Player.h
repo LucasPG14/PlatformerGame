@@ -76,6 +76,9 @@ private:
 
 	SString folder;
 	SString playerString;
+
+	bool deadPlayer;
+	int time;
 };
 #endif
 
