@@ -32,7 +32,7 @@ public:
 	void Gravity();
 	void Jump();
 
-	bool checkCollisionType(int idTile);
+	bool checkCollisionType(int idTile, std::string direction);
 
 	void Dead();
 	// Load and Save

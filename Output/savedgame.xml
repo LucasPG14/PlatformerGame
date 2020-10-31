@@ -9,10 +9,10 @@
   <scene />
   <map />
   <player>
-    <position x="745" y="607" />
+    <position x="1236" y="536.999756" />
   </player>
   <:anonymous />
   <renderer>
-    <camera x="-545" y="0" />
+    <camera x="-486" y="0" />
   </renderer>
 </save_status>

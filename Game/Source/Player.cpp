@@ -302,7 +302,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 94);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (checkCollisionType(idTile))
+						if (checkCollisionType(idTile,"bottom"))
 						{
 							return true;
 						}
@@ -314,7 +314,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + (10 + (20 * i)), position.y + 3);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (checkCollisionType(idTile))
+						if (checkCollisionType(idTile,"top"))
 						{
 							return true;
 						}
@@ -326,7 +326,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + 51, position.y + (2 + (45 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (checkCollisionType(idTile))
+						if (checkCollisionType(idTile,"right"))
 						{
 							return true;
 						}
@@ -338,7 +338,7 @@ bool Player::Collision(const char* side)
 					{
 						tilePos = app->map->WorldToMap(position.x + 9, position.y + (2 + (45 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (checkCollisionType(idTile))
+						if (checkCollisionType(idTile,"left"))
 						{
 							return true;
 						}
@@ -403,7 +403,7 @@ void Player::Dead()
 }
 
 
-bool Player::checkCollisionType(int idTile)
+bool Player::checkCollisionType(int idTile, std::string direction)
 {
 	switch (idTile)
 	{
@@ -416,7 +416,15 @@ bool Player::checkCollisionType(int idTile)
 			Dead();
 			return true;
 			break;
+
+		case 52:
+			if (direction == "top") 
+				return false;
+			else
+				return true;
+			break;
 	}
+	
 
 	return false;
 }
