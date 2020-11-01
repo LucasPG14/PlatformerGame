@@ -56,6 +56,26 @@ This project is licensed under an unmodified MIT license, which is an OSI-certif
 Tiles and background art: https://free-game-assets.itch.io/free-parallax-2d-backgrounds
 https://swapnilrane24.itch.io/snow-background
 
-The art of the videogame is licensed under this [LICENSE](License). Check it for further details.
+License(Tiles and background): 
+	
+
+	by  Kenney Vleugels (Kenney.nl)
+
+			------------------------------
+
+	License (Creative Commons Zero, CC0)
+	http://creativecommons.org/publicdomain/zero/1.0/
+
+	You may use these assets in personal and commercial projects.
+	Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
+
+			------------------------------
+
+	Donate:   http://support.kenney.nl
+	Request:  http://request.kenney.nl
+
+	Follow on Twitter for updates:
+	@KenneyWings
+
 
 
