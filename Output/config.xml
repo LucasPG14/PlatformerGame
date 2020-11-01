@@ -15,7 +15,7 @@
     <fullscreen_window value="false"/>
   </window>
   <audio>
-    <fx volume ="0"/>
+    <fx volume ="50"/>
     <music volume ="0"/>
   </audio>
   <map>
@@ -29,8 +29,8 @@
     <folder>Assets/textures/Characters/Adventurer/</folder>
     <image source ="AdventurerTilesheet.png"/>
     <godmode value ="false"/>
-    <speed x="2" y="0.0f"/>
-    <gravity value="0.1f"/>
+    <speed x="1" y="0.0f"/>
+    <gravity value="0.015f"/>
     <jump value="false"/>
     <position x="200" y="607"/>
   </player>

@@ -41,12 +41,10 @@ bool Scene::Start()
 
 		bg = app->tex->Load("Assets/textures/Backgrounds/SnowBackground.png");
 		bg2 = app->tex->Load("Assets/textures/Backgrounds/SnowBackground2.png");
-
-		app->map->active = true;
+		// Load map
+		app->map->Load("SnowMap.tmx");
+		app->map->Enable();
 	}
-
-	// Load map
-	app->map->Load("SnowMap.tmx");
 
 	return true;
 }

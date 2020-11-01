@@ -60,11 +60,7 @@ bool SceneDie::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		app->player->resetPlayer();
-		app->player->Disable();
-		app->map->Disable();
 		app->fade->Fade(this, (Module*)app->sceneIntro);
-		active = false;
 	}
 
 	dieAnim.Update();
@@ -83,9 +79,12 @@ bool SceneDie::PostUpdate()
 }
 
 bool SceneDie::CleanUp() {
+	
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);
 	dieAnim.Reset();
+	this->active = false;
+
 	return true;
 }

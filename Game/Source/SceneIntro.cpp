@@ -15,17 +15,17 @@
 
 SceneIntro::SceneIntro() : Module()
 {
+	name.Create("intro");
+
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
-			introAnim.PushBack({1500 * j,1020 * i,1500,1020 });
+			introAnim.PushBack({ 1500 * j,1020 * i,1500,1020 });
 		}
 	}
 	introAnim.loop = false;
 	introAnim.speed = 0.005f;
-
-	name.Create("intro");
 }
 
 SceneIntro::~SceneIntro()

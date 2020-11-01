@@ -212,9 +212,8 @@ bool Player::Update(float dt)
 
 			jumping = true;
 			jump = true;
-			speedY = 7.0f;
+			speedY = 2.6f;
 		}
-
 
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
 			app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
