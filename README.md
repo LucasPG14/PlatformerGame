@@ -57,7 +57,7 @@ Tiles and background art: https://free-game-assets.itch.io/free-parallax-2d-back
 https://swapnilrane24.itch.io/snow-background
 
 License(Tiles and background): 
-	Abstract Platformer
+	
 
 	by  Kenney Vleugels (Kenney.nl)
 
