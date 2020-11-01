@@ -56,7 +56,7 @@ bool SceneDie::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
 
-	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
 		app->player->resetPlayer();
 		app->player->Disable();

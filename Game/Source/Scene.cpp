@@ -51,7 +51,8 @@ bool Scene::Start()
 	app->map->Load("SnowMap.tmx");
 
 	SString tmp("%s%s", folder.GetString(), stringBackground.GetString());
-	bg = app->tex->Load(tmp.GetString());
+	bg = app->tex->Load("Assets/textures/Backgrounds/SnowBackground.png");
+	bg2 = app->tex->Load("Assets/textures/Backgrounds/SnowBackground2.png");
 
 	return true;
 }
@@ -116,6 +117,7 @@ bool Scene::PostUpdate()
 		ret = false;
 
 	app->render->DrawTexture(bg, 0, 0, NULL, 1.0f);
+	app->render->DrawTexture(bg2, 9100, 0, NULL, 1.0f);
 	// Draw map
 	app->map->Draw();
 
@@ -129,6 +131,7 @@ bool Scene::CleanUp()
 
 	//Unload the background
 	app->tex->UnLoad(bg);
+	app->tex->UnLoad(bg2);
 
 	app->player->Disable();
 	app->map->Disable();
