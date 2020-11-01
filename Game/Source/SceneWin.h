@@ -29,8 +29,8 @@ public:
 
 	Animation winAnim;
 
-	//Animation fAnim;
-	//Animation* menuAnim = nullptr;
+	int time;
+	uint winFx;
 
 };
 

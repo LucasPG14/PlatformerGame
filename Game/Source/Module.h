@@ -67,11 +67,6 @@ public:
 		return true;
 	}
 
-	//void IsActive(bool activeModule)
-	//{
-	//	active = activeModule;
-	//}
-
 	void Enable()
 	{
 		if (!this->active)

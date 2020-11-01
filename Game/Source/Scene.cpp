@@ -15,7 +15,6 @@
 Scene::Scene() : Module()
 {
 	name.Create("scene");
-	//IsActive(false);
 }
 
 // Destructor
@@ -28,31 +27,26 @@ bool Scene::Awake(pugi::xml_node& config)
 	LOG("Loading Scene");
 	bool ret = true;
 
-	folder.Create(config.child("folder").child_value());
-
-	stringBackground.Create(config.child("image").attribute("source").as_string(""));
-
 	return ret;
 }
 
 // Called before the first frame
 bool Scene::Start()
 {
-	if (this->active)
+	if (this->active == true)
 	{
 		app->player->Enable();
-		app->map->Enable();
-
 		// Load music
 		app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
-	}
-	// L03: DONE: Load map
-	//app->map->Load("hello2.tmx");
-	app->map->Load("SnowMap.tmx");
 
-	SString tmp("%s%s", folder.GetString(), stringBackground.GetString());
-	bg = app->tex->Load("Assets/textures/Backgrounds/SnowBackground.png");
-	bg2 = app->tex->Load("Assets/textures/Backgrounds/SnowBackground2.png");
+		bg = app->tex->Load("Assets/textures/Backgrounds/SnowBackground.png");
+		bg2 = app->tex->Load("Assets/textures/Backgrounds/SnowBackground2.png");
+
+		app->map->active = true;
+	}
+
+	// Load map
+	app->map->Load("SnowMap.tmx");
 
 	return true;
 }
@@ -66,13 +60,6 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-    // L02: DONE 3: Request Load / Save when pressing L/S
-	//To Delete
-	//if(app->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
-	//	app->LoadGameRequest();
-
-	//if(app->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-	//	app->SaveGameRequest();
 
 	if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		app->render->camera.y += 1;
@@ -119,7 +106,10 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(bg, 0, 0, NULL, 1.0f);
 	app->render->DrawTexture(bg2, 9100, 0, NULL, 1.0f);
 	// Draw map
-	app->map->Draw();
+	if (app->map->active == true)
+	{
+		app->map->Draw();
+	}
 
 	return ret;
 }

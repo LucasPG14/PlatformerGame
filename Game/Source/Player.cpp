@@ -86,9 +86,10 @@ bool Player::Start()
 		// SET POSITION
 		resetPlayer();
 		currentAnimation = &rightIdleAnim;
-	}
+		stepSnow = app->audio->LoadFx("Assets/audio/fx/StepSnow.ogg");
 
-	jumping = false;
+		jumping = false;
+	}
 
 	return true;
 }
@@ -128,6 +129,11 @@ bool Player::Update(float dt)
 				}
  				position.x += speedX;
 			}
+
+			if (Collision("bottom") == true)
+			{
+				app->audio->PlayFx(stepSnow);
+			}
 		}
 
 		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
@@ -153,6 +159,11 @@ bool Player::Update(float dt)
 					app->render->camera.x += speedX;
 				}
 				position.x -= speedX;
+			}
+
+			if (Collision("bottom") == true)
+			{
+				app->audio->PlayFx(stepSnow);
 			}
 		}
 
@@ -246,9 +257,6 @@ bool Player::Update(float dt)
 			app->LoadGameRequest();
 		}
 
-		// VIEW COLLIDERS (F9)
-
-
 		// GODMODE (F10)
 		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
 		{
@@ -296,7 +304,7 @@ bool Player::CleanUp() {
 
 	//Unload textures
 	app->tex->UnLoad(player);
-
+	this->active = false;
 	return true;
 }
 
@@ -425,10 +433,8 @@ void Player::Dead()
 	{
 		time = 0;
 		deadPlayer = false;
-		app->sceneDie->active = true;
-		app->scene->active = false;
-		active = false;
 		app->render->cameraStartPosition();
+		app->fade->Fade(app->scene, app->sceneDie, 60);
 	}
 }
 
@@ -437,11 +443,8 @@ void Player::changeLevel(int level)
 	switch (level)
 	{
 	case 1:
-		app->scene->active = false;
-		app->sceneWin->active = true;
-		active = false;
 		app->render->cameraStartPosition();
-
+		app->fade->Fade(app->scene, app->sceneWin, 60);
 		break;
 	}
 

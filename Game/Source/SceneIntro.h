@@ -14,7 +14,6 @@ public:
 
 	~SceneIntro();
 
-
 	bool Start();
 
 	bool Update(float dt);
@@ -29,6 +28,7 @@ private:
 	SDL_Texture* logoTexture = nullptr;
 	Animation introAnim;
 
+	Animation* currentAnimation = nullptr;
 	int time = 0;
 	//Animation fAnim;
 	//Animation* menuAnim = nullptr;

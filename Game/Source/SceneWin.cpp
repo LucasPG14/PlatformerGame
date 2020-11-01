@@ -35,29 +35,28 @@ SceneWin::~SceneWin()
 // Load assets
 bool SceneWin::Start()
 {
-
-
 	bool ret = true;
-
-	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundWin.png");
-	//App->audio->PlayMusic("Assets/music/Build/music/opening.ogg", 1.0f);
+	if (this->active == true)
+	{
+		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundWin.png");
+		winFx = app->audio->LoadFx("Assets/audio/fx/YouWin.ogg");
+		time = 0;
+	}
 
 	return ret;
 }
 
 bool SceneWin::Update(float dt)
 {
+	time++;
+	if (time == 1) app->audio->PlayFx(winFx);
+
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		app->player->resetPlayer();
-		app->player->Disable();
-		app->map->Disable();
-		app->fade->Fade(this, (Module*)app->sceneIntro, 1200);
-
-		active = false;
+		app->fade->Fade(this, (Module*)app->sceneIntro, 60);
 	}
 
 	winAnim.Update();
@@ -78,6 +77,7 @@ bool SceneWin::CleanUp() {
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);
-	//app->audio->CleanUp();
+	winAnim.Reset();
+	this->active = false;
 	return true;
 }

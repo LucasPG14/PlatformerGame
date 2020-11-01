@@ -31,7 +31,6 @@ public:
 
 	void Gravity();
 	void Jump();
-	bool jumping;
 	bool checkCollisionType(int idTile, std::string direction);
 
 	void changeLevel(int level);
@@ -79,6 +78,10 @@ private:
 
 	bool deadPlayer;
 	int time;
+
+	bool jumping;
+
+	uint stepSnow;
 };
 #endif
 

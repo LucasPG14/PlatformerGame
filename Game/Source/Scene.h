@@ -38,8 +38,6 @@ private:
 	SDL_Texture* bg;
 	SDL_Texture* bg2;
 	pugi::xml_node node;
-	SString folder;
-	SString stringBackground;
 };
 
 #endif // __SCENE_H__

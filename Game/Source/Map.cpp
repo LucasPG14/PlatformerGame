@@ -264,8 +264,6 @@ bool Map::Load(const char* filename)
 		LOG("TileHeight=%d", data.tileHeight);
 		LOG("<< END DATA >>\n");
 
-
-
 		// L04: TODO 4: LOG the info for each loaded layer
 		ListItem<MapLayer*>* layerList;
 		layerList = data.layers.start;

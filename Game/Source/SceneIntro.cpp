@@ -6,6 +6,8 @@
 #include "Input.h"
 #include "Audio.h"
 #include "Animation.h"
+#include "Map.h"
+#include "Scene.h"
 
 #include "FadeToBlack.h"
 #include "SDL/include/SDL_scancode.h"
@@ -22,6 +24,8 @@ SceneIntro::SceneIntro() : Module()
 	}
 	introAnim.loop = false;
 	introAnim.speed = 0.005f;
+
+	name.Create("intro");
 }
 
 SceneIntro::~SceneIntro()
@@ -33,8 +37,15 @@ SceneIntro::~SceneIntro()
 bool SceneIntro::Start()
 {
 	bool ret = true;
-	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
-	logoTexture = app->tex->Load("Assets/textures/Backgrounds/LogoRealAmbient.png");
+	if(this->active == true)
+	{
+		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
+		logoTexture = app->tex->Load("Assets/textures/Backgrounds/LogoRealAmbient.png");
+		app->scene->Disable();
+		app->map->Disable();
+		app->player->Disable();
+		time = 0;
+	}
 
 	return ret;
 }
@@ -47,7 +58,7 @@ bool SceneIntro::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		app->fade->Fade(this, (Module*)app->scene, 600);
+		app->fade->Fade(this, (Module*)app->scene, 60);
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN)
@@ -79,12 +90,13 @@ bool SceneIntro::PostUpdate()
 	return ret;
 }
 
-bool SceneIntro::CleanUp() {
+bool SceneIntro::CleanUp() 
+{
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);
 	app->tex->UnLoad(logoTexture);
-	active = false;
+	introAnim.Reset();
 
 	return true;
 }

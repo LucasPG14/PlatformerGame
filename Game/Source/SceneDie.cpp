@@ -39,20 +39,22 @@ SceneDie::~SceneDie()
 // Load assets
 bool SceneDie::Start()
 {
-
-
 	bool ret = true;
-
-	bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundDead.png");
-	//App->audio->PlayMusic("Assets/music/Build/music/opening.ogg", 1.0f);
-
-
+	if (this->active == true)
+	{
+		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundDead.png");
+		dieFx = app->audio->LoadFx("Assets/audio/fx/YouLose.ogg");
+		time = 0;
+	}
 
 	return ret;
 }
 
 bool SceneDie::Update(float dt)
 {
+	time++;
+	if (time == 1) app->audio->PlayFx(dieFx);
+
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
 
@@ -62,7 +64,6 @@ bool SceneDie::Update(float dt)
 		app->player->Disable();
 		app->map->Disable();
 		app->fade->Fade(this, (Module*)app->sceneIntro);
-
 		active = false;
 	}
 
@@ -85,6 +86,6 @@ bool SceneDie::CleanUp() {
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);
-	//app->audio->CleanUp();
+	dieAnim.Reset();
 	return true;
 }

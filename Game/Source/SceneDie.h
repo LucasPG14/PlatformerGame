@@ -29,6 +29,8 @@ public:
 
 	Animation dieAnim;
 
+	int time;
+	uint dieFx;
 };
 
 #endif
