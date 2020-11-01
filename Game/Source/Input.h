@@ -74,5 +74,4 @@ private:
 	int mouseX;
 	int mouseY;
 };
-
 #endif // __INPUT_H__

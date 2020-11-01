@@ -32,5 +32,4 @@ public:
 	int time;
 	uint dieFx;
 };
-
 #endif

@@ -52,5 +52,4 @@ private:
 	Module* moduleToEnable = nullptr;
 	Module* moduleToDisable = nullptr;
 };
-
 #endif //__FADETOBLACK_H__

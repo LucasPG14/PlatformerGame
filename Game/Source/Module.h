@@ -12,7 +12,9 @@ class Module
 public:
 
 	Module() : active(false)
-	{}
+	{
+	
+	}
 
 	void Init(bool activeModule)
 	{
@@ -20,7 +22,6 @@ public:
 	}
 
 	// Called before render is available
-	// L01: DONE 5: Sending config file to all modules
 	virtual bool Awake(pugi::xml_node&)
 	{
 		return true;
@@ -56,17 +57,19 @@ public:
 		return true;
 	}
 
-    // L02: DONE 2: Create new virtual methods to Load / Save state
+    // Loads the information in the save XML
 	virtual bool LoadState(pugi::xml_node&)
 	{
 		return true;
 	}
 
+	// Saves the information in the save XML
 	virtual bool SaveState(pugi::xml_node&) const
 	{
 		return true;
 	}
 
+	// Enable the module when the fade function is called
 	void Enable()
 	{
 		if (!this->active)
@@ -76,6 +79,7 @@ public:
 		}
 	}
 
+	// Disable the module when the fade fucntion is called
 	void Disable()
 	{
 		if (this->active)
@@ -89,7 +93,5 @@ public:
 
 	SString name;
 	bool active;
-
 };
-
 #endif // __MODULE_H__

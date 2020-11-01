@@ -37,6 +37,7 @@ SceneIntro::~SceneIntro()
 bool SceneIntro::Start()
 {
 	bool ret = true;
+
 	if(this->active == true)
 	{
 		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
@@ -55,36 +56,26 @@ bool SceneIntro::Update(float dt)
 
 	time++;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
-	{
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
 		app->fade->Fade(this, (Module*)app->scene, 60);
-	}
 
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN)
-	{
-		ret = false;
-	}
-	if (time > 10000)
-	{
-		introAnim.Update();
-	}
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN) ret = false;
+
+	if (time > 10000) introAnim.Update();
 
 	return ret;
 }
 
-// Update: draw background
+// PostUpdate: draw background
 bool SceneIntro::PostUpdate()
 {
 	bool ret = true;
-	// Draw everything --------------------------------------
-	if (time > 10000)
-	{
+	// Draw everything 
+	if (time > 10000) 
 		app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
-	}
-	else
-	{
+
+	else 
 		app->render->DrawTexture(logoTexture, 250, 10, NULL);
-	}
 
 	return ret;
 }

@@ -11,8 +11,6 @@
 
 #include "FadeToBlack.h"
 
-
-
 #include "SDL/include/SDL_scancode.h"
 
 
@@ -49,22 +47,22 @@ bool SceneWin::Start()
 bool SceneWin::Update(float dt)
 {
 	time++;
+
 	if (time == 1) app->audio->PlayFx(winFx);
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
-	{
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
 		app->fade->Fade(this, (Module*)app->sceneIntro, 60);
-	}
+
 
 	winAnim.Update();
 
 	return true;
 }
 
-// Update: draw background
+// PostUpdate: draw background
 bool SceneWin::PostUpdate()
 {
 	// Draw everything --------------------------------------
@@ -73,7 +71,8 @@ bool SceneWin::PostUpdate()
 	return true;
 }
 
-bool SceneWin::CleanUp() {
+bool SceneWin::CleanUp() 
+{
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);

@@ -28,7 +28,7 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
-	// Called before all Updates
+	// Called before all updates
 	bool PostUpdate();
 
 	// Called before quitting
@@ -39,5 +39,4 @@ private:
 	SDL_Texture* bg2;
 	pugi::xml_node node;
 };
-
 #endif // __SCENE_H__

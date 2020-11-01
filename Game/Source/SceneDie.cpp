@@ -18,7 +18,6 @@
 
 SceneDie::SceneDie() : Module()
 {
-
 	dieAnim.PushBack({ 0,0,1502,1020 });
 	dieAnim.PushBack({ 1600,0,1502,1020 });
 	dieAnim.PushBack({ 3200,0,1502,1020 });
@@ -28,7 +27,6 @@ SceneDie::SceneDie() : Module()
 
 	dieAnim.speed = 0.0008f;
 	dieAnim.loop = false;
-
 }
 
 SceneDie::~SceneDie()
@@ -58,10 +56,8 @@ bool SceneDie::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		return false;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
-	{
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
 		app->fade->Fade(this, (Module*)app->sceneIntro);
-	}
 
 	dieAnim.Update();
 
@@ -86,5 +82,5 @@ bool SceneDie::CleanUp() {
 	dieAnim.Reset();
 	this->active = false;
 
-	return true;
+	return ret;
 }

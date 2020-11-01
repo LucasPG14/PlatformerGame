@@ -43,5 +43,4 @@ private:
 	uint height;
 	uint scale;
 };
-
 #endif // __WINDOW_H__

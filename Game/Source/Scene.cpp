@@ -19,7 +19,9 @@ Scene::Scene() : Module()
 
 // Destructor
 Scene::~Scene()
-{}
+{
+
+}
 
 // Called before render is available
 bool Scene::Awake(pugi::xml_node& config)
@@ -71,14 +73,13 @@ bool Scene::Update(float dt)
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x -= 1;
 
-	// VIEW COLLIDERS(F9)
+	// View colliders
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		app->map->viewCollisions = !app->map->viewCollisions;
 
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-	{
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) 
 		app->fade->Fade(this, (Module*)app->scene, 60);
-	}
+
 
 	return true;
 }
@@ -91,13 +92,11 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-	app->render->DrawTexture(bg, 0, 0, NULL, 1.0f);
-	app->render->DrawTexture(bg2, 9100, 0, NULL, 1.0f);
+	app->render->DrawTexture(bg, 0, 0, NULL, 0.75f);
+	app->render->DrawTexture(bg2, 9100, 0, NULL, 0.75f);
+	
 	// Draw map
-	if (app->map->active == true)
-	{
-		app->map->Draw();
-	}
+	if (app->map->active == true) app->map->Draw();
 
 	return ret;
 }

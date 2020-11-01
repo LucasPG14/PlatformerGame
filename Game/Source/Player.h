@@ -21,6 +21,7 @@ class Player : public Module
 {
 public:
 	Player();
+	
 	bool Awake(pugi::xml_node& config);
 	bool Start();
 	bool Update(float dt);
@@ -31,20 +32,29 @@ public:
 
 	void Gravity();
 	void Jump();
-	bool checkCollisionType(int idTile, std::string direction);
+	bool CheckCollisionType(int idTile, std::string direction);
 
-	void changeLevel(int level);
+	void ChangeLevel(int level);
 
 	void Dead();
-	void resetPlayer();
+	void ResetPlayer();
+
 	// Load and Save
 	bool LoadState(pugi::xml_node& load);
 	bool SaveState(pugi::xml_node& save) const;
 
 	// Player position
-
-	// Player position
 	Position position;
+
+	bool godMode;
+
+private:
+	// Player texture
+	SDL_Texture* player = nullptr;
+
+	// Player gravity
+	float gravity;
+
 	// Player animations
 	Animation* lastAnimation = nullptr;
 	Animation* currentAnimation = nullptr;
@@ -56,15 +66,6 @@ public:
 	Animation leftRunAnim;
 	Animation rightRunAnim;
 	Animation deadAnim;
-
-	bool godMode;
-
-private:
-	// Player texture
-	SDL_Texture* player = nullptr;
-
-	// Player gravity
-	float gravity;
 
 	// Jump mechanic
 	bool jump;
@@ -84,4 +85,3 @@ private:
 	uint stepSnow;
 };
 #endif
-

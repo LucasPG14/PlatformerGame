@@ -291,20 +291,15 @@ const char* App::GetOrganization() const
 // Load / Save
 void App::LoadGameRequest()
 {
-	// NOTE: We should check if SAVE_STATE_FILENAME actually exist
 	loadGameRequested = true;
 }
 
 // ---------------------------------------
 void App::SaveGameRequest() const
 {
-	// NOTE: We should check if SAVE_STATE_FILENAME actually exist and... should we overwriten
 	saveGameRequested = true;
 }
 
-// ---------------------------------------
-// L02: TODO 5: Create a method to actually load an xml file
-// then call all the modules to load themselves
 bool App::LoadGame()
 {
 	loadGameRequested = false;
@@ -336,7 +331,6 @@ bool App::LoadGame()
 	return ret;
 }
 
-// L02: TODO 7: Implement the xml save method for current state
 bool App::SaveGame() const
 {
 	LOG("Saving Results!!");
@@ -362,6 +356,3 @@ bool App::SaveGame() const
 	}
 	return ret;
 }
-
-
-
