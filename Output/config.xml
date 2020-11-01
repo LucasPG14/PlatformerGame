@@ -29,7 +29,7 @@
     <folder>Assets/textures/Characters/Adventurer/</folder>
     <image source ="AdventurerTilesheet.png"/>
     <godmode value ="false"/>
-    <speed x="0.1f" y="0.0f"/>
+    <speed x="2" y="0.0f"/>
     <gravity value="0.1f"/>
     <jump value="false"/>
     <position x="200" y="607"/>

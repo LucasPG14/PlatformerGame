@@ -70,7 +70,7 @@ bool Player::Awake(pugi::xml_node& config)
 	godMode = config.child("godmode").attribute("value").as_bool();
 	gravity = config.child("gravity").attribute("value").as_float();
 	jump = config.child("jump").attribute("value").as_bool();
-	speedX = config.child("speed").attribute("x").as_float();
+	speedX = config.child("speed").attribute("x").as_int();
 	speedY = config.child("speed").attribute("y").as_float();
 	time = 0;
 	deadPlayer = false;
@@ -87,6 +87,8 @@ bool Player::Start()
 		resetPlayer();
 		currentAnimation = &rightIdleAnim;
 	}
+
+	jumping = false;
 
 	return true;
 }
@@ -122,9 +124,9 @@ bool Player::Update(float dt)
 			{
 				if (position.x >= app->render->camera.w / 2)
 				{
-					app->render->camera.x -= 2;
+					app->render->camera.x -= speedX;
 				}
-				position.x += 2;
+ 				position.x += speedX;
 			}
 		}
 
@@ -148,20 +150,20 @@ bool Player::Update(float dt)
 			{
 				if (position.x > app->render->camera.w / 2)
 				{
-					app->render->camera.x += 2;
+					app->render->camera.x += speedX;
 				}
-				position.x -= 2;
+				position.x -= speedX;
 			}
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
 		{
-			position.y -= 2;
+			position.y -= speedX;
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 		{
-			position.y += 2;
+			position.y += speedX;
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
@@ -262,6 +264,11 @@ bool Player::Update(float dt)
 		if (Collision("top") == true)
 		{
 			speedY = 0.0f;
+		}
+
+		if (speedY <= 0.0f)
+		{
+			jumping = false;
 		}
 
 		Gravity();
@@ -442,20 +449,11 @@ void Player::changeLevel(int level)
 }
 
 
-int x = 0;
-bool touched = false;
-bool top = false;
-bool bottom = false;
-bool canpass = false;
-bool z = false;
 bool Player::checkCollisionType(int idTile, std::string direction)
 {
 	switch (idTile)
 	{
 	case 50:
-		x = 0;
-		touched = false;
-		z = false;
 		return true;
 		break;
 
@@ -466,43 +464,20 @@ bool Player::checkCollisionType(int idTile, std::string direction)
 		break;
 
 	case 52:
-		if (direction == "bottom" && z == false)
-			return true;
-
-		if (direction == "bottom" && jumping) {
- 			x++;
-			if (x > 3 && x < 62)
-				jumping = true;
-			if (x >= 62)
-				jumping = false;
-			if (x == 0)
-				jumping = false;
-
-
-		}
-		if (direction == "top") {
-
-			z = true;
+		if (direction == "bottom" && jumping == true)
+		{
 			return false;
-
-
 		}
-		else if (direction == "bottom" && jumping && !touched) {
-
+		else if (direction == "bottom" && jumping == false)
+		{
+			return true;
+		}
+		else
+		{
 			return false;
-
-		}
-
-		else if (direction == "bottom" && !jumping) {
-
-			touched = true;
-			x = 0;
-			return true;
-		}
-		else {
-			return true;
 		}
 		break;
+
 	case 53:
 		changeLevel(1);
 		break;
