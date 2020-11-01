@@ -30,7 +30,7 @@ int main(int argc, char* args[])
 {
 	LOG("Engine starting ...");
 
-	ShowWindow(GetConsoleWindow(), SW_SHOW);
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
 
 
 	MainState state = CREATE;
