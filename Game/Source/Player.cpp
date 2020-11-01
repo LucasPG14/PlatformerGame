@@ -31,13 +31,13 @@ Player::Player() : Module()
 	rightRunAnim.PushBack({ 216, 122, 71, 93 });
 	rightRunAnim.PushBack({ 303, 121, 54, 94 });
 
-	rightRunAnim.speed = 0.05f;
+	rightRunAnim.speed = 0.01f;
 	rightRunAnim.loop = true;
 
 	leftRunAnim.PushBack({ 219, 234, 71, 93 });
 	leftRunAnim.PushBack({ 301, 233, 54, 94 });
 
-	leftRunAnim.speed = 0.05f;
+	leftRunAnim.speed = 0.01f;
 	leftRunAnim.loop = true;
 
 	// ANIMATION WHEN PLAYER IS JUMPING 
@@ -86,7 +86,7 @@ bool Player::Start()
 		// SET POSITION
 		resetPlayer();
 		currentAnimation = &rightIdleAnim;
-		stepSnow = app->audio->LoadFx("Assets/audio/fx/StepSnow.ogg");
+		stepSnow = app->audio->LoadFx("Assets/audio/fx/StepSnow.wav");
 
 		jumping = false;
 	}

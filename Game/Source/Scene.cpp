@@ -75,16 +75,6 @@ bool Scene::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		app->map->viewCollisions = !app->map->viewCollisions;
 
-	//app->render->DrawTexture(img, 380, 100); // Placeholder not needed any more
-
-	// L03: DONE 7: Set the window title with map/tileset info
-	SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d",
-				   app->map->data.width, app->map->data.height,
-				   app->map->data.tileWidth, app->map->data.tileHeight,
-				   app->map->data.tilesets.count());
-
-	app->win->SetTitle(title.GetString());
-
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		app->fade->Fade(this, (Module*)app->scene, 60);

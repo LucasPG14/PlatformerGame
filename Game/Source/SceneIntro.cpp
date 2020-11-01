@@ -44,7 +44,6 @@ bool SceneIntro::Start()
 		app->scene->Disable();
 		app->map->Disable();
 		app->player->Disable();
-		time = 0;
 	}
 
 	return ret;
@@ -97,6 +96,7 @@ bool SceneIntro::CleanUp()
 	app->tex->UnLoad(bgTexture);
 	app->tex->UnLoad(logoTexture);
 	introAnim.Reset();
+	time = 10001;
 
 	return true;
 }
