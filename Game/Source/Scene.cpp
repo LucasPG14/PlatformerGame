@@ -77,7 +77,7 @@ bool Scene::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		app->map->viewCollisions = !app->map->viewCollisions;
 
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) 
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		app->fade->Fade(this, (Module*)app->scene, 60);
 
 

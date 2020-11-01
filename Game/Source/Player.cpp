@@ -221,16 +221,6 @@ bool Player::Update(float dt)
 			}
 		}
 
-		// Restart game
-
-		if (app->input->GetKey(SDL_SCANCODE_F1) == KeyState::KEY_DOWN || 
-			app->input->GetKey(SDL_SCANCODE_F3) == KeyState::KEY_DOWN)
-		{
-			app->player->CleanUp();
-			app->player->Start();
-			app->render->cameraStartPosition();
-		}
-
 		// Save game
 		if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
 			app->SaveGameRequest();
