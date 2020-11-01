@@ -56,7 +56,7 @@ This project is licensed under an unmodified MIT license, which is an OSI-certif
 Tiles and background art: https://free-game-assets.itch.io/free-parallax-2d-backgrounds
 https://swapnilrane24.itch.io/snow-background
 
-License(Tiles and background): 
+[License for tiles, characters and audio](Character LICENSE): 
 	
 
 	by  Kenney Vleugels (Kenney.nl)
