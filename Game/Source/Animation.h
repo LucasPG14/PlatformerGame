@@ -61,6 +61,5 @@ public:
 
 		return frames[actualFrame];
 	}
-};
-
+}; 
 #endif

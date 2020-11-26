@@ -56,14 +56,14 @@
       <Filter>External\PugiXml</Filter>
     </ClInclude>
     <ClInclude Include="Source\Map.h" />
-    <ClInclude Include="Animation.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\SceneIntro.h" />
     <ClInclude Include="Source\FadeToBlack.h" />
     <ClInclude Include="Source\SceneDie.h" />
     <ClInclude Include="Source\SceneWin.h" />
+    <ClInclude Include="Source\Animation.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

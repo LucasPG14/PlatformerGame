@@ -22,7 +22,7 @@ SceneWin::SceneWin() : Module()
 	}
 
 	winAnim.loop = true;
-	winAnim.speed = 0.0006f;
+	winAnim.speed = 0.1f;
 }
 
 SceneWin::~SceneWin()
@@ -36,8 +36,8 @@ bool SceneWin::Start()
 	bool ret = true;
 	if (this->active == true)
 	{
-		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundWin.png");
-		winFx = app->audio->LoadFx("Assets/audio/fx/YouWin.ogg");
+		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_win.png");
+		winFx = app->audio->LoadFx("Assets/audio/fx/you_win.ogg");
 		time = 0;
 	}
 

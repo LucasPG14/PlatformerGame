@@ -25,7 +25,7 @@ SceneIntro::SceneIntro() : Module()
 		}
 	}
 	introAnim.loop = false;
-	introAnim.speed = 0.005f;
+	introAnim.speed = 0.5f;
 }
 
 SceneIntro::~SceneIntro()
@@ -40,8 +40,8 @@ bool SceneIntro::Start()
 
 	if(this->active == true)
 	{
-		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundIntro.png");
-		logoTexture = app->tex->Load("Assets/textures/Backgrounds/LogoRealAmbient.png");
+		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
+		logoTexture = app->tex->Load("Assets/textures/Backgrounds/logo_real_ambient.png");
 		app->scene->Disable();
 		app->map->Disable();
 		app->player->Disable();
@@ -61,7 +61,7 @@ bool SceneIntro::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN) ret = false;
 
-	if (time > 10000) introAnim.Update();
+	if (time > 300) introAnim.Update();
 
 	return ret;
 }
@@ -71,7 +71,7 @@ bool SceneIntro::PostUpdate()
 {
 	bool ret = true;
 	// Draw everything 
-	if (time > 10000) 
+	if (time > 300) 
 		app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
 
 	else 
@@ -87,7 +87,7 @@ bool SceneIntro::CleanUp()
 	app->tex->UnLoad(bgTexture);
 	app->tex->UnLoad(logoTexture);
 	introAnim.Reset();
-	time = 10001;
+	time = 301;
 
 	return true;
 }

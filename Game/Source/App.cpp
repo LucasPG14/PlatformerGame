@@ -305,7 +305,7 @@ bool App::LoadGame()
 	loadGameRequested = false;
 	bool ret = true;
 
-	pugi::xml_parse_result resul = saveLoadFile.load_file("savedgame.xml");
+	pugi::xml_parse_result resul = saveLoadFile.load_file("save_game.xml");
 	
 	if (resul == NULL)
 	{
@@ -349,7 +349,7 @@ bool App::SaveGame() const
 		item = item->next;
 	}
 
-	bool saveSucceed = file.save_file("savedgame.xml", PUGIXML_TEXT("  "));
+	bool saveSucceed = file.save_file("save_game.xml", PUGIXML_TEXT("  "));
 	if (saveSucceed == false)
 	{
 		LOG("Couldn't save the file. pugi error: %s", pugi::status_internal_error);

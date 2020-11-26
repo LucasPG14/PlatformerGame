@@ -5,7 +5,7 @@
     <organization>UPC</organization>
   </app>
   <renderer>
-    <vsync value="false"/>
+    <vsync value="true"/>
   </renderer>
   <window>
     <resolution width="1500" height="1020" scale="1"/>
@@ -27,10 +27,10 @@
   </scene>
   <player>
     <folder>Assets/textures/Characters/Adventurer/</folder>
-    <image source ="AdventurerTilesheet.png"/>
+    <image source ="adventurer_tilesheet.png"/>
     <godmode value ="false"/>
-    <speed x="1" y="0.0f"/>
-    <gravity value="0.015f"/>
+    <speed x="5" y="0.0f"/>
+    <gravity value="0.3f"/>
     <jump value="false"/>
     <position x="200" y="607"/>
   </player>

@@ -21,23 +21,23 @@ Player::Player() : Module()
 	// Animation when player is static
 	rightIdleAnim.PushBack({ 11, 18, 59, 92 });
 
-	rightIdleAnim.speed = 0.01f;
+	rightIdleAnim.speed = 0.5f;
 
 	leftIdleAnim.PushBack({ 213, 18, 59, 92 });
 
-	leftIdleAnim.speed = 0.01f;
+	leftIdleAnim.speed = 0.5f;
 
 	// Animation when player is running
 	rightRunAnim.PushBack({ 216, 122, 71, 93 });
 	rightRunAnim.PushBack({ 303, 121, 54, 94 });
 
-	rightRunAnim.speed = 0.01f;
+	rightRunAnim.speed = 0.1f;
 	rightRunAnim.loop = true;
 
 	leftRunAnim.PushBack({ 219, 234, 71, 93 });
 	leftRunAnim.PushBack({ 301, 233, 54, 94 });
 
-	leftRunAnim.speed = 0.01f;
+	leftRunAnim.speed = 0.1f;
 	leftRunAnim.loop = true;
 
 	// Animation when player is jumping
@@ -56,7 +56,7 @@ Player::Player() : Module()
 	deadAnim.PushBack({ 447,127,75,92 });
 	deadAnim.PushBack({ 447,224,79,95 });
 
-	deadAnim.speed = 0.05f;
+	deadAnim.speed = 0.1f;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -86,7 +86,7 @@ bool Player::Start()
 		// Set position
 		ResetPlayer();
 		currentAnimation = &rightIdleAnim;
-		stepSnow = app->audio->LoadFx("Assets/audio/fx/StepSnow.wav");
+		stepSnow = app->audio->LoadFx("Assets/Audio/Fx/step_snow.wav");
 
 		jumping = false;
 	}
@@ -200,7 +200,7 @@ bool Player::Update(float dt)
 
 			jumping = true;
 			jump = true;
-			speedY = 2.6f;
+			speedY = 12.0f;
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
@@ -302,7 +302,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (14 * i)), position.y + 94);
+						tilePos = app->map->WorldToMap(position.x + (10 + (14 * i)), position.y + 96);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"bottom"))
 						{
@@ -360,9 +360,9 @@ void Player::Gravity()
 	{
 		speedY -= gravity;
 		position.y -= speedY;
-		if (speedY < -3.0f)
+		if (speedY < -5.0f)
 		{
-			speedY = -1.0f;
+			speedY = -5.0f;
 		}
 	}
 }

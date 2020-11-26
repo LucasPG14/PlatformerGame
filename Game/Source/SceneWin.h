@@ -28,7 +28,7 @@ public:
 
 	Animation winAnim;
 
-	int time;
-	uint winFx;
+	int time = 0;
+	uint winFx = 0;
 };
 #endif

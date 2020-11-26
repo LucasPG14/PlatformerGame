@@ -39,12 +39,12 @@ bool Scene::Start()
 	{
 		app->player->Enable();
 		// Load music
-		app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
+		app->audio->PlayMusic("Assets/Audio/Music/music_spy.ogg");
 
-		bg = app->tex->Load("Assets/textures/Backgrounds/SnowBackground.png");
-		bg2 = app->tex->Load("Assets/textures/Backgrounds/SnowBackground2.png");
+		bg = app->tex->Load("Assets/Textures/Backgrounds/snow_background.png");
+		bg2 = app->tex->Load("Assets/Textures/Backgrounds/snow_background2.png");
 		// Load map
-		app->map->Load("SnowMap.tmx");
+		app->map->Load("snow_map.tmx");
 		app->map->Enable();
 	}
 
@@ -60,16 +60,24 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
+	bool ret = true;
 
+	// Quit the game
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
+
+	// Move the camera up
 	if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		app->render->camera.y += 1;
 
+	// Move the camera down
 	if(app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 		app->render->camera.y -= 1;
 
+	// Move the camera to the left
 	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		app->render->camera.x += 1;
 
+	// Move the camera to the right
 	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		app->render->camera.x -= 1;
 
@@ -77,20 +85,23 @@ bool Scene::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		app->map->viewCollisions = !app->map->viewCollisions;
 
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
+		app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		app->fade->Fade(this, (Module*)app->scene, 60);
 
+	// Raise up the volume
+	if (app->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN) app->audio->MoreVolume();
 
-	return true;
+	// Lower the volume 
+	if (app->input->GetKey(SDL_SCANCODE_KP_MINUS) == KEY_DOWN) app->audio->LessVolume();
+
+	return ret;
 }
 
 // Called each loop iteration
 bool Scene::PostUpdate()
 {
 	bool ret = true;
-
-	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		ret = false;
 
 	app->render->DrawTexture(bg, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg2, 9100, 0, NULL, 0.75f);

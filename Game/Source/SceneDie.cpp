@@ -25,7 +25,7 @@ SceneDie::SceneDie() : Module()
 	dieAnim.PushBack({ 6400,0,1502,1020 });
 	dieAnim.PushBack({ 8000,0,1502,1020 });
 
-	dieAnim.speed = 0.0008f;
+	dieAnim.speed = 0.1f;
 	dieAnim.loop = false;
 }
 
@@ -40,8 +40,8 @@ bool SceneDie::Start()
 	bool ret = true;
 	if (this->active == true)
 	{
-		bgTexture = app->tex->Load("Assets/textures/Backgrounds/BackgroundDead.png");
-		dieFx = app->audio->LoadFx("Assets/audio/fx/YouLose.ogg");
+		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_dead.png");
+		dieFx = app->audio->LoadFx("Assets/Audio/Fx/you_lose.ogg");
 		time = 0;
 	}
 
