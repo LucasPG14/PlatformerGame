@@ -30,7 +30,7 @@
     <image source ="dark_knight_spritesheet2.png"/>
     <godmode value ="false"/>
     <speed x="5" y="0.0f"/>
-    <gravity value="0.3f"/>
+    <gravity value="0.4"/>
     <jump value="false"/>
     <position x="200" y="607"/>
   </player>

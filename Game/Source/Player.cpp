@@ -38,28 +38,28 @@ Player::Player() : Module()
 	leftIdleAnim.loop = true;
 
 	// Animation when player is running
-	rightRunAnim.PushBack({ 75, 261, 45, 72 });
-	rightRunAnim.PushBack({ 267, 261, 42, 72 });
-	rightRunAnim.PushBack({ 459, 261, 45, 72 });
-	rightRunAnim.PushBack({ 648, 261, 51, 72 });
-	rightRunAnim.PushBack({ 837, 261, 57, 72 });
-	rightRunAnim.PushBack({ 1026, 261, 63, 72 });
-	rightRunAnim.PushBack({ 1221, 261, 57, 72 });
-	rightRunAnim.PushBack({ 1416, 261, 51, 72 });
+	rightRunAnim.PushBack({ 75, 264, 45, 75 });
+	rightRunAnim.PushBack({ 267, 264, 42, 75 });
+	rightRunAnim.PushBack({ 459, 264, 45, 75 });
+	rightRunAnim.PushBack({ 648, 264, 51, 75 });
+	rightRunAnim.PushBack({ 837, 264, 57, 75 });
+	rightRunAnim.PushBack({ 1026, 264, 63, 75 });
+	rightRunAnim.PushBack({ 1221, 264, 57, 75 });
+	rightRunAnim.PushBack({ 1416, 264, 51, 75 });
 
-	rightRunAnim.speed = 0.1f;
+	rightRunAnim.speed = 0.2f;
 	rightRunAnim.loop = true;
 
-	leftRunAnim.PushBack({ 2970, 261, 45, 72 });
-	leftRunAnim.PushBack({ 2781, 261, 42, 72 });
-	leftRunAnim.PushBack({ 2586, 261, 45, 72 });
-	leftRunAnim.PushBack({ 2391, 261, 51, 72 });
-	leftRunAnim.PushBack({ 2196, 261, 57, 72 });
-	leftRunAnim.PushBack({ 2001, 261, 63, 72 });
-	leftRunAnim.PushBack({ 1812, 261, 57, 72 });
-	leftRunAnim.PushBack({ 1623, 261, 51, 72 });
+	leftRunAnim.PushBack({ 2970, 264, 45, 75 });
+	leftRunAnim.PushBack({ 2781, 264, 42, 75 });
+	leftRunAnim.PushBack({ 2586, 264, 45, 75 });
+	leftRunAnim.PushBack({ 2391, 264, 51, 75 });
+	leftRunAnim.PushBack({ 2196, 264, 57, 75 });
+	leftRunAnim.PushBack({ 2001, 264, 63, 75 });
+	leftRunAnim.PushBack({ 1812, 264, 57, 75 });
+	leftRunAnim.PushBack({ 1623, 264, 51, 75 });
 
-	leftRunAnim.speed = 0.1f;
+	leftRunAnim.speed = 0.2f;
 	leftRunAnim.loop = true;
 
 	// Animation when player is jumping
@@ -67,14 +67,14 @@ Player::Player() : Module()
 	rightJumpAnim.PushBack({ 264, 462, 51, 66 });
 	rightJumpAnim.PushBack({ 453, 462, 51, 66 });
 
-	rightJumpAnim.speed = 0.1f;
+	rightJumpAnim.speed = 0.3f;
 	rightJumpAnim.loop = false;
 
 	leftJumpAnim.PushBack({ 2964, 462, 51, 66 });
 	leftJumpAnim.PushBack({ 2775, 462, 51, 66 });
 	leftJumpAnim.PushBack({ 2586, 462, 51, 66 });
 
-	leftJumpAnim.speed = 0.1f;
+	leftJumpAnim.speed = 0.3f;
 	leftJumpAnim.loop = false;
 
 	// Animation when player dies
@@ -332,7 +332,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (14 * i)), position.y + 96);
+						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 66);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"bottom"))
 						{
@@ -344,7 +344,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (14 * i)), position.y + 3);
+						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 14);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"top"))
 						{
@@ -356,7 +356,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + 51, position.y + (45 * i));
+						tilePos = app->map->WorldToMap(position.x + 39, position.y + (16 + (16 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"right"))
 						{
@@ -368,7 +368,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + 9, position.y + (45 * i));
+						tilePos = app->map->WorldToMap(position.x + 8, position.y + (16 + (16 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"left"))
 						{
