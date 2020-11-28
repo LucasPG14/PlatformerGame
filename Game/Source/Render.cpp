@@ -70,7 +70,7 @@ bool Render::PreUpdate()
 
 bool Render::Update(float dt)
 {
-	if (app->map->active == true)
+	/*if (app->map->active == true)
 	{
 		if (camera.x < -(app->map->data.width * app->map->data.tileWidth) + camera.w)
 		{
@@ -80,7 +80,7 @@ bool Render::Update(float dt)
 		{
 			camera.x = 0;
 		}
-	}
+	}*/
 
 	return true;
 }

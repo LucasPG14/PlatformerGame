@@ -37,7 +37,7 @@ bool SceneWin::Start()
 	if (this->active == true)
 	{
 		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_win.png");
-		winFx = app->audio->LoadFx("Assets/audio/fx/you_win.ogg");
+		winFx = app->audio->LoadFx("Assets/Audio/Fx/you_win.ogg");
 		time = 0;
 	}
 

@@ -19,42 +19,72 @@ Player::Player() : Module()
 	name.Create("player");
 
 	// Animation when player is static
-	rightIdleAnim.PushBack({ 11, 18, 59, 92 });
+	rightIdleAnim.PushBack({ 24, 26, 17, 22 });
+	rightIdleAnim.PushBack({ 88,27,17,21 });
+	rightIdleAnim.PushBack({ 152,28,17,20 });
+	rightIdleAnim.PushBack({ 216,27,17,21 });
+	rightIdleAnim.PushBack({ 280,26,17,22 });
 
-	rightIdleAnim.speed = 0.5f;
+	rightIdleAnim.speed = 0.1f;
+	rightIdleAnim.loop = true;
 
-	leftIdleAnim.PushBack({ 213, 18, 59, 92 });
+	leftIdleAnim.PushBack({ 989, 26, 17, 22 });
+	leftIdleAnim.PushBack({ 925, 27, 17, 21 });
+	leftIdleAnim.PushBack({ 861, 28, 17, 20 });
+	leftIdleAnim.PushBack({ 797, 27, 17, 21 });
+	leftIdleAnim.PushBack({ 733, 26, 17, 22 });
 
-	leftIdleAnim.speed = 0.5f;
+	leftIdleAnim.speed = 0.1f;
+	leftIdleAnim.loop = true;
 
 	// Animation when player is running
-	rightRunAnim.PushBack({ 216, 122, 71, 93 });
-	rightRunAnim.PushBack({ 303, 121, 54, 94 });
+	rightRunAnim.PushBack({ 25, 89, 15, 22 });
+	rightRunAnim.PushBack({ 89, 88, 14, 23 });
+	rightRunAnim.PushBack({ 153, 89, 15, 23 });
+	rightRunAnim.PushBack({ 216, 90, 17, 22 });
+	rightRunAnim.PushBack({ 279, 89, 19, 21 });
+	rightRunAnim.PushBack({ 342, 88, 21, 22 });
+	rightRunAnim.PushBack({ 407, 89, 19, 23 });
+	rightRunAnim.PushBack({ 472, 90, 17, 22 });
 
 	rightRunAnim.speed = 0.1f;
 	rightRunAnim.loop = true;
 
-	leftRunAnim.PushBack({ 219, 234, 71, 93 });
-	leftRunAnim.PushBack({ 301, 233, 54, 94 });
+	leftRunAnim.PushBack({ 990, 89, 15, 22 });
+	leftRunAnim.PushBack({ 927, 88, 14, 23 });
+	leftRunAnim.PushBack({ 862, 89, 15, 23 });
+	leftRunAnim.PushBack({ 797, 90, 17, 22 });
+	leftRunAnim.PushBack({ 732, 89, 19, 21 });
+	leftRunAnim.PushBack({ 667, 88, 21, 22 });
+	leftRunAnim.PushBack({ 604, 89, 19, 23 });
+	leftRunAnim.PushBack({ 541, 90, 17, 22 });
 
 	leftRunAnim.speed = 0.1f;
 	leftRunAnim.loop = true;
 
 	// Animation when player is jumping
-	rightJumpAnim.PushBack({ 9, 118, 71, 96 });
+	rightJumpAnim.PushBack({ 25, 154, 17, 22 });
+	rightJumpAnim.PushBack({ 88, 154, 17, 22 });
+	rightJumpAnim.PushBack({ 151, 154, 17, 22 });
 
-	rightJumpAnim.speed = 1.0f;
+	rightJumpAnim.speed = 0.1f;
 	rightJumpAnim.loop = false;
 
-	leftJumpAnim.PushBack({ 95, 118, 71, 96 });
+	leftJumpAnim.PushBack({ 988, 154, 17, 22 });
+	leftJumpAnim.PushBack({ 925, 154, 17, 22 });
+	leftJumpAnim.PushBack({ 862, 154, 17, 22 });
 
-	leftJumpAnim.speed = 1.0f;
+	leftJumpAnim.speed = 0.1f;
 	leftJumpAnim.loop = false;
 
 	// Animation when player dies
-	deadAnim.PushBack({ 449, 27, 75,92 });
-	deadAnim.PushBack({ 447,127,75,92 });
-	deadAnim.PushBack({ 447,224,79,95 });
+	deadAnim.PushBack({ 22, 405, 17, 27 });
+	deadAnim.PushBack({ 75, 405, 31, 27 });
+	deadAnim.PushBack({ 143, 405, 39, 27 });
+	deadAnim.PushBack({ 206, 405, 40, 27 });
+	deadAnim.PushBack({ 272, 405, 38, 27 });
+	deadAnim.PushBack({ 335, 405, 39, 27 });
+	deadAnim.PushBack({ 399, 405, 39, 27 });
 
 	deadAnim.speed = 0.1f;
 }
@@ -426,7 +456,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 {
 	switch (idTile)
 	{
-	case 50:
+	case 241:
 		return true;
 		break;
 

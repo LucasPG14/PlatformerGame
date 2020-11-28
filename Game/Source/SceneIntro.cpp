@@ -41,7 +41,7 @@ bool SceneIntro::Start()
 	if(this->active == true)
 	{
 		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
-		logoTexture = app->tex->Load("Assets/textures/Backgrounds/logo_real_ambient.png");
+		logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
 		app->scene->Disable();
 		app->map->Disable();
 		app->player->Disable();

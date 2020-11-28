@@ -8,7 +8,7 @@
     <vsync value="true"/>
   </renderer>
   <window>
-    <resolution width="1500" height="1020" scale="1"/>
+    <resolution width="1280" height="720" scale="1"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="false"/>
@@ -22,12 +22,12 @@
     <folder>Assets/tiles/</folder>
   </map>
   <scene>
-      <folder>Assets/textures/Backgrounds/</folder>
+      <folder>Assets/Textures/Backgrounds/</folder>
       <image source ="SnowBackground.png"/>
   </scene>
   <player>
-    <folder>Assets/textures/Characters/Adventurer/</folder>
-    <image source ="adventurer_tilesheet.png"/>
+    <folder>Assets/Textures/Characters/</folder>
+    <image source ="dark_knight_spritesheet.png"/>
     <godmode value ="false"/>
     <speed x="5" y="0.0f"/>
     <gravity value="0.3f"/>
