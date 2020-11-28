@@ -21,7 +21,7 @@ SceneIntro::SceneIntro() : Module()
 	{
 		for (int j = 0; j < 6; j++)
 		{
-			introAnim.PushBack({ 1500 * j,1020 * i,1500,1020 });
+			introAnim.PushBack({ 1280 * j, 720 * i, 1280, 720 });
 		}
 	}
 	introAnim.loop = false;
@@ -40,8 +40,8 @@ bool SceneIntro::Start()
 
 	if(this->active == true)
 	{
-		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
-		logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
+		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro2.png");
+		logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient2.png");
 		app->scene->Disable();
 		app->map->Disable();
 		app->player->Disable();

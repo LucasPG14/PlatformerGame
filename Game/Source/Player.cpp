@@ -19,72 +19,72 @@ Player::Player() : Module()
 	name.Create("player");
 
 	// Animation when player is static
-	rightIdleAnim.PushBack({ 24, 26, 17, 22 });
-	rightIdleAnim.PushBack({ 88,27,17,21 });
-	rightIdleAnim.PushBack({ 152,28,17,20 });
-	rightIdleAnim.PushBack({ 216,27,17,21 });
-	rightIdleAnim.PushBack({ 280,26,17,22 });
+	rightIdleAnim.PushBack({ 72, 78, 51, 66 });
+	rightIdleAnim.PushBack({ 264, 78, 51, 66 });
+	rightIdleAnim.PushBack({ 456, 78, 51, 66 });
+	rightIdleAnim.PushBack({ 648, 78, 51, 66 });
+	rightIdleAnim.PushBack({ 840, 78, 51, 66 });
 
 	rightIdleAnim.speed = 0.1f;
 	rightIdleAnim.loop = true;
 
-	leftIdleAnim.PushBack({ 989, 26, 17, 22 });
-	leftIdleAnim.PushBack({ 925, 27, 17, 21 });
-	leftIdleAnim.PushBack({ 861, 28, 17, 20 });
-	leftIdleAnim.PushBack({ 797, 27, 17, 21 });
-	leftIdleAnim.PushBack({ 733, 26, 17, 22 });
+	leftIdleAnim.PushBack({ 2967, 78, 51, 66 });
+	leftIdleAnim.PushBack({ 2775, 78, 51, 66 });
+	leftIdleAnim.PushBack({ 2583, 78, 51, 66 });
+	leftIdleAnim.PushBack({ 2391, 78, 51, 66 });
+	leftIdleAnim.PushBack({ 2199, 78, 51, 66 });
 
 	leftIdleAnim.speed = 0.1f;
 	leftIdleAnim.loop = true;
 
 	// Animation when player is running
-	rightRunAnim.PushBack({ 25, 89, 15, 22 });
-	rightRunAnim.PushBack({ 89, 88, 14, 23 });
-	rightRunAnim.PushBack({ 153, 89, 15, 23 });
-	rightRunAnim.PushBack({ 216, 90, 17, 22 });
-	rightRunAnim.PushBack({ 279, 89, 19, 21 });
-	rightRunAnim.PushBack({ 342, 88, 21, 22 });
-	rightRunAnim.PushBack({ 407, 89, 19, 23 });
-	rightRunAnim.PushBack({ 472, 90, 17, 22 });
+	rightRunAnim.PushBack({ 75, 261, 45, 72 });
+	rightRunAnim.PushBack({ 267, 261, 42, 72 });
+	rightRunAnim.PushBack({ 459, 261, 45, 72 });
+	rightRunAnim.PushBack({ 648, 261, 51, 72 });
+	rightRunAnim.PushBack({ 837, 261, 57, 72 });
+	rightRunAnim.PushBack({ 1026, 261, 63, 72 });
+	rightRunAnim.PushBack({ 1221, 261, 57, 72 });
+	rightRunAnim.PushBack({ 1416, 261, 51, 72 });
 
 	rightRunAnim.speed = 0.1f;
 	rightRunAnim.loop = true;
 
-	leftRunAnim.PushBack({ 990, 89, 15, 22 });
-	leftRunAnim.PushBack({ 927, 88, 14, 23 });
-	leftRunAnim.PushBack({ 862, 89, 15, 23 });
-	leftRunAnim.PushBack({ 797, 90, 17, 22 });
-	leftRunAnim.PushBack({ 732, 89, 19, 21 });
-	leftRunAnim.PushBack({ 667, 88, 21, 22 });
-	leftRunAnim.PushBack({ 604, 89, 19, 23 });
-	leftRunAnim.PushBack({ 541, 90, 17, 22 });
+	leftRunAnim.PushBack({ 2970, 261, 45, 72 });
+	leftRunAnim.PushBack({ 2781, 261, 42, 72 });
+	leftRunAnim.PushBack({ 2586, 261, 45, 72 });
+	leftRunAnim.PushBack({ 2391, 261, 51, 72 });
+	leftRunAnim.PushBack({ 2196, 261, 57, 72 });
+	leftRunAnim.PushBack({ 2001, 261, 63, 72 });
+	leftRunAnim.PushBack({ 1812, 261, 57, 72 });
+	leftRunAnim.PushBack({ 1623, 261, 51, 72 });
 
 	leftRunAnim.speed = 0.1f;
 	leftRunAnim.loop = true;
 
 	// Animation when player is jumping
-	rightJumpAnim.PushBack({ 25, 154, 17, 22 });
-	rightJumpAnim.PushBack({ 88, 154, 17, 22 });
-	rightJumpAnim.PushBack({ 151, 154, 17, 22 });
+	rightJumpAnim.PushBack({ 75, 462, 51, 66 });
+	rightJumpAnim.PushBack({ 264, 462, 51, 66 });
+	rightJumpAnim.PushBack({ 453, 462, 51, 66 });
 
 	rightJumpAnim.speed = 0.1f;
 	rightJumpAnim.loop = false;
 
-	leftJumpAnim.PushBack({ 988, 154, 17, 22 });
-	leftJumpAnim.PushBack({ 925, 154, 17, 22 });
-	leftJumpAnim.PushBack({ 862, 154, 17, 22 });
+	leftJumpAnim.PushBack({ 2964, 462, 51, 66 });
+	leftJumpAnim.PushBack({ 2775, 462, 51, 66 });
+	leftJumpAnim.PushBack({ 2586, 462, 51, 66 });
 
 	leftJumpAnim.speed = 0.1f;
 	leftJumpAnim.loop = false;
 
 	// Animation when player dies
-	deadAnim.PushBack({ 22, 405, 17, 27 });
-	deadAnim.PushBack({ 75, 405, 31, 27 });
-	deadAnim.PushBack({ 143, 405, 39, 27 });
-	deadAnim.PushBack({ 206, 405, 40, 27 });
-	deadAnim.PushBack({ 272, 405, 38, 27 });
-	deadAnim.PushBack({ 335, 405, 39, 27 });
-	deadAnim.PushBack({ 399, 405, 39, 27 });
+	deadAnim.PushBack({ 66, 1215, 51, 81 });
+	deadAnim.PushBack({ 225, 1215, 93, 81 });
+	deadAnim.PushBack({ 429, 1215, 117, 81 });
+	deadAnim.PushBack({ 618, 1215, 120, 81 });
+	deadAnim.PushBack({ 816, 1215, 114, 81 });
+	deadAnim.PushBack({ 1005, 1215, 117, 81 });
+	deadAnim.PushBack({ 1197, 1215, 117, 81 });
 
 	deadAnim.speed = 0.1f;
 }
