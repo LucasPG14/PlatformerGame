@@ -87,6 +87,7 @@ Player::Player() : Module()
 	rightDeadAnim.PushBack({ 1131, 783, 117, 87 });
 
 	rightDeadAnim.speed = 0.1f;
+	rightDeadAnim.loop = false;
 
 	leftDeadAnim.PushBack({ 1197, 870, 51, 87 });
 	leftDeadAnim.PushBack({ 996, 870, 93, 87 });
@@ -97,6 +98,7 @@ Player::Player() : Module()
 	leftDeadAnim.PushBack({ 0, 870, 117, 87 });
 
 	leftDeadAnim.speed = 0.1f;
+	leftDeadAnim.loop = false;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -341,9 +343,9 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 87);
+						tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 88);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile,"bottom"))
+						if (CheckCollisionType(idTile, "bottom"))
 						{
 							return true;
 						}
@@ -353,9 +355,9 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 15);
+						tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 40);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile,"top"))
+						if (CheckCollisionType(idTile, "top"))
 						{
 							return true;
 						}
@@ -365,9 +367,9 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + 39, position.y + (16 + (16 * i)));
+						tilePos = app->map->WorldToMap(position.x + 40, position.y + (42 + (14 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile,"right"))
+						if (CheckCollisionType(idTile, "right"))
 						{
 							return true;
 						}
@@ -377,9 +379,9 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + 8, position.y + (16 + (16 * i)));
+						tilePos = app->map->WorldToMap(position.x + 6, position.y + (42 + (14 * i)));
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile,"left"))
+						if (CheckCollisionType(idTile, "left"))
 						{
 							return true;
 						}
@@ -443,7 +445,6 @@ void Player::Dead()
 	if (time == 60)
 	{
 		time = 0;
-		deadPlayer = false;
 		app->fade->Fade(app->scene, app->sceneDie, 60);
 	}
 }
@@ -463,17 +464,17 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 {
 	switch (idTile)
 	{
-	case 241:
+	case 289:
 		return true;
 		break;
 
 
-	case 51:
+	case 290:
 		Dead();
 		return true;
 		break;
 
-	case 52:
+	case 291:
 		if (direction == "bottom" && jumping == true)
 		{
 			return false;
@@ -488,7 +489,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 		}
 		break;
 
-	case 53:
+	case 292:
 		ChangeLevel(1);
 		break;
 	}
