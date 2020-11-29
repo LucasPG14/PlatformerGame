@@ -47,6 +47,9 @@ bool Scene::Start()
 		//app->map->Load("snow_map.tmx");
 		app->map->Load("level1.tmx");
 		app->map->Enable();
+
+		app->render->camera.x = 0;
+		app->render->camera.y = 0;
 	}
 
 	return true;
@@ -67,20 +70,20 @@ bool Scene::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
 
 	// Move the camera up
-	if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		app->render->camera.y += 1;
+	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		app->render->camera.y -= floor(200.0f * dt);
 
 	// Move the camera down
-	if(app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		app->render->camera.y -= 1;
+	if (app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		app->render->camera.y += floor(200.0f * dt);
 
 	// Move the camera to the left
-	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		app->render->camera.x += 1;
+	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		app->render->camera.x -= floor(200.0f * dt);
 
 	// Move the camera to the right
-	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		app->render->camera.x -= 1;
+	if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		app->render->camera.x += floor(200.0f * dt);
 
 	// View colliders
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
@@ -88,7 +91,15 @@ bool Scene::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
 		app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-		app->fade->Fade(this, (Module*)app->scene, 60);
+		app->fade->Fade(this, (Module*)app->scene, 1/dt);
+
+	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	{
+		if (app->cappedMs == 1000 / 60)
+		{
+			app->cappedMs = 30;
+		}
+	}
 
 	// Raise up the volume
 	if (app->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN) app->audio->MoreVolume();

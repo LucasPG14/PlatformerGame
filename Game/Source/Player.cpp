@@ -19,74 +19,84 @@ Player::Player() : Module()
 	name.Create("player");
 
 	// Animation when player is static
-	rightIdleAnim.PushBack({ 72, 78, 51, 66 });
-	rightIdleAnim.PushBack({ 264, 78, 51, 66 });
-	rightIdleAnim.PushBack({ 456, 78, 51, 66 });
-	rightIdleAnim.PushBack({ 648, 78, 51, 66 });
-	rightIdleAnim.PushBack({ 840, 78, 51, 66 });
+	rightIdleAnim.PushBack({ 0, 0, 51, 87 });
+	rightIdleAnim.PushBack({ 192, 0, 51, 87 });
+	rightIdleAnim.PushBack({ 384, 0, 51, 87 });
+	rightIdleAnim.PushBack({ 576, 0, 51, 87 });
+	rightIdleAnim.PushBack({ 768, 0, 51, 87 });
 
 	rightIdleAnim.speed = 0.1f;
 	rightIdleAnim.loop = true;
 
-	leftIdleAnim.PushBack({ 2967, 78, 51, 66 });
-	leftIdleAnim.PushBack({ 2775, 78, 51, 66 });
-	leftIdleAnim.PushBack({ 2583, 78, 51, 66 });
-	leftIdleAnim.PushBack({ 2391, 78, 51, 66 });
-	leftIdleAnim.PushBack({ 2199, 78, 51, 66 });
+	leftIdleAnim.PushBack({ 0, 87, 51, 87 });
+	leftIdleAnim.PushBack({ 192, 87, 51, 87 });
+	leftIdleAnim.PushBack({ 384, 87, 51, 87 });
+	leftIdleAnim.PushBack({ 576, 87, 51, 87 });
+	leftIdleAnim.PushBack({ 768, 87, 51, 87 });
 
 	leftIdleAnim.speed = 0.1f;
 	leftIdleAnim.loop = true;
 
 	// Animation when player is running
-	rightRunAnim.PushBack({ 75, 264, 45, 75 });
-	rightRunAnim.PushBack({ 267, 264, 42, 75 });
-	rightRunAnim.PushBack({ 459, 264, 45, 75 });
-	rightRunAnim.PushBack({ 648, 264, 51, 75 });
-	rightRunAnim.PushBack({ 837, 264, 57, 75 });
-	rightRunAnim.PushBack({ 1026, 264, 63, 75 });
-	rightRunAnim.PushBack({ 1221, 264, 57, 75 });
-	rightRunAnim.PushBack({ 1416, 264, 51, 75 });
+	rightRunAnim.PushBack({ 0, 174, 45, 87 });
+	rightRunAnim.PushBack({ 192, 174, 42, 87 });
+	rightRunAnim.PushBack({ 384, 174, 45, 87 });
+	rightRunAnim.PushBack({ 573, 174, 51, 87 });
+	rightRunAnim.PushBack({ 762, 174, 57, 87 });
+	rightRunAnim.PushBack({ 951, 174, 63, 87 });
+	rightRunAnim.PushBack({ 1146, 174, 57, 87 });
+	rightRunAnim.PushBack({ 1341, 174, 51, 87 });
 
 	rightRunAnim.speed = 0.2f;
 	rightRunAnim.loop = true;
 
-	leftRunAnim.PushBack({ 2970, 264, 45, 75 });
-	leftRunAnim.PushBack({ 2781, 264, 42, 75 });
-	leftRunAnim.PushBack({ 2586, 264, 45, 75 });
-	leftRunAnim.PushBack({ 2391, 264, 51, 75 });
-	leftRunAnim.PushBack({ 2196, 264, 57, 75 });
-	leftRunAnim.PushBack({ 2001, 264, 63, 75 });
-	leftRunAnim.PushBack({ 1812, 264, 57, 75 });
-	leftRunAnim.PushBack({ 1623, 264, 51, 75 });
+	leftRunAnim.PushBack({ 1347, 261, 45, 87 });
+	leftRunAnim.PushBack({ 1158, 261, 42, 87 });
+	leftRunAnim.PushBack({ 963, 261, 45, 87 });
+	leftRunAnim.PushBack({ 768, 261, 51, 87 });
+	leftRunAnim.PushBack({ 573, 261, 57, 87 });
+	leftRunAnim.PushBack({ 378, 261, 63, 87 });
+	leftRunAnim.PushBack({ 189, 261, 57, 87 });
+	leftRunAnim.PushBack({ 0, 261, 51, 87 });
 
 	leftRunAnim.speed = 0.2f;
 	leftRunAnim.loop = true;
 
 	// Animation when player is jumping
-	rightJumpAnim.PushBack({ 75, 462, 51, 66 });
-	rightJumpAnim.PushBack({ 264, 462, 51, 66 });
-	rightJumpAnim.PushBack({ 453, 462, 51, 66 });
+	rightJumpAnim.PushBack({ 0, 348, 51, 87 });
+	rightJumpAnim.PushBack({ 189, 348, 51, 87 });
+	rightJumpAnim.PushBack({ 378, 348, 51, 87 });
 
 	rightJumpAnim.speed = 0.3f;
 	rightJumpAnim.loop = false;
 
-	leftJumpAnim.PushBack({ 2964, 462, 51, 66 });
-	leftJumpAnim.PushBack({ 2775, 462, 51, 66 });
-	leftJumpAnim.PushBack({ 2586, 462, 51, 66 });
+	leftJumpAnim.PushBack({ 1341, 348, 51, 87 });
+	leftJumpAnim.PushBack({ 1152, 348, 51, 87 });
+	leftJumpAnim.PushBack({ 963, 348, 51, 87 });
 
 	leftJumpAnim.speed = 0.3f;
 	leftJumpAnim.loop = false;
 
 	// Animation when player dies
-	deadAnim.PushBack({ 66, 1215, 51, 81 });
-	deadAnim.PushBack({ 225, 1215, 93, 81 });
-	deadAnim.PushBack({ 429, 1215, 117, 81 });
-	deadAnim.PushBack({ 618, 1215, 120, 81 });
-	deadAnim.PushBack({ 816, 1215, 114, 81 });
-	deadAnim.PushBack({ 1005, 1215, 117, 81 });
-	deadAnim.PushBack({ 1197, 1215, 117, 81 });
+	rightDeadAnim.PushBack({ 0, 783, 51, 87 });
+	rightDeadAnim.PushBack({ 159, 783, 93, 87 });
+	rightDeadAnim.PushBack({ 363, 783, 117, 87 });
+	rightDeadAnim.PushBack({ 552, 783, 120, 87 });
+	rightDeadAnim.PushBack({ 750, 783, 114, 87 });
+	rightDeadAnim.PushBack({ 939, 783, 117, 87 });
+	rightDeadAnim.PushBack({ 1131, 783, 117, 87 });
 
-	deadAnim.speed = 0.1f;
+	rightDeadAnim.speed = 0.1f;
+
+	leftDeadAnim.PushBack({ 1197, 870, 51, 87 });
+	leftDeadAnim.PushBack({ 996, 870, 93, 87 });
+	leftDeadAnim.PushBack({ 768, 870, 117, 87 });
+	leftDeadAnim.PushBack({ 576, 870, 120, 87 });
+	leftDeadAnim.PushBack({ 384, 870, 114, 87 });
+	leftDeadAnim.PushBack({ 192, 870, 117, 87 });
+	leftDeadAnim.PushBack({ 0, 870, 117, 87 });
+
+	leftDeadAnim.speed = 0.1f;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -127,7 +137,7 @@ bool Player::Update(float dt)
 {
 	if (deadPlayer == false)
 	{
-		if (lastAnimation == &deadAnim) currentAnimation = &rightIdleAnim;
+		if (lastAnimation == &rightDeadAnim) currentAnimation = &rightIdleAnim;
 
 		// Input to move the player
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
@@ -257,7 +267,6 @@ bool Player::Update(float dt)
 		{
 			app->player->CleanUp();
 			app->player->Start();
-			app->render->cameraStartPosition();
 		}
 
 		// Save game
@@ -332,7 +341,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 66);
+						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 87);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"bottom"))
 						{
@@ -344,7 +353,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 14);
+						tilePos = app->map->WorldToMap(position.x + (9 + (10 * i)), position.y + 15);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile,"top"))
 						{
@@ -428,14 +437,13 @@ bool Player::SaveState(pugi::xml_node& save) const
 
 void Player::Dead() 
 {
-	currentAnimation = &deadAnim;
+	currentAnimation = &rightDeadAnim;
 	lastAnimation = currentAnimation;
 	deadPlayer = true;
 	if (time == 60)
 	{
 		time = 0;
 		deadPlayer = false;
-		app->render->cameraStartPosition();
 		app->fade->Fade(app->scene, app->sceneDie, 60);
 	}
 }
@@ -445,7 +453,6 @@ void Player::ChangeLevel(int level)
 	switch (level)
 	{
 	case 1:
-		app->render->cameraStartPosition();
 		app->fade->Fade(app->scene, app->sceneWin, 60);
 		break;
 	}

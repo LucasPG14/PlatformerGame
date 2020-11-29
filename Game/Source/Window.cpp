@@ -17,7 +17,6 @@ Window::Window() : Module()
 // Destructor
 Window::~Window()
 {
-
 }
 
 // Called before render is available

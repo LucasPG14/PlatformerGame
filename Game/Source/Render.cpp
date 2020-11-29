@@ -46,7 +46,8 @@ bool Render::Awake(pugi::xml_node& config)
 	{
 		camera.w = app->win->screenSurface->w;
 		camera.h = app->win->screenSurface->h;
-		cameraStartPosition();
+		camera.x = 0;
+		camera.y = 0;
 	}
 
 	return ret;
@@ -259,10 +260,4 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 	}
 
 	return ret;
-}
-
-void Render::cameraStartPosition()
-{
-	camera.x = 0;
-	camera.y = 0;
 }

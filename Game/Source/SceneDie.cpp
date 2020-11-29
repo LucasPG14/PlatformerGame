@@ -18,12 +18,12 @@
 
 SceneDie::SceneDie() : Module()
 {
-	dieAnim.PushBack({ 0,0,1502,1020 });
-	dieAnim.PushBack({ 1600,0,1502,1020 });
-	dieAnim.PushBack({ 3200,0,1502,1020 });
-	dieAnim.PushBack({ 4800,0,1502,1020 });
-	dieAnim.PushBack({ 6400,0,1502,1020 });
-	dieAnim.PushBack({ 8000,0,1502,1020 });
+	dieAnim.PushBack({ 0, 0, 1280, 720 });
+	dieAnim.PushBack({ 1280, 0, 1280, 720 });
+	dieAnim.PushBack({ 2560, 0, 1280, 720 });
+	dieAnim.PushBack({ 3840, 0, 1280, 720 });
+	dieAnim.PushBack({ 5120, 0, 1280, 720 });
+	dieAnim.PushBack({ 6400, 0, 1280, 720 });
 
 	dieAnim.speed = 0.1f;
 	dieAnim.loop = false;
@@ -57,7 +57,7 @@ bool SceneDie::Update(float dt)
 		return false;
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, (Module*)app->sceneIntro);
+		app->fade->Fade(this, (Module*)app->sceneIntro, 1/dt);
 
 	dieAnim.Update();
 

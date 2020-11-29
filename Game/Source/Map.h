@@ -48,7 +48,7 @@ struct Properties
 	
 	~Properties()
 	{
-		list.clear();
+		list.Clear();
 	}
 
 	// Ask the value of a custom property

@@ -29,7 +29,7 @@ public:
 
 	Animation dieAnim;
 
-	int time;
-	uint dieFx;
+	int time = 0;
+	uint dieFx = -1;
 };
 #endif

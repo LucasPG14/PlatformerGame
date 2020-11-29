@@ -18,7 +18,7 @@ SceneWin::SceneWin() : Module()
 {
 	for (int i = 0; i < 5; i++)
 	{
-		winAnim.PushBack({ 1500 * i, 0, 1500, 1020 });
+		winAnim.PushBack({ 1280 * i, 0, 1280, 720 });
 	}
 
 	winAnim.loop = true;
@@ -54,8 +54,7 @@ bool SceneWin::Update(float dt)
 		return false;
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, (Module*)app->sceneIntro, 60);
-
+		app->fade->Fade(this, (Module*)app->sceneIntro, 1/dt);
 
 	winAnim.Update();
 

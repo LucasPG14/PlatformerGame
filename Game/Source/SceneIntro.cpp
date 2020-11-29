@@ -40,8 +40,8 @@ bool SceneIntro::Start()
 
 	if(this->active == true)
 	{
-		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro2.png");
-		logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient2.png");
+		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
+		logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
 		app->scene->Disable();
 		app->map->Disable();
 		app->player->Disable();
@@ -57,7 +57,7 @@ bool SceneIntro::Update(float dt)
 	time++;
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, (Module*)app->scene, 60);
+		app->fade->Fade(this, (Module*)app->scene, 1/dt);
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN) ret = false;
 

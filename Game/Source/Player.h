@@ -65,7 +65,8 @@ private:
 	Animation rightJumpAnim;
 	Animation leftRunAnim;
 	Animation rightRunAnim;
-	Animation deadAnim;
+	Animation rightDeadAnim;
+	Animation leftDeadAnim;
 
 	// Jump mechanic
 	bool jump;

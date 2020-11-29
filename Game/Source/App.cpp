@@ -20,6 +20,7 @@
 // Constructor
 App::App(int argc, char* args[]) : argc(argc), args(args)
 {
+	PERF_START(pTimer);
 	frames = 0;
 
 	win = new Window();
@@ -51,6 +52,8 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 
 	// Render last to swap buffer
 	AddModule(render, true);
+
+	PERF_PEEK(pTimer);
 }
 
 // Destructor
@@ -65,18 +68,20 @@ App::~App()
 		item = item->prev;
 	}
 
-	modules.clear();
+	modules.Clear();
 }
 
 void App::AddModule(Module* module, bool active)
 {
 	module->Init(active);
-	modules.add(module);
+	modules.Add(module);
 }
 
 // Called before render is available
 bool App::Awake()
 {
+	PERF_START(pTimer);
+
 	pugi::xml_document configFile;
 	pugi::xml_node config;
 	pugi::xml_node configApp;
@@ -110,7 +115,13 @@ bool App::Awake()
 			ret = item->data->Awake(config.child(item->data->name.GetString()));
 			item = item->next;
 		}
+
+		int cap = configApp.attribute("framerate_cap").as_int(-1);
+
+		if (cap > 0) cappedMs = 1000 / cap;
 	}
+
+	PERF_PEEK(pTimer);
 
 	return ret;
 }
@@ -118,6 +129,8 @@ bool App::Awake()
 // Called before the first frame
 bool App::Start()
 {
+	PERF_START(pTimer);
+
 	bool ret = true;
 	ListItem<Module*>* item;
 	item = modules.start;
@@ -127,6 +140,8 @@ bool App::Start()
 		ret = item->data->Start();
 		item = item->next;
 	}
+
+	PERF_PEEK(pTimer);
 
 	return ret;
 }
@@ -170,6 +185,12 @@ pugi::xml_node App::LoadConfig(pugi::xml_document& configFile) const
 // ---------------------------------------------
 void App::PrepareUpdate()
 {
+	frameCount++;
+	lastSecFrameCount++;
+
+	// Calculate the differential time since last frame
+	dt = frameTime.ReadSec();
+	frameTime.Start();
 }
 
 // ---------------------------------------------
@@ -178,6 +199,32 @@ void App::FinishUpdate()
 	// L02: DONE 1: This is a good place to call Load / Save methods
 	if (loadGameRequested == true) LoadGame();
 	if (saveGameRequested == true) SaveGame();
+
+	if (lastSecFrameTime.Read() > 1000)
+	{
+		lastSecFrameTime.Start();
+		prevLastSecFrameCount = lastSecFrameCount;
+		lastSecFrameCount = 0;
+	}
+
+	float averageFps = float(frameCount) / startupTime.ReadSec();
+	float secondsSinceStartup = startupTime.ReadSec();
+	uint32 lastFrameMs = frameTime.Read();
+	uint32 framesOnLastUpdate = prevLastSecFrameCount;
+
+	static char title[256];
+	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %I64u ",
+		averageFps, lastFrameMs, framesOnLastUpdate, dt, secondsSinceStartup, frameCount);
+
+	app->win->SetTitle(title);
+
+	// Use SDL_Delay to make sure you get your capped framerate
+	SDL_Delay(cappedMs);
+
+	if ((cappedMs > 0) && (lastFrameMs < cappedMs))
+	{
+		// L08: TODO 3: Measure accurately the amount of time SDL_Delay() actually waits compared to what was expected
+	}
 }
 
 // Call modules before each loop iteration
