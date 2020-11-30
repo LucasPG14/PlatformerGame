@@ -25,6 +25,7 @@ class Scene;
 class Map;
 class SceneDie;
 class SceneWin;
+class ColliderManagement;
 
 class App
 {
@@ -101,6 +102,7 @@ public:
 	Map* map;
 	SceneDie* sceneDie;
 	SceneWin* sceneWin;
+	ColliderManagement* collManager;
 
 	int	cappedMs = -1;
 
