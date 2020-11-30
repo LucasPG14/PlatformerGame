@@ -35,6 +35,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	player = new Player();
 	sceneDie = new SceneDie();
 	sceneWin = new SceneWin();
+	colliderManager = new ColliderManagement();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp

@@ -2,7 +2,7 @@
 #define __SCENE_H__
 
 #include "Module.h"
-
+#include "ColliderManagement.h"
 #include "PugiXml\src\pugixml.hpp"
 
 struct SDL_Texture;

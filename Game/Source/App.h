@@ -102,7 +102,7 @@ public:
 	Map* map;
 	SceneDie* sceneDie;
 	SceneWin* sceneWin;
-	ColliderManagement* collManager;
+	ColliderManagement* colliderManager;
 
 	int	cappedMs = -1;
 

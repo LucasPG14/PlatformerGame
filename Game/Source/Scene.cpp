@@ -8,6 +8,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "FadeToBlack.h"
+#include "ColliderManagement.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -88,7 +89,10 @@ bool Scene::Update(float dt)
 
 	// View colliders
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	{
 		app->map->viewCollisions = !app->map->viewCollisions;
+		app->colliderManager->showColliders = !app->colliderManager->showColliders;
+	}
 
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
 		app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
@@ -119,7 +123,7 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(bg, 0, 0, NULL, 0.5f);
 	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
-	
+	app->colliderManager->DrawColliders();
 	// Draw map
 	if (app->map->active == true) app->map->Draw();
 
@@ -134,7 +138,7 @@ bool Scene::CleanUp()
 	//Unload the background
 	app->tex->UnLoad(bg);
 	app->tex->UnLoad(bg2);
-
+	app->colliderManager->CleanUp();
 	app->player->Disable();
 	app->map->Disable();
 

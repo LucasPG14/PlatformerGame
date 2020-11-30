@@ -2,7 +2,10 @@
 #include "Render.h"
 #include "App.h"
 
-ColliderManagement::ColliderManagement(){}
+ColliderManagement::ColliderManagement()
+{
+	showColliders = false;
+}
 
 ColliderManagement::~ColliderManagement(){}
 
@@ -35,6 +38,10 @@ bool ColliderManagement::Update(float dt)
 
 void ColliderManagement::DrawColliders()
 {
+	if (showColliders == false)
+		return;
+
+	Uint8 alpha = 80;
 	ListItem<Collider*>* coll = collidersList.start;
 
 	while (coll != nullptr)
@@ -42,19 +49,19 @@ void ColliderManagement::DrawColliders()
 		switch (coll->data->type)
 		{
 		case Collider::Type::NONE:
-			app->render->DrawRectangle(coll->data->rect, 255, 255, 255);
+			app->render->DrawRectangle(coll->data->rect, 255, 255, 255, alpha);
 			break;
 		case Collider::Type::PLAYER:
-			app->render->DrawRectangle(coll->data->rect, 0, 255, 0);
+			app->render->DrawRectangle(coll->data->rect, 0, 255, 0, alpha);
 			break;
 		case Collider::Type::SWORD:
-			app->render->DrawRectangle(coll->data->rect, 0, 0, 255);
+			app->render->DrawRectangle(coll->data->rect, 0, 0, 255, alpha);
 			break;
 		case Collider::Type::ENEMY_WALK:
-			app->render->DrawRectangle(coll->data->rect, 255, 0, 0);
+			app->render->DrawRectangle(coll->data->rect, 255, 0, 0, alpha);
 			break;
 		case Collider::Type::ENEMY_FLY:
-			app->render->DrawRectangle(coll->data->rect, 255, 255, 0);
+			app->render->DrawRectangle(coll->data->rect, 255, 255, 0, alpha);
 			break;
 		}
 		coll = coll->next;

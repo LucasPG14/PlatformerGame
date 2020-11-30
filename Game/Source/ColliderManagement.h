@@ -48,6 +48,8 @@ public:
 
 	void OnCollision(Collider* coll1, Collider* coll2);
 
+	bool showColliders;
+
 private:
 
 	List<Collider*> collidersList;
