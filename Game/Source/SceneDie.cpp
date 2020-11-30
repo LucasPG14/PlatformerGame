@@ -43,6 +43,8 @@ bool SceneDie::Start()
 		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_dead.png");
 		dieFx = app->audio->LoadFx("Assets/Audio/Fx/you_lose.ogg");
 		time = 0;
+		app->render->camera.x = 0;
+		app->render->camera.y = 0;
 	}
 
 	return ret;
@@ -80,6 +82,7 @@ bool SceneDie::CleanUp() {
 
 	app->tex->UnLoad(bgTexture);
 	dieAnim.Reset();
+	
 	this->active = false;
 
 	return ret;

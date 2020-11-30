@@ -37,6 +37,7 @@ public:
 private:
 	SDL_Texture* bg;
 	SDL_Texture* bg2;
+	SDL_Texture* bg3;
 	pugi::xml_node node;
 };
 #endif // __SCENE_H__

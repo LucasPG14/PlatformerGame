@@ -41,8 +41,9 @@ bool Scene::Start()
 		// Load music
 		app->audio->PlayMusic("Assets/Audio/Music/music_spy.ogg");
 
-		bg = app->tex->Load("Assets/Textures/Backgrounds/snow_background.png");
-		bg2 = app->tex->Load("Assets/Textures/Backgrounds/snow_background2.png");
+		bg = app->tex->Load("Assets/Textures/Backgrounds/level1_dark_trees_background.png");
+		bg2 = app->tex->Load("Assets/Textures/Backgrounds/level1_trees_background.png");
+		bg3 = app->tex->Load("Assets/Textures/Backgrounds/level1_ground_background.png");
 		// Load map
 		//app->map->Load("snow_map.tmx");
 		app->map->Load("level1.tmx");
@@ -71,11 +72,11 @@ bool Scene::Update(float dt)
 
 	// Move the camera up
 	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		app->render->camera.y -= floor(200.0f * dt);
+		app->render->camera.y += floor(200.0f * dt);
 
 	// Move the camera down
 	if (app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		app->render->camera.y += floor(200.0f * dt);
+		app->render->camera.y -= floor(200.0f * dt);
 
 	// Move the camera to the left
 	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
@@ -115,8 +116,9 @@ bool Scene::PostUpdate()
 {
 	bool ret = true;
 
-	app->render->DrawTexture(bg, 0, 0, NULL, 0.75f);
-	app->render->DrawTexture(bg2, 9100, 0, NULL, 0.75f);
+	app->render->DrawTexture(bg, 0, 0, NULL, 0.5f);
+	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
+	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
 	
 	// Draw map
 	if (app->map->active == true) app->map->Draw();

@@ -45,6 +45,8 @@ bool SceneIntro::Start()
 		app->scene->Disable();
 		app->map->Disable();
 		app->player->Disable();
+		app->render->camera.x = 0;
+		app->render->camera.y = 0;
 	}
 
 	return ret;

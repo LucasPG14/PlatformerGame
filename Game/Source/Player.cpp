@@ -25,7 +25,6 @@ Player::Player() : Module()
 	rightIdleAnim.PushBack({ 576, 0, 51, 87 });
 	rightIdleAnim.PushBack({ 768, 0, 51, 87 });
 
-	rightIdleAnim.speed = 0.1f;
 	rightIdleAnim.loop = true;
 
 	leftIdleAnim.PushBack({ 0, 87, 51, 87 });
@@ -34,7 +33,6 @@ Player::Player() : Module()
 	leftIdleAnim.PushBack({ 576, 87, 51, 87 });
 	leftIdleAnim.PushBack({ 768, 87, 51, 87 });
 
-	leftIdleAnim.speed = 0.1f;
 	leftIdleAnim.loop = true;
 
 	// Animation when player is running
@@ -47,7 +45,6 @@ Player::Player() : Module()
 	rightRunAnim.PushBack({ 1146, 174, 57, 87 });
 	rightRunAnim.PushBack({ 1341, 174, 51, 87 });
 
-	rightRunAnim.speed = 0.2f;
 	rightRunAnim.loop = true;
 
 	leftRunAnim.PushBack({ 1347, 261, 45, 87 });
@@ -59,7 +56,6 @@ Player::Player() : Module()
 	leftRunAnim.PushBack({ 189, 261, 57, 87 });
 	leftRunAnim.PushBack({ 0, 261, 51, 87 });
 
-	leftRunAnim.speed = 0.2f;
 	leftRunAnim.loop = true;
 
 	// Animation when player is jumping
@@ -67,14 +63,12 @@ Player::Player() : Module()
 	rightJumpAnim.PushBack({ 189, 348, 51, 87 });
 	rightJumpAnim.PushBack({ 378, 348, 51, 87 });
 
-	rightJumpAnim.speed = 0.3f;
 	rightJumpAnim.loop = false;
 
 	leftJumpAnim.PushBack({ 1341, 348, 51, 87 });
 	leftJumpAnim.PushBack({ 1152, 348, 51, 87 });
 	leftJumpAnim.PushBack({ 963, 348, 51, 87 });
 
-	leftJumpAnim.speed = 0.3f;
 	leftJumpAnim.loop = false;
 
 	// Animation when player dies
@@ -86,7 +80,6 @@ Player::Player() : Module()
 	rightDeadAnim.PushBack({ 939, 783, 117, 87 });
 	rightDeadAnim.PushBack({ 1131, 783, 117, 87 });
 
-	rightDeadAnim.speed = 0.1f;
 	rightDeadAnim.loop = false;
 
 	leftDeadAnim.PushBack({ 1197, 870, 51, 87 });
@@ -97,7 +90,6 @@ Player::Player() : Module()
 	leftDeadAnim.PushBack({ 192, 870, 117, 87 });
 	leftDeadAnim.PushBack({ 0, 870, 117, 87 });
 
-	leftDeadAnim.speed = 0.1f;
 	leftDeadAnim.loop = false;
 }
 bool Player::Awake(pugi::xml_node& config)
@@ -140,6 +132,14 @@ bool Player::Update(float dt)
 	if (deadPlayer == false)
 	{
 		if (lastAnimation == &rightDeadAnim) currentAnimation = &rightIdleAnim;
+		rightIdleAnim.speed = 3.0f * dt;
+		leftIdleAnim.speed = 3.0f * dt;
+		rightRunAnim.speed = 6.0f * dt;
+		leftRunAnim.speed = 6.0f * dt;
+		rightJumpAnim.speed = 9.0f * dt;
+		leftJumpAnim.speed = 9.0f * dt;
+		rightDeadAnim.speed = 3.0f * dt;
+		leftDeadAnim.speed = 3.0f * dt;
 
 		// Input to move the player
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
@@ -164,9 +164,9 @@ bool Player::Update(float dt)
 
 			if (Collision("right") == false)
 			{
-				if (position.x >= app->render->camera.w / 2) app->render->camera.x -= speedX;
+				if (position.x >= app->render->camera.w / 2) app->render->camera.x -= speedX * dt;
 
- 				position.x += speedX;
+ 				position.x += speedX * dt;
 			}
 
 			if (Collision("bottom") == true) app->audio->PlayFx(stepSnow);
@@ -191,9 +191,9 @@ bool Player::Update(float dt)
 
 			if (Collision("left") == false)
 			{
-				if (position.x > app->render->camera.w / 2) app->render->camera.x += speedX;
+				if (position.x > app->render->camera.w / 2) app->render->camera.x += speedX * dt;
 
-				position.x -= speedX;
+				position.x -= speedX * dt;
 			}
 
 			if (Collision("bottom") == true) app->audio->PlayFx(stepSnow);
@@ -201,11 +201,11 @@ bool Player::Update(float dt)
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
-			position.y -= speedX;
+			position.y -= speedX * dt;
 
 
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
-			position.y += speedX;
+			position.y += speedX * dt;
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
@@ -317,6 +317,8 @@ bool Player::CleanUp() {
 	//Unload textures
 	app->tex->UnLoad(player);
 	ResetPlayer();
+	leftDeadAnim.Reset();
+	rightDeadAnim.Reset();
 	this->active = false;
 	return true;
 }
@@ -445,6 +447,7 @@ void Player::Dead()
 	if (time == 60)
 	{
 		time = 0;
+		deadPlayer = false;
 		app->fade->Fade(app->scene, app->sceneDie, 60);
 	}
 }
