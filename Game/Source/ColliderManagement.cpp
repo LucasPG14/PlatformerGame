@@ -1,5 +1,6 @@
 #include "ColliderManagement.h"
 #include "Render.h"
+#include "Player.h"
 #include "App.h"
 
 ColliderManagement::ColliderManagement()
@@ -105,19 +106,21 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 
 	if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
 	{
-		
+		RemoveCollider(coll1);
+		app->player->Dead();
 	}
 	else if (coll2->type == Collider::Type::PLAYER && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
 	{
-
+		RemoveCollider(coll2);
+		app->player->Dead();
 	}
 	else if (coll1->type == Collider::Type::SWORD && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
 	{
-
+		RemoveCollider(coll2);
 	}
 	else if (coll2->type == Collider::Type::SWORD && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
 	{
-
+		RemoveCollider(coll2);
 	}
 }
 

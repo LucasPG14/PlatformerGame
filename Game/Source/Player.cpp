@@ -141,8 +141,8 @@ bool Player::Start()
 		// Set position
 		ResetPlayer();
 		currentAnimation = &rightIdleAnim;
-		stepSnow = app->audio->LoadFx("Assets/Audio/Fx/step_snow.wav");
-
+		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
+		
 		jumping = false;
 		levelFinished = false;
 		deadPlayer = false;
@@ -197,7 +197,7 @@ bool Player::Update(float dt)
  				position.x += speedX * dt;
 			}
 
-			if (Collision("bottom") == true) app->audio->PlayFx(stepSnow);
+			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 
 		}
 
@@ -224,7 +224,7 @@ bool Player::Update(float dt)
 				position.x -= speedX * dt;
 			}
 
-			if (Collision("bottom") == true) app->audio->PlayFx(stepSnow);
+			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 
 		}
 

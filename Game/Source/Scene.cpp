@@ -42,7 +42,7 @@ bool Scene::Start()
 	app->player->active = true;
 	app->player->Start();
 	// Load music
-	app->audio->PlayMusic("Assets/Audio/Music/music_spy.ogg");
+	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_8-8bit_march_10_minutes.ogg");
 
 	bg = app->tex->Load("Assets/Textures/Backgrounds/level1_dark_trees_background.png");
 	bg2 = app->tex->Load("Assets/Textures/Backgrounds/level1_trees_background.png");
@@ -99,9 +99,12 @@ bool Scene::CleanUp()
 {
 	LOG("Freeing scene");
 
+	app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
+
 	//Unload the background
 	app->tex->UnLoad(bg);
 	app->tex->UnLoad(bg2);
+	app->tex->UnLoad(bg3);
 	app->colliderManager->CleanUp();
 	app->player->CleanUp();
 	app->map->CleanUp();

@@ -92,6 +92,6 @@ private:
 	//Cooldown on attack
 	int attackCooldown;
 
-	uint stepSnow;
+	uint stepFx;
 };
 #endif

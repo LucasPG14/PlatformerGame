@@ -51,7 +51,7 @@ bool SceneDie::Update(float dt)
 	if (time == 1)
 	{
 		app->audio->PlayFx(dieFx);
-		dieAnim.speed = 10.0f * dt;
+		dieAnim.speed = 0.05f * dt;
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)

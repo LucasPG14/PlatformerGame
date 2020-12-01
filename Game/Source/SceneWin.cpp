@@ -49,7 +49,7 @@ bool SceneWin::Update(float dt)
 	if (time == 1)
 	{
 		app->audio->PlayFx(winFx);
-		winAnim.speed = 0.5f * dt;
+		winAnim.speed = 0.05f * dt;
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
