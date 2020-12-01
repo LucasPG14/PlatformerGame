@@ -27,6 +27,7 @@ class SceneDie;
 class SceneWin;
 class SceneManager;
 class ColliderManagement;
+class Fonts;
 
 class App
 {
@@ -101,6 +102,7 @@ public:
 	Map* map;
 	SceneManager* sceneManager;
 	ColliderManagement* colliderManager;
+	Fonts* fonts;
 
 	int	cappedMs = -1;
 

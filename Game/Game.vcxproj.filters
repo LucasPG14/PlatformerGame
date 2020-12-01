@@ -33,6 +33,7 @@
     <ClCompile Include="Source\SceneWin.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Fonts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -91,6 +92,7 @@
     <ClInclude Include="Source\Scenes.h">
       <Filter>Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Fonts.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

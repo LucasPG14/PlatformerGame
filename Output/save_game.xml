@@ -4,16 +4,14 @@
   <input />
   <textures />
   <audio />
-  <intro />
-  <scene />
+  <:anonymous />
   <map />
   <player>
-	<position x="35" y="491.199982" />
+    <position x="1994.3999" y="665.64978" />
   </player>
-  <:anonymous />
-  <:anonymous />
   <fade />
+  <:anonymous />
   <renderer>
-	<camera x="0" y="0" />
+    <camera x="-1316" y="1" />
   </renderer>
 </save_status>

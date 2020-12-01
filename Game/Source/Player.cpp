@@ -192,7 +192,7 @@ bool Player::Update(float dt)
 
 			if (Collision("right") == false)
 			{
-				if (position.x >= app->render->camera.w / 2) app->render->camera.x -= speedX * dt;
+				if (position.x >= app->render->camera.w / 2) app->render->camera.x -= 208.1 * dt;
 
  				position.x += speedX * dt;
 			}
@@ -219,7 +219,7 @@ bool Player::Update(float dt)
 
 			if (Collision("left") == false)
 			{
-				if (position.x > app->render->camera.w / 2) app->render->camera.x += speedX * dt;
+				if (position.x > app->render->camera.w / 2) app->render->camera.x += 208.1 * dt;
 
 				position.x -= speedX * dt;
 			}
@@ -227,6 +227,8 @@ bool Player::Update(float dt)
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 
 		}
+
+		if(position.y >600) app->render->camera.y = -position.y+500;
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
 			position.y -= speedX * dt;
@@ -245,6 +247,7 @@ bool Player::Update(float dt)
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
+
 			if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 			{
 				if (currentAnimation != &rightJumpAnim)
