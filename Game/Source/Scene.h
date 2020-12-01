@@ -1,13 +1,13 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include "Module.h"
+#include "Scenes.h"
 #include "ColliderManagement.h"
 #include "PugiXml\src\pugixml.hpp"
 
 struct SDL_Texture;
 
-class Scene : public Module
+class Scene : public Scenes
 {
 public:
 
@@ -33,6 +33,8 @@ public:
 
 	// Called before quitting
 	bool CleanUp();
+
+	void PlayerPosition();
 
 private:
 	SDL_Texture* bg;

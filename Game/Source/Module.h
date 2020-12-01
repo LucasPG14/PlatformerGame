@@ -55,7 +55,7 @@ public:
 		return true;
 	}
 
-    // Loads the information in the save XML
+	// Loads the information in the save XML
 	virtual bool LoadState(pugi::xml_node&)
 	{
 		return true;
@@ -65,26 +65,6 @@ public:
 	virtual bool SaveState(pugi::xml_node&) const
 	{
 		return true;
-	}
-
-	// Enable the module when the fade function is called
-	void Enable()
-	{
-		if (!this->active)
-		{
-			this->active = true;
-			this->Start();
-		}
-	}
-
-	// Disable the module when the fade fucntion is called
-	void Disable()
-	{
-		if (this->active)
-		{
-			this->active = false;
-			this->CleanUp();
-		}
 	}
 
 public:

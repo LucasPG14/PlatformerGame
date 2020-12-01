@@ -8,12 +8,12 @@
   <scene />
   <map />
   <player>
-    <position x="35" y="491.199982" />
+	<position x="35" y="491.199982" />
   </player>
   <:anonymous />
   <:anonymous />
   <fade />
   <renderer>
-    <camera x="0" y="0" />
+	<camera x="0" y="0" />
   </renderer>
 </save_status>

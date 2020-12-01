@@ -1,13 +1,13 @@
 #ifndef __SCENE_DIE_H__
 #define __SCENE_DIE_H__
 
-#include "Module.h"
+#include "Scenes.h"
 #include "Animation.h"
 
 
 struct SDL_Texture;
 
-class SceneDie : public Module
+class SceneDie : public Scenes
 {
 public:
 	SceneDie();

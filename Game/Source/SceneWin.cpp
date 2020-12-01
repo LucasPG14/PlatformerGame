@@ -1,10 +1,9 @@
 #include "SceneWin.h"
 #include "App.h"
 #include "Textures.h"
-#include "Player.h"
 #include "Render.h"
-#include "Scene.h"
-#include "Map.h"
+#include "SceneIntro.h"
+#include "SceneManager.h"
 
 #include "Input.h"
 #include "Audio.h"
@@ -14,7 +13,7 @@
 #include "SDL/include/SDL_scancode.h"
 
 
-SceneWin::SceneWin() : Module()
+SceneWin::SceneWin() : Scenes()
 {
 	for (int i = 0; i < 5; i++)
 	{
@@ -22,7 +21,6 @@ SceneWin::SceneWin() : Module()
 	}
 
 	winAnim.loop = true;
-	winAnim.speed = 0.1f;
 }
 
 SceneWin::~SceneWin()
@@ -34,14 +32,12 @@ SceneWin::~SceneWin()
 bool SceneWin::Start()
 {
 	bool ret = true;
-	if (this->active == true)
-	{
-		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_win.png");
-		winFx = app->audio->LoadFx("Assets/Audio/Fx/you_win.ogg");
-		time = 0;
-		app->render->camera.x = 0;
-		app->render->camera.y = 0;
-	}
+
+	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_win.png");
+	winFx = app->audio->LoadFx("Assets/Audio/Fx/you_win.ogg");
+	time = 0;
+	app->render->camera.x = 0;
+	app->render->camera.y = 0;
 
 	return ret;
 }
@@ -50,13 +46,14 @@ bool SceneWin::Update(float dt)
 {
 	time++;
 
-	if (time == 1) app->audio->PlayFx(winFx);
-
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		return false;
+	if (time == 1)
+	{
+		app->audio->PlayFx(winFx);
+		winAnim.speed = 0.5f * dt;
+	}
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, (Module*)app->sceneIntro, 1/dt);
+		app->fade->Fade(this, app->sceneManager->intro, 1/dt);
 
 	winAnim.Update();
 

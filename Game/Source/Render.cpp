@@ -50,6 +50,8 @@ bool Render::Awake(pugi::xml_node& config)
 		camera.y = 0;
 	}
 
+	vsync = config.child("vsync").attribute("value").as_bool();
+
 	return ret;
 }
 

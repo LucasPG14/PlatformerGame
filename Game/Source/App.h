@@ -25,6 +25,7 @@ class Scene;
 class Map;
 class SceneDie;
 class SceneWin;
+class SceneManager;
 class ColliderManagement;
 
 class App
@@ -97,11 +98,8 @@ public:
 	Audio* audio;
 	Player* player;
 	FadeToBlack* fade;
-	SceneIntro* sceneIntro;
-	Scene* scene;
 	Map* map;
-	SceneDie* sceneDie;
-	SceneWin* sceneWin;
+	SceneManager* sceneManager;
 	ColliderManagement* colliderManager;
 
 	int	cappedMs = -1;

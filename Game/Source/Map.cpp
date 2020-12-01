@@ -11,7 +11,7 @@
 
 Map::Map() : Module(), mapLoaded(false)
 {
-    name.Create("map");
+	name.Create("map");
 }
 
 // Destructor
@@ -38,12 +38,12 @@ int Properties::GetProperty(const char* value, int defaultValue) const
 
 bool Map::Awake(pugi::xml_node& config)
 {
-    LOG("Loading Map Parser");
-    bool ret = true;
+	LOG("Loading Map Parser");
+	bool ret = true;
 
-    folder.Create(config.child("folder").child_value());
+	folder.Create(config.child("folder").child_value());
 
-    return ret;
+	return ret;
 }
 
 // Draw the map (all required layers)
@@ -165,9 +165,9 @@ SDL_Rect TileSet::GetTileRect(int id) const
 // Called before quitting
 bool Map::CleanUp()
 {
-    LOG("Unloading map");
+	LOG("Unloading map");
 
-    // Remove all tilesets
+	// Remove all tilesets
 	ListItem<TileSet*>* item;
 	item = data.tilesets.start;
 
@@ -192,27 +192,27 @@ bool Map::CleanUp()
 	// Clean up the pugui tree
 	mapFile.reset();
 
-    return true;
+	return true;
 }
 
 // Load new map
 bool Map::Load(const char* filename)
 {
-    bool ret = true;
-    SString tmp("%s%s", folder.GetString(), filename);
+	bool ret = true;
+	SString tmp("%s%s", folder.GetString(), filename);
 
-    pugi::xml_parse_result result = mapFile.load_file(tmp.GetString());
+	pugi::xml_parse_result result = mapFile.load_file(tmp.GetString());
 
-    if(result == NULL)
-    {
-        LOG("Could not load map xml file %s. pugi error: %s", filename, result.description());
-        ret = false;
-    }
+	if(result == NULL)
+	{
+		LOG("Could not load map xml file %s. pugi error: %s", filename, result.description());
+		ret = false;
+	}
 
 	// Load general info
-    if(ret == true)	ret = LoadMap();
+	if(ret == true)	ret = LoadMap();
 
-    // Calls a private function to load the tileset values
+	// Calls a private function to load the tileset values
 	pugi::xml_node tileset;
 	for (tileset = mapFile.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
 	{
@@ -236,9 +236,9 @@ bool Map::Load(const char* filename)
 
 		if (ret == true) data.layers.Add(lay); 
 	}
-    
-    if(ret == true)
-    {
+	
+	if(ret == true)
+	{
 		LOG("--------------------------------------------------------------------------");
 		LOG("<< MAP DATA >>");
 		LOG("Width=%d", data.width);
@@ -259,11 +259,11 @@ bool Map::Load(const char* filename)
 			LOG("<< END LAYER >>\n");
 			layerList = layerList->next;
 		}
-    }
+	}
 
-    mapLoaded = ret;
+	mapLoaded = ret;
 
-    return ret;
+	return ret;
 }
 
 bool Map::LoadMap()

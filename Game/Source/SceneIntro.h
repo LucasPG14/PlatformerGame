@@ -1,12 +1,12 @@
 #ifndef __SCENE_INTRO_H__
 #define __SCENE_INTRO_H__
 
-#include "Module.h"
+#include "Scenes.h"
 #include "Animation.h"
 
 struct SDL_Texture;
 
-class SceneIntro : public Module
+class SceneIntro : public Scenes
 {
 public:
 	SceneIntro();
@@ -30,6 +30,5 @@ private:
 	Animation introAnim;
 
 	int time = 0;
-
 };
 #endif

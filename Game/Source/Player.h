@@ -30,23 +30,25 @@ public:
 
 	bool Collision(const char* side);
 
-	void Gravity();
-	void Jump();
+	void Gravity(float dt);
+	void Jump(float dt);
 	bool CheckCollisionType(int idTile, std::string direction);
-
-	void ChangeLevel(int level);
 
 	void Dead();
 	void ResetPlayer();
+	bool LevelFinished();
+	bool IsDead();
+	Position GetPosition();
 
 	// Load and Save
 	bool LoadState(pugi::xml_node& load);
 	bool SaveState(pugi::xml_node& save) const;
 
-	// Player position
-	Position position;
-
 	bool godMode;
+
+	int time;
+
+	bool deadPlayer;
 
 private:
 	// Player texture
@@ -54,6 +56,9 @@ private:
 
 	// Player gravity
 	float gravity;
+
+	// Player position
+	Position position;
 
 	// Player animations
 	Animation* lastAnimation = nullptr;
@@ -65,8 +70,10 @@ private:
 	Animation rightJumpAnim;
 	Animation leftRunAnim;
 	Animation rightRunAnim;
-	Animation rightDeadAnim;
 	Animation leftDeadAnim;
+	Animation rightDeadAnim;
+	Animation leftAttackAnim;
+	Animation rightAttackAnim;
 
 	// Jump mechanic
 	bool jump;
@@ -78,10 +85,12 @@ private:
 	SString folder;
 	SString playerString;
 
-	bool deadPlayer;
-	int time;
-
 	bool jumping;
+
+	bool levelFinished = false;
+
+	//Cooldown on attack
+	int attackCooldown;
 
 	uint stepSnow;
 };

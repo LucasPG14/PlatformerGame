@@ -1,12 +1,12 @@
 #ifndef __SCENE_WIN_H__
 #define __SCENE_WIN_H__
 
-#include "Module.h"
+#include "Scenes.h"
 #include "Animation.h"
 
 struct SDL_Texture;
 
-class SceneWin : public Module
+class SceneWin : public Scenes
 {
 public:
 	SceneWin();

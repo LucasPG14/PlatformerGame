@@ -4,15 +4,14 @@
 #include "Render.h"
 #include "Textures.h"
 #include "Audio.h"
-#include "Scene.h"
 #include "Map.h"
 #include "Player.h"
-#include "SceneIntro.h"
 #include "FadeToBlack.h"
+#include "SceneManager.h"
+#include "ColliderManagement.h"
+
 #include "Defs.h"
 #include "Log.h"
-#include "SceneDie.h"
-#include "SceneWin.h"
 
 #include <iostream>
 #include <sstream>
@@ -29,12 +28,9 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new Textures();
 	audio = new Audio();
 	fade = new FadeToBlack();
-	sceneIntro = new SceneIntro();
-	scene = new Scene();
+	sceneManager = new SceneManager();
 	map = new Map();
 	player = new Player();
-	sceneDie = new SceneDie();
-	sceneWin = new SceneWin();
 	colliderManager = new ColliderManagement();
 
 	// Ordered for awake / Start / Update
@@ -43,12 +39,9 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(input, true);
 	AddModule(tex, true);
 	AddModule(audio, true);
-	AddModule(sceneIntro, true);
-	AddModule(scene, false);
+	AddModule(sceneManager, true);
 	AddModule(map, false);
 	AddModule(player, false);
-	AddModule(sceneDie, false);
-	AddModule(sceneWin, false);
 	AddModule(fade, true);
 
 	// Render last to swap buffer
@@ -213,9 +206,13 @@ void App::FinishUpdate()
 	uint32 lastFrameMs = frameTime.Read();
 	uint32 framesOnLastUpdate = prevLastSecFrameCount;
 
+	SString vsyncMode;
+	if (render->vsync) vsyncMode.Create("on");
+	else vsyncMode.Create("off");
+
 	static char title[256];
-	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %I64u ",
-		averageFps, lastFrameMs, framesOnLastUpdate, dt, secondsSinceStartup, frameCount);
+	sprintf_s(title, 256, "FPS: %i / Avg. FPS: %.2f / Last-frame MS: %02u / Vsync: %s ",
+		framesOnLastUpdate, averageFps, lastFrameMs, vsyncMode.GetString());
 
 	app->win->SetTitle(title);
 

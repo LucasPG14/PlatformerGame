@@ -1,22 +1,20 @@
 #include "SceneIntro.h"
-#include "App.h"
 #include "Textures.h"
 #include "Player.h"
 #include "Render.h"
 #include "Input.h"
 #include "Audio.h"
 #include "Animation.h"
-#include "Map.h"
+#include "SceneManager.h"
+#include "Scenes.h"
 #include "Scene.h"
 
 #include "FadeToBlack.h"
 #include "SDL/include/SDL_scancode.h"
 
 
-SceneIntro::SceneIntro() : Module()
+SceneIntro::SceneIntro() : Scenes()
 {
-	name.Create("intro");
-
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 6; j++)
@@ -25,7 +23,6 @@ SceneIntro::SceneIntro() : Module()
 		}
 	}
 	introAnim.loop = false;
-	introAnim.speed = 0.5f;
 }
 
 SceneIntro::~SceneIntro()
@@ -38,16 +35,10 @@ bool SceneIntro::Start()
 {
 	bool ret = true;
 
-	if(this->active == true)
-	{
-		bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
-		logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
-		app->scene->Disable();
-		app->map->Disable();
-		app->player->Disable();
-		app->render->camera.x = 0;
-		app->render->camera.y = 0;
-	}
+	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
+	logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
+	app->render->camera.x = 0;
+	app->render->camera.y = 0;
 
 	return ret;
 }
@@ -58,10 +49,13 @@ bool SceneIntro::Update(float dt)
 
 	time++;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, (Module*)app->scene, 1/dt);
+	if (time == 1) 
+	{
+		introAnim.speed = 10.0f * dt;
+	}
 
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KeyState::KEY_DOWN) ret = false;
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
+		app->fade->Fade(this, app->sceneManager->level1, 1/dt);
 
 	if (time > 300) introAnim.Update();
 

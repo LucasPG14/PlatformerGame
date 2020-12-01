@@ -102,6 +102,7 @@
     <ClCompile Include="Source\Render.cpp" />
     <ClCompile Include="Source\SceneDie.cpp" />
     <ClCompile Include="Source\SceneIntro.cpp" />
+    <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneWin.cpp" />
     <ClCompile Include="Source\Textures.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
@@ -120,6 +121,8 @@
     <ClInclude Include="Source\Render.h" />
     <ClInclude Include="Source\SceneDie.h" />
     <ClInclude Include="Source\SceneIntro.h" />
+    <ClInclude Include="Source\SceneManager.h" />
+    <ClInclude Include="Source\Scenes.h" />
     <ClInclude Include="Source\SceneWin.h" />
     <ClInclude Include="Source\Textures.h" />
     <ClInclude Include="Source\Timer.h" />

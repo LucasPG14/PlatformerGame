@@ -2,6 +2,7 @@
 #define __FADETOBLACK_H__
 
 #include "Module.h"
+#include "Scenes.h"
 #include "SDL\include\SDL_rect.h"
 
 class FadeToBlack : public Module
@@ -28,7 +29,7 @@ public:
 	// Called from another module
 	// Starts the fade process which has two steps, fade_out and fade_in
 	// After the first step, the modules should be switched
-	bool Fade(Module* toDisable, Module* toEnable, float frames = 60);
+	bool Fade(Scenes* toDisable, Scenes* toEnable, float frames = 60);
 
 	bool CleanUp();
 
@@ -49,7 +50,7 @@ private:
 	SDL_Rect screenRect;
 
 	// The modules that should be switched after the first step
-	Module* moduleToEnable = nullptr;
-	Module* moduleToDisable = nullptr;
+	Scenes* scenesToEnable = nullptr;
+	Scenes* scenesToDisable = nullptr;
 };
 #endif //__FADETOBLACK_H__

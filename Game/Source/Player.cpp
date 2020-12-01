@@ -7,12 +7,11 @@
 #include "Input.h"
 #include "Scene.h"
 #include "Animation.h"
-#include "SceneDie.h"
 #include "Audio.h"
 #include "Map.h"
 #include "FadeToBlack.h"
 #include "Log.h"
-#include "SceneWin.h"
+
 
 Player::Player() : Module()
 {
@@ -91,6 +90,25 @@ Player::Player() : Module()
 	leftDeadAnim.PushBack({ 0, 870, 117, 87 });
 
 	leftDeadAnim.loop = false;
+
+	// Animation when player attack
+	rightAttackAnim.PushBack({ 0, 522, 42, 87 });
+	rightAttackAnim.PushBack({ 186, 522, 48, 87 });
+	rightAttackAnim.PushBack({ 378, 522, 102, 87 });
+	rightAttackAnim.PushBack({ 573, 522, 99, 87 });
+	rightAttackAnim.PushBack({ 771, 522, 78, 87 });
+	rightAttackAnim.PushBack({ 963, 522, 42, 87 });
+
+	rightAttackAnim.loop = false;
+
+	leftAttackAnim.PushBack({ 963, 609, 42, 87 });
+	leftAttackAnim.PushBack({ 771, 609, 48, 87 });
+	leftAttackAnim.PushBack({ 525, 609, 102, 87 });
+	leftAttackAnim.PushBack({ 333, 609, 99, 87 });
+	leftAttackAnim.PushBack({ 156, 609, 78, 87 });
+	leftAttackAnim.PushBack({ 0, 609, 42, 87 });
+
+	leftAttackAnim.loop = false;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -108,9 +126,12 @@ bool Player::Awake(pugi::xml_node& config)
 	speedY = config.child("speed").attribute("y").as_float();
 	time = 0;
 	deadPlayer = false;
+	levelFinished = config.child("level_finished").attribute("value").as_bool();
+	attackCooldown = config.child("attack_cooldown").attribute("value").as_int();
 
 	return true;
 }
+
 bool Player::Start()
 {
 	if (this->active == true)
@@ -123,6 +144,8 @@ bool Player::Start()
 		stepSnow = app->audio->LoadFx("Assets/Audio/Fx/step_snow.wav");
 
 		jumping = false;
+		levelFinished = false;
+		deadPlayer = false;
 	}
 
 	return true;
@@ -132,14 +155,19 @@ bool Player::Update(float dt)
 	if (deadPlayer == false)
 	{
 		if (lastAnimation == &rightDeadAnim) currentAnimation = &rightIdleAnim;
-		rightIdleAnim.speed = 3.0f * dt;
-		leftIdleAnim.speed = 3.0f * dt;
-		rightRunAnim.speed = 6.0f * dt;
-		leftRunAnim.speed = 6.0f * dt;
-		rightJumpAnim.speed = 9.0f * dt;
-		leftJumpAnim.speed = 9.0f * dt;
-		rightDeadAnim.speed = 3.0f * dt;
-		leftDeadAnim.speed = 3.0f * dt;
+
+		rightIdleAnim.speed = 10.0f * dt;
+		leftIdleAnim.speed = 10.0f * dt;
+		rightRunAnim.speed = 10.0f * dt;
+		leftRunAnim.speed = 10.0f * dt;
+		rightJumpAnim.speed = 10.0f * dt;
+		leftJumpAnim.speed = 10.0f * dt;
+		rightDeadAnim.speed = 10.0f * dt;
+		leftDeadAnim.speed = 10.0f * dt;
+		rightAttackAnim.speed = 10.0f * dt;
+		leftAttackAnim.speed = 10.0f * dt;
+
+		if (attackCooldown != 0) attackCooldown--;
 
 		// Input to move the player
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
@@ -207,6 +235,14 @@ bool Player::Update(float dt)
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 			position.y += speedX * dt;
 
+		if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
+		{
+			rightAttackAnim.Reset();
+			currentAnimation = &rightAttackAnim;
+			lastAnimation = currentAnimation;
+			attackCooldown = 300;
+		}
+
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
@@ -242,33 +278,26 @@ bool Player::Update(float dt)
 
 			jumping = true;
 			jump = true;
-			speedY = 12.0f;
+			speedY = 450.0f * dt;
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
 			app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
-			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE)
+			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE &&
+			app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_IDLE)
 		{
-			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim)
+			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim || rightAttackAnim.HasFinished() == true)
 			{
 				rightIdleAnim.Reset();
 				currentAnimation = &rightIdleAnim;
 				lastAnimation = currentAnimation;
 			}
-			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim)
+			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim || leftAttackAnim.HasFinished() == true)
 			{
 				leftIdleAnim.Reset();
 				currentAnimation = &leftIdleAnim;
 				lastAnimation = currentAnimation;
 			}
-		}
-
-		// Restart game
-		if (app->input->GetKey(SDL_SCANCODE_F1) == KeyState::KEY_DOWN ||
-			app->input->GetKey(SDL_SCANCODE_F3) == KeyState::KEY_DOWN)
-		{
-			app->player->CleanUp();
-			app->player->Start();
 		}
 
 		// Save game
@@ -283,15 +312,14 @@ bool Player::Update(float dt)
 		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN) 
 			godMode = !godMode;
 
-		if (jump == true) Jump();
-
+		if (jump == true) Jump(dt);
 
 		if (Collision("top") == true) speedY = 0.0f;
 
 
 		if (speedY <= 0.0f) jumping = false;
 
-		Gravity();
+		Gravity(dt);
 	}
 	else
 	{
@@ -316,7 +344,6 @@ bool Player::CleanUp() {
 
 	//Unload textures
 	app->tex->UnLoad(player);
-	ResetPlayer();
 	leftDeadAnim.Reset();
 	rightDeadAnim.Reset();
 	this->active = false;
@@ -397,11 +424,11 @@ bool Player::Collision(const char* side)
 	return ret;
 }
 
-void Player::Gravity()
+void Player::Gravity(float dt)
 {
 	if(Collision("bottom") == false && godMode == false)
 	{
-		speedY -= gravity;
+		speedY -= gravity * dt;
 		position.y -= speedY;
 		if (speedY < -5.0f)
 		{
@@ -410,9 +437,9 @@ void Player::Gravity()
 	}
 }
 
-void Player::Jump()
+void Player::Jump(float dt)
 {
-	speedY -= gravity;
+	speedY -= gravity * dt;
 	position.y -= speedY;
 	jump = false;
 }
@@ -444,24 +471,7 @@ void Player::Dead()
 	currentAnimation = &rightDeadAnim;
 	lastAnimation = currentAnimation;
 	deadPlayer = true;
-	if (time == 60)
-	{
-		time = 0;
-		deadPlayer = false;
-		app->fade->Fade(app->scene, app->sceneDie, 60);
-	}
 }
-
-void Player::ChangeLevel(int level)
-{
-	switch (level)
-	{
-	case 1:
-		app->fade->Fade(app->scene, app->sceneWin, 60);
-		break;
-	}
-}
-
 
 bool Player::CheckCollisionType(int idTile, std::string direction)
 {
@@ -493,7 +503,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 		break;
 
 	case 292:
-		ChangeLevel(1);
+		levelFinished = true;
 		break;
 	}
 
@@ -504,5 +514,19 @@ void Player::ResetPlayer()
 {
 	position.x = 200;
 	position.y = 607;
-	active = true;
+}
+
+bool Player::LevelFinished()
+{
+	return levelFinished;
+}
+
+bool Player::IsDead()
+{
+	return deadPlayer;
+}
+
+Position Player::GetPosition()
+{
+	return position;
 }

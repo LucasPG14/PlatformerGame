@@ -3,6 +3,7 @@
 #include "App.h"
 #include "Render.h"
 #include "Window.h"
+#include "Scenes.h"
 
 #include "SDL/include/SDL_render.h"
 
@@ -13,7 +14,6 @@ FadeToBlack::FadeToBlack() : Module()
 
 FadeToBlack::~FadeToBlack()
 {
-
 }
 
 bool FadeToBlack::Start()
@@ -37,8 +37,8 @@ bool FadeToBlack::Update(float dt)
 		++frameCount;
 		if (frameCount >= maxFadeFrames)
 		{
-			moduleToDisable->Disable();
-			moduleToEnable->Enable();
+			scenesToDisable->Disable();
+			scenesToEnable->Enable();
 
 			currentStep = FadeStep::FROM_BLACK;
 		}
@@ -69,7 +69,7 @@ bool FadeToBlack::PostUpdate()
 	return true;
 }
 
-bool FadeToBlack::Fade(Module* moduleToDisable, Module* moduleToEnable, float frames)
+bool FadeToBlack::Fade(Scenes* moduleToDisable, Scenes* moduleToEnable, float frames)
 {
 	bool ret = false;
 
@@ -80,8 +80,8 @@ bool FadeToBlack::Fade(Module* moduleToDisable, Module* moduleToEnable, float fr
 		frameCount = 0;
 		maxFadeFrames = frames;
 
-		this->moduleToDisable = moduleToDisable;
-		this->moduleToEnable = moduleToEnable;
+		this->scenesToDisable = moduleToDisable;
+		this->scenesToEnable = moduleToEnable;
 
 		ret = true;
 	}
