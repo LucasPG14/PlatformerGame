@@ -11,6 +11,7 @@
 #include "SceneDie.h"
 #include "SceneWin.h"
 #include "ColliderManagement.h"
+#include "EnemyManager.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -38,9 +39,14 @@ bool Scene::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool Scene::Start()
 {
-	// Load music
+	//Load Player
 	app->player->active = true;
 	app->player->Start();
+
+	//Load Enemies
+	//app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
+	app->enemyManager->Start();
+
 	// Load music
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_8-8bit_march_10_minutes.ogg");
 
@@ -62,6 +68,8 @@ bool Scene::Update(float dt)
 {
 	bool ret = true;
 
+	app->colliderManager->Update(dt);
+
 	//if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
 	//	app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	//	app->fade->Fade(this, this, 1/dt);
@@ -76,6 +84,8 @@ bool Scene::Update(float dt)
 	if (app->player->LevelFinished() == true)
 		app->fade->Fade(this, app->sceneManager->winScene, 1 / dt);
 
+	app->enemyManager->Update(dt);
+
 	return ret;
 }
 
@@ -87,6 +97,8 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(bg, 0, 0, NULL, 0.5f);
 	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
+
+	app->enemyManager->Draw();
 	app->colliderManager->DrawColliders();
 	// Draw map
 	if (app->map->active == true) app->map->Draw();
@@ -106,6 +118,7 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(bg2);
 	app->tex->UnLoad(bg3);
 	app->colliderManager->CleanUp();
+	app->enemyManager->CleanUp();
 	app->player->CleanUp();
 	app->map->CleanUp();
 

@@ -34,6 +34,8 @@
       <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Fonts.cpp" />
+    <ClCompile Include="Source\EnemyManager.cpp" />
+    <ClCompile Include="Source\Slime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -93,6 +95,9 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Fonts.h" />
+    <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\EnemyManager.h" />
+    <ClInclude Include="Source\Slime.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

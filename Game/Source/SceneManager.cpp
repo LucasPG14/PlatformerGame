@@ -77,7 +77,10 @@ bool SceneManager::Update(float dt)
 
 	// View colliders
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	{
 		app->map->viewCollisions = !app->map->viewCollisions;
+		app->colliderManager->showColliders = !app->colliderManager->showColliders;
+	}
 
 	// Cap the game to 30 FPS
 	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)

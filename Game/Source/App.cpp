@@ -10,6 +10,7 @@
 #include "SceneManager.h"
 #include "ColliderManagement.h"
 #include "Fonts.h"
+#include "EnemyManager.h"
 #include "Defs.h"
 #include "Log.h"
 
@@ -33,6 +34,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	player = new Player();
 	colliderManager = new ColliderManagement();
 	fonts = new Fonts();
+	enemyManager = new EnemyManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp

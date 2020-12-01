@@ -90,6 +90,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\ColliderManagement.cpp" />
+    <ClCompile Include="Source\EnemyManager.cpp" />
     <ClCompile Include="Source\Fonts.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\App.cpp" />
@@ -105,11 +106,14 @@
     <ClCompile Include="Source\SceneIntro.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneWin.cpp" />
+    <ClCompile Include="Source\Slime.cpp" />
     <ClCompile Include="Source\Textures.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClInclude Include="Source\Animation.h" />
     <ClInclude Include="Source\ColliderManagement.h" />
+    <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\EnemyManager.h" />
     <ClInclude Include="Source\Fonts.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\FadeToBlack.h" />
@@ -126,6 +130,7 @@
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\Scenes.h" />
     <ClInclude Include="Source\SceneWin.h" />
+    <ClInclude Include="Source\Slime.h" />
     <ClInclude Include="Source\Textures.h" />
     <ClInclude Include="Source\Timer.h" />
     <ClInclude Include="Source\Window.h" />
