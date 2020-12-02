@@ -24,6 +24,7 @@ bool Slime::Start()
 	tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
 	collider = app->colliderManager->AddCollider({ pos.x + 2, pos.y + 2, 12, 8 }, Collider::Type::ENEMY_WALK);
 
+	//SpeedX = 
 	speedY = 0;
 
 	return true;

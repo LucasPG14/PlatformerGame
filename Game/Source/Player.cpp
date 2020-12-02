@@ -148,6 +148,10 @@ bool Player::Start()
 		jumping = false;
 		levelFinished = false;
 		deadPlayer = false;
+
+		app->render->offset = { 0,0 };
+		app->render->camera.x = !(app->render->offset.x);
+		app->render->camera.y = !(app->render->offset.y);
 	}
 
 	return true;
@@ -194,9 +198,13 @@ bool Player::Update(float dt)
 
 			if (Collision("right") == false)
 			{
-				if (position.x >= app->render->camera.w / 2) app->render->camera.x -= 208.1 * dt;
-
- 				position.x += speedX * dt;
+ 				position.x += floor(speedX * dt);
+				if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
+				else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
+				{
+					app->render->offset.x += floor(speedX * dt);
+					app->render->camera.x -= floor(speedX * dt);
+				}
 			}
 
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
@@ -221,23 +229,26 @@ bool Player::Update(float dt)
 
 			if (Collision("left") == false)
 			{
-				if (position.x > app->render->camera.w / 2) app->render->camera.x += 208.1 * dt;
+				position.x -= floor(speedX * dt);
 
-				position.x -= speedX * dt;
+				if (app->render->offset.x <= 0);
+				else if (position.x < app->render->offset.x + 640)
+				{
+					app->render->offset.x -= floor(speedX * dt);
+					app->render->camera.x += floor(speedX * dt);
+				}
 			}
 
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 
 		}
 
-		if(position.y >600) app->render->camera.y = -position.y+500;
-
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
-			position.y -= speedX * dt;
+			position.y -= floor(speedX * dt);
 
 
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
-			position.y += speedX * dt;
+			position.y += floor(speedX * dt);
 
 		if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
 		{
@@ -283,7 +294,7 @@ bool Player::Update(float dt)
 
 			jumping = true;
 			jump = true;
-			speedY = 450.0f * dt;
+			speedY = 12.0f;
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
@@ -325,6 +336,20 @@ bool Player::Update(float dt)
 		if (speedY <= 0.0f) jumping = false;
 
 		Gravity(dt);
+
+		if (app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight));
+		else if (position.y >= app->render->offset.y + 360)
+		{
+			app->render->offset.y = position.y - 360;
+			app->render->camera.y = -(position.y - 360);
+		}
+
+		if (app->render->offset.y <= 0);
+		else if (position.y < app->render->offset.y + 360)
+		{
+			app->render->offset.y = position.y - 360;
+			app->render->camera.y = -(position.y - 360);
+		}
 	}
 	else
 	{
@@ -515,7 +540,6 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 				deadPlayer = false;
 				ResetPlayer();
 				app->render->resetCam();
-
 			}
 			if (lifes == 0)
 			{

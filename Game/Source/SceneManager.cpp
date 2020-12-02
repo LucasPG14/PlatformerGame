@@ -61,19 +61,31 @@ bool SceneManager::Update(float dt)
 
 	// Move the camera up
 	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	{
 		app->render->camera.y += floor(200.0f * dt);
+		app->render->offset.y -= floor(200.0f * dt);
+	}
 
 	// Move the camera down
 	if (app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	{
 		app->render->camera.y -= floor(200.0f * dt);
+		app->render->offset.y += floor(200.0f * dt);
+	}
 
 	// Move the camera to the left
 	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		app->render->camera.x -= floor(200.0f * dt);
+	{
+		app->render->camera.x += floor(200.0f * dt);
+		app->render->offset.x -= floor(200.0f * dt);
+	}
 
 	// Move the camera to the right
 	if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		app->render->camera.x += floor(200.0f * dt);
+	{
+		app->render->camera.x -= floor(200.0f * dt);
+		app->render->offset.x += floor(200.0f * dt);
+	}
 
 	// View colliders
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)

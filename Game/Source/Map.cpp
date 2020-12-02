@@ -3,6 +3,7 @@
 #include "Textures.h"
 #include "Map.h"
 #include "Player.h"
+#include "ColliderManagement.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -64,9 +65,13 @@ void Map::Draw()
 				{
 					iPoint ret = MapToWorld(x, y);
 					TileSet* set = GetTilesetFromTileId(tileId);
-					if (layer->data->properties.GetProperty("Drawable") == 1 || viewCollisions == true)
+					
+					if (ret.x > (app->render->offset.x - 16)  && ret.x < app->render->offset.x + app->render->camera.w && ret.y > (app->render->offset.y - 16) && ret.y < app->render->offset.y + app->render->camera.h)
 					{
-						app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
+						if (layer->data->properties.GetProperty("Drawable") == 1 || viewCollisions == true)
+						{
+							app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
+						}
 					}
 				}
 			}

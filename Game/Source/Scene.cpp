@@ -58,9 +58,6 @@ bool Scene::Start()
 	app->map->active = true;
 	app->map->Load("level1.tmx");
 
-	app->render->camera.x = 0;
-	app->render->camera.y = 0;
-
 	return true;
 }
 

@@ -30,5 +30,6 @@ private:
 	Animation animLeft;
 	Animation animRight;
 	int deadFx = 0;
+	uint speedX;
 	uint speedY;
 };

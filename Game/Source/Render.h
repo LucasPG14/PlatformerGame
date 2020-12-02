@@ -39,6 +39,7 @@ public:
 
 	//Reset camera position
 	void resetCam();
+
 	// Drawing
 	bool DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float speed = 1.0f, double angle = 0, int pivotX = INT_MAX, int pivotY = INT_MAX) const;
 	bool DrawRectangle(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255, bool filled = true, bool useCamera = true) const;
@@ -55,5 +56,7 @@ public:
 	SDL_Rect viewport;
 	SDL_Color background;
 	bool vsync;
+
+	fPoint offset;
 };
 #endif // __RENDER_H__

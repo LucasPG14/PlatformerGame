@@ -142,8 +142,9 @@ void Render::ResetViewPort()
 
 void Render::resetCam()
 {
-	camera.x = 0;
-	camera.y = 0;
+	offset = { 0,0 };
+	camera.x = !(offset.x);
+	camera.y = !(offset.y);
 }
 
 // Blit to screen
