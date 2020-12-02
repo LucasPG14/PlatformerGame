@@ -140,6 +140,12 @@ void Render::ResetViewPort()
 	SDL_RenderSetViewport(renderer, &viewport);
 }
 
+void Render::resetCam()
+{
+	camera.x = 0;
+	camera.y = 0;
+}
+
 // Blit to screen
 bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivotX, int pivotY) const
 {

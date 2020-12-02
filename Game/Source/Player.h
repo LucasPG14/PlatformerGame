@@ -50,6 +50,8 @@ public:
 
 	bool deadPlayer;
 
+	int lifes;
+
 private:
 	// Player texture
 	SDL_Texture* player = nullptr;
@@ -93,5 +95,8 @@ private:
 	int attackCooldown;
 
 	uint stepFx;
+
+	//lifes
+	SDL_Texture* lifesTex = nullptr;
 };
 #endif

@@ -3,6 +3,7 @@
 #include "Render.h"
 #include "Textures.h"
 #include "Window.h"
+#include "SceneManager.h"
 #include "Module.h"
 #include "Input.h"
 #include "Scene.h"
@@ -136,13 +137,14 @@ bool Player::Start()
 {
 	if (this->active == true)
 	{
+		lifes = 3;
 		SString tmp("%s%s", folder.GetString(), playerString.GetString());
 		player = app->tex->Load(tmp.GetString());
 		// Set position
 		ResetPlayer();
 		currentAnimation = &rightIdleAnim;
 		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
-		
+		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
 		jumping = false;
 		levelFinished = false;
 		deadPlayer = false;
@@ -340,6 +342,27 @@ bool Player::PostUpdate() {
 	SDL_Rect rect = currentAnimation->GetCurrentFrame();
 	app->render->DrawTexture(player, position.x, position.y, &rect);
 
+	switch (lifes)
+	{
+	case 3:
+		rect = { 0,0,115,49 };
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+		break;
+	case 2:
+		rect = { 0,0,76,49 };
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+		break;
+	case 1:
+		rect = { 0,0,41,49 };
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+		break;
+	default:
+		break;
+	}
+
+	
+
+
 	return true;
 }
 
@@ -486,7 +509,19 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 
 	case 290:
-		Dead();
+		lifes--;
+
+			if (lifes > 0) {
+				deadPlayer = false;
+				ResetPlayer();
+				app->render->resetCam();
+
+			}
+			if (lifes == 0)
+			{
+				Dead();
+			}
+		
 		return true;
 		break;
 
@@ -517,6 +552,7 @@ void Player::ResetPlayer()
 {
 	position.x = 200;
 	position.y = 607;
+
 }
 
 bool Player::LevelFinished()
