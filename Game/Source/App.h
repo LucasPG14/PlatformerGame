@@ -20,13 +20,10 @@ class Textures;
 class Audio;
 class Player;
 class FadeToBlack;
-class SceneIntro;
-class Scene;
 class Map;
-class SceneDie;
-class SceneWin;
 class SceneManager;
 class ColliderManagement;
+class Pathfinding;
 class Fonts;
 class EnemyManager;
 
@@ -104,6 +101,7 @@ public:
 	SceneManager* sceneManager;
 	ColliderManagement* colliderManager;
 	Fonts* fonts;
+	Pathfinding* pathfinding;
 	EnemyManager* enemyManager;
 
 	int	cappedMs = -1;

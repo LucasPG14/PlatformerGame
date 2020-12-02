@@ -54,9 +54,6 @@ bool SceneDie::Update(float dt)
 		dieAnim.speed = 0.05f * dt;
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		return false;
-
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
 		app->fade->Fade(this, (Scenes*)app->sceneManager->intro, 1/dt);
 

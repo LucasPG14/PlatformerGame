@@ -11,6 +11,7 @@
 #include "ColliderManagement.h"
 #include "Fonts.h"
 #include "EnemyManager.h"
+#include "Pathfinding.h"
 #include "Defs.h"
 #include "Log.h"
 
@@ -34,6 +35,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	player = new Player();
 	colliderManager = new ColliderManagement();
 	fonts = new Fonts();
+	pathfinding = new Pathfinding();
 	enemyManager = new EnemyManager();
 
 	// Ordered for awake / Start / Update
@@ -45,6 +47,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(sceneManager, true);
 	AddModule(map, false);
 	AddModule(player, false);
+	AddModule(pathfinding, true);
 	AddModule(fade, true);
 	AddModule(fonts, true);
 

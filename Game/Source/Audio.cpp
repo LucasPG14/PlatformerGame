@@ -55,6 +55,8 @@ bool Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
+	volumeMusic = config.child("music").attribute("volume").as_int();
+
 	return ret;
 }
 
@@ -135,7 +137,7 @@ bool Audio::PlayMusic(const char* path, float fadeTime)
 	}
 
 	LOG("Successfully playing %s", path);
-	Mix_VolumeMusic(20);
+	Mix_VolumeMusic(volumeMusic);
 	return ret;
 }
 

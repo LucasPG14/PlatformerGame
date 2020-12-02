@@ -51,7 +51,7 @@ bool SceneIntro::Update(float dt)
 
 	if (time == 1) 
 	{
-		introAnim.speed = 10.0f * dt;
+		introAnim.speed = 0.5f * dt;
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 

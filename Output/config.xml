@@ -16,7 +16,7 @@
   </window>
   <audio>
 		<fx volume ="50"/>
-		<music volume ="0"/>
+		<music volume ="50"/>
   </audio>
   <map>
 		<folder>Assets/tiles/</folder>

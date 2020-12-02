@@ -123,6 +123,8 @@ public:
 	// Translates x and y coordinates from world positions to map positions
 	iPoint WorldToMap(int x, int y) const;
 
+	TileSet* GetTilesetFromTileId(int id) const;
+
 private:
 
 	// Methods to load all required map data
@@ -131,8 +133,6 @@ private:
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
-	
-	TileSet* GetTilesetFromTileId(int id) const;
 
 public:
 

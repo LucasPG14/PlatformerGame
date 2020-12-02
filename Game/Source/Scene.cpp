@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "FadeToBlack.h"
 #include "SceneManager.h"
+#include "Pathfinding.h"
 #include "SceneDie.h"
 #include "SceneWin.h"
 #include "ColliderManagement.h"
@@ -74,6 +75,24 @@ bool Scene::Update(float dt)
 	//	app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	//	app->fade->Fade(this, this, 1/dt);
 
+		// Pathfinding testing inputs
+	if (app->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+		app->pathfinding->ResetPath(iPoint(12, 40));
+
+	if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
+		app->pathfinding->PropagateDijkstra();
+
+	if (app->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
+		app->pathfinding->PropagateDijkstra();
+
+	if (app->input->GetMouseButtonDown(1) == KEY_DOWN)
+	{
+		iPoint p;
+		app->input->GetMousePosition(p.x, p.y);
+		app->pathfinding->checkPath = true;
+		app->pathfinding->ComputePath(p.x - app->render->camera.x - app->map->data.tileWidth, p.y - app->render->camera.y - app->map->data.tileHeight);
+	}
+
 	if (app->player->IsDead() == true && app->player->time == 60)
 	{
 		app->fade->Fade(this, app->sceneManager->dieScene, 1 / dt);
@@ -101,7 +120,10 @@ bool Scene::PostUpdate()
 	app->enemyManager->Draw();
 	app->colliderManager->DrawColliders();
 	// Draw map
-	if (app->map->active == true) app->map->Draw();
+	app->map->Draw();
+	app->pathfinding->DrawPath();
+
+
 
 	return ret;
 }
