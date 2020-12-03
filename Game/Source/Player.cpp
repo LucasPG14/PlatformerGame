@@ -140,14 +140,14 @@ bool Player::Start()
 		lifes = 3;
 		SString tmp("%s%s", folder.GetString(), playerString.GetString());
 		player = app->tex->Load(tmp.GetString());
-		// Set position
-		ResetPlayer();
 		currentAnimation = &rightIdleAnim;
 		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
 		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
 		jumping = false;
 		levelFinished = false;
+		checkPoint = false;
 		deadPlayer = false;
+		playerCollider = app->colliderManager->AddCollider({ (int)position.x, (int)position.y + 20, 51, 66 }, Collider::PLAYER);
 
 		app->render->offset = { 0,0 };
 		app->render->camera.x = !(app->render->offset.x);
@@ -238,9 +238,7 @@ bool Player::Update(float dt)
 					app->render->camera.x += floor(speedX * dt);
 				}
 			}
-
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
-
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
@@ -250,13 +248,14 @@ bool Player::Update(float dt)
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 			position.y += floor(speedX * dt);
 
-		if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
-		{
-			rightAttackAnim.Reset();
-			currentAnimation = &rightAttackAnim;
-			lastAnimation = currentAnimation;
-			attackCooldown = 300;
-		}
+		//if (rightAttackAnim.HasFinished() == true && sword == true)
+		//{
+		//	currentAnimation = &rightIdleAnim;
+		//	sword = false;
+		//}
+
+		//if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
+		//	SwordAttack();
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
@@ -316,14 +315,6 @@ bool Player::Update(float dt)
 			}
 		}
 
-		// Save game
-		if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
-			app->SaveGameRequest();
-
-		// Load game
-		if (app->input->GetKey(SDL_SCANCODE_F6) == KeyState::KEY_DOWN) 
-			app->LoadGameRequest();
-
 		// God mode
 		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN) 
 			godMode = !godMode;
@@ -332,12 +323,12 @@ bool Player::Update(float dt)
 
 		if (Collision("top") == true) speedY = 0.0f;
 
-
 		if (speedY <= 0.0f) jumping = false;
 
 		Gravity(dt);
 
 		if (app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight));
+
 		else if (position.y >= app->render->offset.y + 360)
 		{
 			app->render->offset.y = position.y - 360;
@@ -350,6 +341,8 @@ bool Player::Update(float dt)
 			app->render->offset.y = position.y - 360;
 			app->render->camera.y = -(position.y - 360);
 		}
+
+		playerCollider->SetPos(position.x, position.y + 20);
 	}
 	else
 	{
@@ -384,9 +377,6 @@ bool Player::PostUpdate() {
 	default:
 		break;
 	}
-
-	
-
 
 	return true;
 }
@@ -538,8 +528,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 			if (lifes > 0) {
 				deadPlayer = false;
-				ResetPlayer();
-				app->render->resetCam();
+				app->render->ResetCam();
 			}
 			if (lifes == 0)
 			{
@@ -567,16 +556,14 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 	case 292:
 		levelFinished = true;
 		break;
+	case 293:
+		if(checkPoint == false)
+			app->SaveGameRequest();
+		checkPoint = true;
+		break;
 	}
 
 	return false;
-}
-
-void Player::ResetPlayer()
-{
-	position.x = 200;
-	position.y = 607;
-
 }
 
 bool Player::LevelFinished()
@@ -592,4 +579,15 @@ bool Player::IsDead()
 Position Player::GetPosition()
 {
 	return position;
+}
+
+void Player::SwordAttack()
+{
+	rightAttackAnim.Reset();
+	currentAnimation = &rightAttackAnim;
+	lastAnimation = currentAnimation;
+	attackCooldown = 300;
+
+	swordCollider = app->colliderManager->AddCollider({ (int)position.x + 51, (int)position.y, 51, 66 }, Collider::SWORD);
+	sword = true;
 }

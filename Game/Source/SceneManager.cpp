@@ -87,6 +87,14 @@ bool SceneManager::Update(float dt)
 		app->render->offset.x += floor(200.0f * dt);
 	}
 
+	// Save game
+	if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
+		app->SaveGameRequest();
+
+	// Load game
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KeyState::KEY_DOWN)
+		app->LoadGameRequest();
+
 	// View colliders
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 	{

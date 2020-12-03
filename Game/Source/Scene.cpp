@@ -42,6 +42,7 @@ bool Scene::Start()
 {
 	//Load Player
 	app->player->active = true;
+	PlayerPosition();
 	app->player->Start();
 
 	//Load Enemies
@@ -146,4 +147,6 @@ bool Scene::CleanUp()
 
 void Scene::PlayerPosition()
 {
+	app->player->position.x = 200;
+	app->player->position.y = 600;
 }

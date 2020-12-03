@@ -140,7 +140,7 @@ void Render::ResetViewPort()
 	SDL_RenderSetViewport(renderer, &viewport);
 }
 
-void Render::resetCam()
+void Render::ResetCam()
 {
 	offset = { 0,0 };
 	camera.x = !(offset.x);

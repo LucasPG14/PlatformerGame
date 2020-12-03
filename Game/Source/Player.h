@@ -10,11 +10,12 @@
 struct SDL_Rect;
 struct SDL_Texture;
 struct SDL_Renderer;
+class Collider;
 
-class Position
-{
+class Position {
 public:
-	float x, y;
+	float x;
+	float y;
 };
 
 class Player : public Module
@@ -35,9 +36,9 @@ public:
 	bool CheckCollisionType(int idTile, std::string direction);
 
 	void Dead();
-	void ResetPlayer();
 	bool LevelFinished();
 	bool IsDead();
+	void SwordAttack();
 	Position GetPosition();
 
 	// Load and Save
@@ -52,15 +53,15 @@ public:
 
 	int lifes;
 
+	// Player position
+	Position position;
+
 private:
 	// Player texture
 	SDL_Texture* player = nullptr;
 
 	// Player gravity
 	float gravity;
-
-	// Player position
-	Position position;
 
 	// Player animations
 	Animation* lastAnimation = nullptr;
@@ -91,8 +92,16 @@ private:
 
 	bool levelFinished = false;
 
+	// Checkpoint bool
+	bool checkPoint;
+
+	bool sword = false;
+
 	//Cooldown on attack
 	int attackCooldown;
+
+	Collider* playerCollider;
+	Collider* swordCollider;
 
 	uint stepFx;
 

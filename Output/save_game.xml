@@ -7,11 +7,12 @@
   <:anonymous />
   <map />
   <player>
-    <position x="1994.3999" y="665.64978" />
+    <position x="2827" y="232.160233" />
   </player>
+  <:anonymous />
   <fade />
   <:anonymous />
   <renderer>
-    <camera x="-1316" y="1" />
+    <camera x="-2203" y="4" />
   </renderer>
 </save_status>

@@ -38,7 +38,7 @@ public:
 	void ResetViewPort();
 
 	//Reset camera position
-	void resetCam();
+	void ResetCam();
 
 	// Drawing
 	bool DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float speed = 1.0f, double angle = 0, int pivotX = INT_MAX, int pivotY = INT_MAX) const;
