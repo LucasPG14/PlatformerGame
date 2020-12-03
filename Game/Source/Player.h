@@ -53,6 +53,8 @@ public:
 
 	int lifes;
 
+	bool playerChangePos;
+
 	// Player position
 	Position position;
 

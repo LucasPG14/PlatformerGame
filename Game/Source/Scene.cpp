@@ -46,7 +46,8 @@ bool Scene::Start()
 	app->player->Start();
 
 	//Load Enemies
-	//app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
+	app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
+	app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
 	app->enemyManager->Start();
 
 	// Load music
@@ -69,26 +70,43 @@ bool Scene::Update(float dt)
 
 	app->colliderManager->Update(dt);
 
+	if (app->player->playerChangePos == true)
+	{
+		PlayerPosition();
+		app->player->playerChangePos = false;
+	}
+
 	//if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
 	//	app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	//	app->fade->Fade(this, this, 1/dt);
 
 		// Pathfinding testing inputs
 	if (app->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
 		app->pathfinding->ResetPath(iPoint(12, 40));
+		app->pathfinding->finishAStar = false;
+	}
 
 	if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
-		app->pathfinding->PropagateDijkstra();
+		//app->pathfinding->PropagateDijkstra();
+		app->pathfinding->PropagateAStar();
 
 	if (app->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
-		app->pathfinding->PropagateDijkstra();
+		//app->pathfinding->PropagateDijkstra();
+		app->pathfinding->PropagateAStar();
+
+	if (app->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT)
+		app->pathfinding->ComputePathAStar(app->pathfinding->goalAStar.x, app->pathfinding->goalAStar.y);
 
 	if (app->input->GetMouseButtonDown(1) == KEY_DOWN)
 	{
 		iPoint p;
 		app->input->GetMousePosition(p.x, p.y);
+		app->pathfinding->goalAStar = app->map->WorldToMap(p.x - app->render->camera.x, p.y - app->render->camera.y);
 		app->pathfinding->checkPath = true;
-		app->pathfinding->ComputePath(p.x - app->render->camera.x - app->map->data.tileWidth, p.y - app->render->camera.y - app->map->data.tileHeight);
+		
+		//app->pathfinding->ComputePath(p.x - app->render->camera.x - app->map->data.tileWidth, p.y - app->render->camera.y - app->map->data.tileHeight);
+		//app->pathfinding->ComputePath(p.x, p.y);
 	}
 
 	if (app->player->IsDead() == true && app->player->time == 60)
@@ -115,13 +133,12 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
 
-	app->enemyManager->Draw();
-	app->colliderManager->DrawColliders();
 	// Draw map
 	app->map->Draw();
 	app->pathfinding->DrawPath();
 
-
+	app->enemyManager->Draw();
+	app->colliderManager->DrawColliders();
 
 	return ret;
 }

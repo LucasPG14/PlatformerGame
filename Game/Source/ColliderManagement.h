@@ -19,7 +19,7 @@ public:
 
 	Collider(SDL_Rect rectangle, Type type);
 
-	void SetPos(int x, int y);
+	void SetPos(int x, int y, SDL_Rect* rect);
 
 	bool Intersects(const SDL_Rect* r) const;
 

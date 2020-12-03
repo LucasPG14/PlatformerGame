@@ -1,28 +1,28 @@
-#include "Slime.h"
+#include "Bat.h"
 #include "App.h"
 #include "Textures.h"
 #include "Map.h"
 #include "EnemyManager.h"
 
-Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
+Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 3)
 {
-	animLeft.PushBack({ 44,20,34,20 });
-	animLeft.PushBack({ 2,20,36,20 });
+	animLeft.PushBack({ 44,170,32,30 });
+	animLeft.PushBack({ 2,170,36,30 });
 
 	animLeft.loop = true;
 
-	animRight.PushBack({ 82,20,36,20 });
-	animRight.PushBack({ 122,20,34,20 });
+	animRight.PushBack({ 84,170,32,30 });
+	animRight.PushBack({ 122,170,36,30 });
 
 	animRight.loop = true;
 }
 
-Slime::~Slime() {}
+Bat::~Bat() {}
 
-bool Slime::Start()
+bool Bat::Start()
 {
 	tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
-	collider = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::ENEMY_WALK);
+	collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
 
 	//SpeedX = 
 	speedY = 0;
@@ -30,7 +30,7 @@ bool Slime::Start()
 	return true;
 }
 
-bool Slime::Update(float dt)
+bool Bat::Update(float dt)
 {
 	animLeft.speed = 2.0f * dt;
 	animRight.speed = 2.0f * dt;
@@ -38,19 +38,17 @@ bool Slime::Update(float dt)
 	animLeft.Update();
 	animRight.Update();
 
-	Gravity(dt);
-
-	collider->SetPos(this->pos.x + 4, this->pos.y + 3, &collider->rect);
+	collider->SetPos(this->pos.x + 6, this->pos.y + 4, &collider->rect);
 
 	return true;
 }
 
-void Slime::Draw()
+void Bat::Draw()
 {
 	app->render->DrawTexture(tex, this->pos.x, this->pos.y, &animLeft.GetCurrentFrame());
 }
 
-bool Slime::CleanUp()
+bool Bat::CleanUp()
 {
 	app->colliderManager->RemoveCollider(collider);
 	app->tex->UnLoad(tex);
@@ -58,20 +56,7 @@ bool Slime::CleanUp()
 	return true;
 }
 
-void Slime::Gravity(float dt)
-{
-	if (Collision("bottom") == false)
-	{
-		speedY -= 20.0f * dt;
-		this->pos.y -= speedY;
-		if (speedY < -5.0f)
-		{
-			speedY = -5.0f;
-		}
-	}
-}
-
-bool Slime::Collision(const char* side)
+bool Bat::Collision(const char* side)
 {
 	bool ret = false;
 
@@ -142,7 +127,7 @@ bool Slime::Collision(const char* side)
 	return ret;
 }
 
-bool Slime::CheckCollisionType(int idTile, std::string direction)
+bool Bat::CheckCollisionType(int idTile, std::string direction)
 {
 	switch (idTile)
 	{

@@ -2,6 +2,7 @@
 #include "App.h"
 #include "Map.h"
 #include "Render.h"
+#include "Input.h"
 #include "Textures.h"
 
 Pathfinding::Pathfinding()
@@ -117,6 +118,78 @@ void Pathfinding::ComputePath(int x, int y)
 
 	path.PushBack(breadcrumbs.start->data);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+void Pathfinding::ComputePathAStar(int x, int y)
+{
+	// L12a: Compute AStart pathfinding
+	path.Clear();
+	iPoint goal = { x,y };
+
+	if (finishAStar == true || visited.Find(goal) > -1)
+	{
+		iPoint aux;
+
+		int index;
+
+		index = visited.Find(goal);
+		path.PushBack(visited.At(index)->data);
+		aux = breadcrumbs.At(index)->data;
+
+		while (aux != visited.start->data)
+		{
+			index = visited.Find(aux);
+			path.PushBack(visited.At(index)->data);
+			aux = breadcrumbs.At(index)->data;
+		}
+
+		path.PushBack(visited.start->data);
+	}
+
+}
+
+void Pathfinding::PropagateAStar()
+{
+	/*iPoint p;
+	app->input->GetMousePosition(p.x, p.y);
+	goalAStar = app->map->WorldToMap(p.x - app->render->camera.x - app->map->data.tileWidth / 2, p.y - app->render->camera.y - app->map->data.tileHeight / 2);*/
+
+	if (finishAStar == true)
+	{
+		ComputePathAStar(goalAStar.x, goalAStar.y);
+		return;
+	}
+
+
+	iPoint curr;
+	if (frontier.Pop(curr))
+	{
+		iPoint neighbors[4];
+		neighbors[0].Create(curr.x + 1, curr.y + 0);
+		neighbors[1].Create(curr.x + 0, curr.y + 1);
+		neighbors[2].Create(curr.x - 1, curr.y + 0);
+		neighbors[3].Create(curr.x + 0, curr.y - 1);
+
+		if (curr == goalAStar)
+			finishAStar = true;
+
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (visited.Find(neighbors[i]) == -1)
+			{
+				if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
+				{
+					frontier.Push(neighbors[i], neighbors[i].DistanceManhattan(goalAStar));
+					visited.Add(neighbors[i]);
+					breadcrumbs.Add(curr);
+				}
+			}
+		}
+	}
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 void Pathfinding::PropagateBFS()
 {

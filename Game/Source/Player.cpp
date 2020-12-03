@@ -147,6 +147,7 @@ bool Player::Start()
 		levelFinished = false;
 		checkPoint = false;
 		deadPlayer = false;
+		playerChangePos = false;
 		playerCollider = app->colliderManager->AddCollider({ (int)position.x, (int)position.y + 20, 51, 66 }, Collider::PLAYER);
 
 		app->render->offset = { 0,0 };
@@ -342,7 +343,7 @@ bool Player::Update(float dt)
 			app->render->camera.y = -(position.y - 360);
 		}
 
-		playerCollider->SetPos(position.x, position.y + 20);
+		playerCollider->SetPos(position.x, position.y + 20, &playerCollider->rect);
 	}
 	else
 	{
@@ -385,6 +386,7 @@ bool Player::CleanUp() {
 
 	//Unload textures
 	app->tex->UnLoad(player);
+	app->tex->UnLoad(lifesTex);
 	leftDeadAnim.Reset();
 	rightDeadAnim.Reset();
 	this->active = false;
@@ -528,6 +530,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 			if (lifes > 0) {
 				deadPlayer = false;
+				playerChangePos = true;
 				app->render->ResetCam();
 			}
 			if (lifes == 0)

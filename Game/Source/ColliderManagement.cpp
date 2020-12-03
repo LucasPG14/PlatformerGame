@@ -25,7 +25,7 @@ bool ColliderManagement::Update(float dt)
 			{
 				OnCollision(coll1->data, coll2->data);
 			}
-			else if (coll2->data->Intersects(&coll2->data->rect))
+			else if (coll2->data->Intersects(&coll1->data->rect))
 			{
 				OnCollision(coll2->data, coll1->data);
 			}
@@ -53,13 +53,13 @@ void ColliderManagement::DrawColliders()
 			app->render->DrawRectangle(coll->data->rect, 255, 255, 255, alpha);
 			break;
 		case Collider::Type::PLAYER:
-			app->render->DrawRectangle(coll->data->rect, 0, 255, 0, alpha);
+			app->render->DrawRectangle(coll->data->rect, 225, 0, 0, alpha);
 			break;
 		case Collider::Type::SWORD:
 			app->render->DrawRectangle(coll->data->rect, 0, 0, 255, alpha);
 			break;
 		case Collider::Type::ENEMY_WALK:
-			app->render->DrawRectangle(coll->data->rect, 255, 0, 0, alpha);
+			app->render->DrawRectangle(coll->data->rect, 0, 255, 0, alpha);
 			break;
 		case Collider::Type::ENEMY_FLY:
 			app->render->DrawRectangle(coll->data->rect, 255, 255, 0, alpha);
@@ -106,13 +106,33 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 
 	if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
 	{
-		RemoveCollider(coll1);
-		app->player->Dead();
+		app->player->lifes--;
+
+		if (app->player->lifes > 0) {
+			app->player->deadPlayer = false;
+			app->player->playerChangePos = true;
+			app->render->ResetCam();
+		}
+		if (app->player->lifes == 0)
+		{
+			RemoveCollider(coll1);
+			app->player->Dead();
+		}
 	}
 	else if (coll2->type == Collider::Type::PLAYER && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
 	{
-		RemoveCollider(coll2);
-		app->player->Dead();
+		app->player->lifes--;
+
+		if (app->player->lifes > 0) {
+			app->player->deadPlayer = false;
+			app->player->playerChangePos = true;
+			app->render->ResetCam();
+		}
+		if (app->player->lifes == 0)
+		{
+			RemoveCollider(coll2);
+			app->player->Dead();
+		}
 	}
 	else if (coll1->type == Collider::Type::SWORD && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
 	{
@@ -127,10 +147,10 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 Collider::Collider(SDL_Rect rectangle, Type type) : rect(rectangle), type(type)
 {}
 
-void Collider::SetPos(int x, int y)
+void Collider::SetPos(int x, int y, SDL_Rect* rect)
 {
-	rect.x = x;
-	rect.y = y;
+	rect->x = x;
+	rect->y = y;
 }
 
 bool Collider::Intersects(const SDL_Rect* r) const

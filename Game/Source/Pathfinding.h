@@ -35,14 +35,20 @@ public:
 	// More pathfinding methods
 	int MovementCost(int x, int y) const;
 	void ComputePath(int x, int y);
+	void ComputePathAStar(int x, int y);
 
 	// Propagation methods
 	void PropagateBFS();
 	void PropagateDijkstra();
+	void PropagateAStar();
+
 
 	bool Load(pugi::xml_node& load);
 
 	bool Save(pugi::xml_node& save);
+
+	iPoint goalAStar;
+	bool finishAStar = false;
 
 public:
 	// L10: BFS Pathfinding variables

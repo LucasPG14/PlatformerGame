@@ -1,5 +1,6 @@
 #include "EnemyManager.h"
 #include "Slime.h"
+#include "Bat.h"
 #include "App.h"
 
 EnemyManager::EnemyManager()
@@ -68,7 +69,7 @@ Enemy* EnemyManager::AddEnemy(iPoint point, EnemyType enemyType)
 		ret = new Slime(point);
 		break;
 	case BAT:
-		//Add enemy and collider
+		ret = new Bat(point);
 		ret;
 		break;
 	}
