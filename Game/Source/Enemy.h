@@ -6,7 +6,8 @@
 enum EnemyType
 {
 	SLIME,
-	BAT
+	BAT,
+	LIFE
 };
 
 class Enemy

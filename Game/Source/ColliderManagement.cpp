@@ -63,6 +63,8 @@ void ColliderManagement::DrawColliders()
 			break;
 		case Collider::Type::ENEMY_FLY:
 			app->render->DrawRectangle(coll->data->rect, 255, 255, 0, alpha);
+		case Collider::Type::LIFE:
+			app->render->DrawRectangle(coll->data->rect, 255, 0, 255, alpha);
 			break;
 		}
 		coll = coll->next;
@@ -142,6 +144,12 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 	{
 		RemoveCollider(coll2);
 	}
+	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::LIFE))
+	{
+		app->player->lifes++;
+		RemoveCollider(coll2);
+	}
+
 }
 
 Collider::Collider(SDL_Rect rectangle, Type type) : rect(rectangle), type(type)

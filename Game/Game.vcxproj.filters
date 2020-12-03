@@ -38,6 +38,7 @@
     <ClCompile Include="Source\Slime.cpp" />
     <ClCompile Include="Source\Pathfinding.cpp" />
     <ClCompile Include="Source\Bat.cpp" />
+    <ClCompile Include="Source\Life.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="Source\Slime.h" />
     <ClInclude Include="Source\Pathfinding.h" />
     <ClInclude Include="Source\Bat.h" />
+    <ClInclude Include="Source\Life.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

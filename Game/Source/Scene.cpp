@@ -48,6 +48,8 @@ bool Scene::Start()
 	//Load Enemies
 	app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
 	app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
+	app->enemyManager->AddEnemy(iPoint(0, 600), EnemyType::LIFE);
+
 	app->enemyManager->Start();
 
 	// Load music

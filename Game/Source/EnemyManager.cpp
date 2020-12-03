@@ -1,6 +1,7 @@
 #include "EnemyManager.h"
 #include "Slime.h"
 #include "Bat.h"
+#include "Life.h"
 #include "App.h"
 
 EnemyManager::EnemyManager()
@@ -70,6 +71,10 @@ Enemy* EnemyManager::AddEnemy(iPoint point, EnemyType enemyType)
 		break;
 	case BAT:
 		ret = new Bat(point);
+		ret;
+		break;
+	case LIFE:
+		ret = new Life(point);
 		ret;
 		break;
 	}

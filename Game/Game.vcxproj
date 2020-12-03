@@ -93,6 +93,7 @@
     <ClCompile Include="Source\ColliderManagement.cpp" />
     <ClCompile Include="Source\EnemyManager.cpp" />
     <ClCompile Include="Source\Fonts.cpp" />
+    <ClCompile Include="Source\Life.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\App.cpp" />
     <ClCompile Include="Source\Audio.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\EnemyManager.h" />
     <ClInclude Include="Source\Fonts.h" />
+    <ClInclude Include="Source\Life.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\FadeToBlack.h" />
     <ClInclude Include="Source\Pathfinding.h" />
