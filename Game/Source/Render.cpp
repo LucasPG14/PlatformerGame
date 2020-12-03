@@ -1,6 +1,7 @@
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
+#include "Player.h"
 #include "Map.h"
 
 #include "Defs.h"
@@ -110,6 +111,9 @@ bool Render::LoadState(pugi::xml_node& data)
 	camera.x = data.child("camera").attribute("x").as_int();
 	camera.y = data.child("camera").attribute("y").as_int();
 
+	offset.x = data.child("offset").attribute("x").as_int();
+	offset.y = data.child("offset").attribute("y").as_int();
+
 	return true;
 }
 
@@ -118,9 +122,13 @@ bool Render::LoadState(pugi::xml_node& data)
 bool Render::SaveState(pugi::xml_node& data) const
 {
 	pugi::xml_node cam = data.append_child("camera");
+	pugi::xml_node offs = data.append_child("offset");
 
 	cam.append_attribute("x") = camera.x;
 	cam.append_attribute("y") = camera.y;
+	
+	offs.append_attribute("x") = offset.x;
+	offs.append_attribute("y") = offset.y;
 
 	return true;
 }
@@ -142,7 +150,7 @@ void Render::ResetViewPort()
 
 void Render::ResetCam()
 {
-	offset = { 0,0 };
+	offset = { app->player->position.x - 640, app->player->position.y };
 	camera.x = !(offset.x);
 	camera.y = !(offset.y);
 }

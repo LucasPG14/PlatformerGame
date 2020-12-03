@@ -149,7 +149,6 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 		app->player->lifes++;
 		RemoveCollider(coll2);
 	}
-
 }
 
 Collider::Collider(SDL_Rect rectangle, Type type) : rect(rectangle), type(type)

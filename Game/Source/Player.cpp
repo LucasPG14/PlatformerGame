@@ -209,7 +209,6 @@ bool Player::Update(float dt)
 			}
 
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
-
 		}
 
 		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
@@ -249,14 +248,16 @@ bool Player::Update(float dt)
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 			position.y += floor(speedX * dt);
 
-		//if (rightAttackAnim.HasFinished() == true && sword == true)
-		//{
-		//	currentAnimation = &rightIdleAnim;
-		//	sword = false;
-		//}
+		if (rightAttackAnim.HasFinished() == true || leftAttackAnim.HasFinished() == true)
+		{
+			if (swordCollider != nullptr)
+			{
+				app->colliderManager->RemoveCollider(swordCollider);
+			}
+		}
 
-		//if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
-		//	SwordAttack();
+		if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
+			SwordAttack();
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
@@ -302,13 +303,15 @@ bool Player::Update(float dt)
 			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE &&
 			app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_IDLE)
 		{
-			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim || rightAttackAnim.HasFinished() == true)
+			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim || 
+				(currentAnimation == &rightAttackAnim && rightAttackAnim.HasFinished() == true))
 			{
 				rightIdleAnim.Reset();
 				currentAnimation = &rightIdleAnim;
 				lastAnimation = currentAnimation;
 			}
-			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim || leftAttackAnim.HasFinished() == true)
+			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim || 
+				(currentAnimation == &leftAttackAnim && leftAttackAnim.HasFinished() == true))
 			{
 				leftIdleAnim.Reset();
 				currentAnimation = &leftIdleAnim;
@@ -359,7 +362,14 @@ bool Player::Update(float dt)
 bool Player::PostUpdate() {
 
 	SDL_Rect rect = currentAnimation->GetCurrentFrame();
-	app->render->DrawTexture(player, position.x, position.y, &rect);
+	if (rect.x == 525)
+		app->render->DrawTexture(player, position.x - 51, position.y, &rect);
+	else if (rect.x == 333)
+		app->render->DrawTexture(player, position.x - 48, position.y, &rect);
+	else if (rect.x == 156)
+		app->render->DrawTexture(player, position.x - 36, position.y, &rect);
+	else
+		app->render->DrawTexture(player, position.x , position.y, &rect);
 
 	switch (lifes)
 	{
@@ -530,8 +540,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 			if (lifes > 0) {
 				deadPlayer = false;
-				playerChangePos = true;
-				app->render->ResetCam();
+				app->LoadGameRequest();
 			}
 			if (lifes == 0)
 			{
@@ -586,11 +595,18 @@ Position Player::GetPosition()
 
 void Player::SwordAttack()
 {
-	rightAttackAnim.Reset();
-	currentAnimation = &rightAttackAnim;
 	lastAnimation = currentAnimation;
 	attackCooldown = 300;
-
-	swordCollider = app->colliderManager->AddCollider({ (int)position.x + 51, (int)position.y, 51, 66 }, Collider::SWORD);
-	sword = true;
+	if (currentAnimation == &rightIdleAnim || currentAnimation == &rightRunAnim || currentAnimation == &rightJumpAnim)
+	{
+		rightAttackAnim.Reset();
+		currentAnimation = &rightAttackAnim;
+		swordCollider = app->colliderManager->AddCollider({ (int)position.x + 51, (int)position.y + 20, 51, 66 }, Collider::SWORD);
+	}
+	else if (currentAnimation == &leftIdleAnim || currentAnimation == &leftRunAnim || currentAnimation == &leftJumpAnim)
+	{
+		leftAttackAnim.Reset();
+		currentAnimation = &leftAttackAnim;
+		swordCollider = app->colliderManager->AddCollider({ (int)position.x - 51, (int)position.y + 20, 51, 66 }, Collider::SWORD);
+	}
 }
