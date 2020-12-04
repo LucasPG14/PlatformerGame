@@ -1,4 +1,5 @@
 #include "EnemyManager.h"
+#include "Textures.h"
 #include "Slime.h"
 #include "Bat.h"
 #include "Life.h"
@@ -10,11 +11,14 @@ EnemyManager::EnemyManager()
 }
 
 EnemyManager::~EnemyManager()
-{}
+{
+}
 
 bool EnemyManager::Start()
 {
 	ListItem<Enemy*>* enemies = enemyList.start;
+
+	texture = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
 
 	while (enemies != nullptr)
 	{
@@ -100,6 +104,8 @@ bool EnemyManager::CleanUp()
 		enemies = enemies->next;
 	}
 
+	app->tex->UnLoad(texture);
+
 	return true;
 }
 
@@ -111,10 +117,11 @@ Enemy* EnemyManager::AddEnemy(iPoint point, EnemyType enemyType)
 	{
 	case SLIME:
 		ret = new Slime(point);
+		ret->texture = texture;
 		break;
 	case BAT:
 		ret = new Bat(point);
-		ret;
+		ret->texture = texture;
 		break;
 	case LIFE:
 		ret = new Life(point);

@@ -15,8 +15,6 @@ public:
 
 	bool CleanUp() override;
 
-	void Draw() override;
-
 	bool Collision(const char* side);
 
 	bool CheckCollisionType(int idTile, std::string direction);
@@ -30,7 +28,7 @@ public:
 
 private:
 
-	SDL_Texture* tex = nullptr;
+	//SDL_Texture* tex = nullptr;
 	Animation animLeft;
 	Animation animRight;
 	int deadFx = 0;

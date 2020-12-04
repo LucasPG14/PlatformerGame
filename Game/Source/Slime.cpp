@@ -15,13 +15,15 @@ Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
 	animRight.PushBack({ 122,20,34,20 });
 
 	animRight.loop = true;
+
+	currentAnim = &animRight;
 }
 
 Slime::~Slime() {}
 
 bool Slime::Start()
 {
-	tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
+	//tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
 	collider = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::ENEMY_WALK);
 
 	//SpeedX = 
@@ -35,8 +37,14 @@ bool Slime::Update(float dt)
 	animLeft.speed = 2.0f * dt;
 	animRight.speed = 2.0f * dt;
 
-	animLeft.Update();
-	animRight.Update();
+	if (this->currentAnim == &animRight)
+	{
+		currentAnim = &animLeft;
+	}
+	else if (this->currentAnim == &animLeft)
+	{
+		currentAnim == &animRight;
+	}
 
 	Gravity(dt);
 
@@ -50,15 +58,9 @@ bool Slime::Update(float dt)
 	return true;
 }
 
-void Slime::Draw()
-{
-	app->render->DrawTexture(tex, this->pos.x, this->pos.y, &animLeft.GetCurrentFrame());
-}
-
 bool Slime::CleanUp()
 {
 	app->colliderManager->RemoveCollider(collider);
-	app->tex->UnLoad(tex);
 
 	return true;
 }
@@ -78,9 +80,9 @@ void Slime::Gravity(float dt)
 
 bool Slime::Load(pugi::xml_node& load)
 {
-
-	this->pos.x = load.child("slime").child("position").attribute("x").as_int();
-	this->pos.y = load.child("slime").child("position").attribute("y").as_int();
+	pugi::xml_node slime = load.child("slime");
+	pos.x = slime.child("position").attribute("x").as_int();
+	pos.y = slime.child("position").attribute("y").as_int();
 
 	return true;
 }
@@ -88,9 +90,10 @@ bool Slime::Load(pugi::xml_node& load)
 bool Slime::Save(pugi::xml_node& save) const
 {
 	pugi::xml_node slime = save.append_child("slime");
+	slime = slime.append_child("position");
 
-	slime.append_child("position").append_attribute("x") = this->pos.x;
-	slime.append_child("position").append_attribute("y") = this->pos.y;
+	slime.append_attribute("x").set_value(pos.x);
+	slime.append_attribute("y").set_value(pos.y);
 
 	return true;
 }

@@ -1,7 +1,9 @@
 #pragma once
 #include "Animation.h"
+#include "App.h"
 #include "Render.h"
 #include "ColliderManagement.h"
+#include "Animation.h"
 
 enum EnemyType
 {
@@ -22,13 +24,23 @@ public:
 	};
 	~Enemy() {};
 	
-	virtual bool Start() { return true; };
+	virtual bool Start() { return true; }
 
-	virtual bool Update(float dt) { return true; };
+	virtual bool Update(float dt) 
+	{ 
+		if (currentAnim != nullptr)
+			currentAnim->Update();
 
-	virtual bool CleanUp() { return true; };
+		return true; 
+	}
 
-	virtual void Draw() {};
+	virtual bool CleanUp() { return true; }
+
+	virtual void Draw()
+	{
+		if (this->currentAnim != nullptr && this->lifes != 0)
+			app->render->DrawTexture(texture, this->pos.x, this->pos.y, &(this->currentAnim->GetCurrentFrame()));
+	}
 
 	virtual bool Load(pugi::xml_node&) { return true; }
 
@@ -36,7 +48,10 @@ public:
 
 
 	Collider* collider;
+	SDL_Texture* texture = nullptr;
 	int lifes;
 	iPoint pos;
 	EnemyType type;
+	// A ptr to the current animation
+	Animation* currentAnim = nullptr;
 };

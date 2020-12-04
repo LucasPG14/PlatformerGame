@@ -4,26 +4,24 @@
   <input />
   <textures />
   <audio />
+  <enemies>
+    <slime>
+      <position x="0" y="668" />
+    </slime>
+    <bat>
+      <position x="100" y="500" />
+    </bat>
+  </enemies>
   <:anonymous />
   <map />
   <player>
-    <position x="249" y="603.28064" />
+    <position x="200" y="600" />
   </player>
-  <enemies>
-    <slime>
-      <position x="0" />
-      <position y="668" />
-    </slime>
-    <slime>
-      <position x="100" />
-      <position y="500" />
-    </slime>
-  </enemies>
   <:anonymous />
   <fade />
   <:anonymous />
   <renderer>
-    <camera x="2" y="-243" />
-    <offset x="-1" y="243.28064" />
+    <camera x="1" y="-240" />
+    <offset x="0" y="240" />
   </renderer>
 </save_status>

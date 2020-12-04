@@ -540,7 +540,10 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 			if (lifes > 0) {
 				deadPlayer = false;
-				app->LoadGameRequest();
+				if (checkPoint == true)
+					app->LoadGameRequest();
+				else
+					playerChangePos = true;
 			}
 			if (lifes == 0)
 			{

@@ -15,15 +15,15 @@ Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 3)
 	animRight.PushBack({ 122,170,36,30 });
 
 	animRight.loop = true;
+
+	currentAnim = &animRight;
 }
 
 Bat::~Bat() {}
 
 bool Bat::Start()
 {
-	tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
 	collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
-
 	//SpeedX = 
 	speedY = 0;
 
@@ -35,8 +35,14 @@ bool Bat::Update(float dt)
 	animLeft.speed = 2.0f * dt;
 	animRight.speed = 2.0f * dt;
 
-	animLeft.Update();
-	animRight.Update();
+	if (currentAnim == &animRight)
+	{
+		currentAnim = &animLeft;
+	}
+	else if (currentAnim == &animLeft)
+	{
+		currentAnim == &animRight;
+	}
 
 	collider->SetPos(this->pos.x + 6, this->pos.y + 4, &collider->rect);
 
@@ -48,16 +54,9 @@ bool Bat::Update(float dt)
 	return true;
 }
 
-void Bat::Draw()
-{
-	if (this->collider != nullptr)
-		app->render->DrawTexture(tex, this->pos.x, this->pos.y, &animLeft.GetCurrentFrame());
-}
-
 bool Bat::CleanUp()
 {
 	app->colliderManager->RemoveCollider(collider);
-	app->tex->UnLoad(tex);
 
 	return true;
 }
@@ -164,8 +163,8 @@ bool Bat::CheckCollisionType(int idTile, std::string direction)
 
 bool Bat::Load(pugi::xml_node& load)
 {
-	this->pos.x = load.child("slime").child("position").attribute("x").as_int();
-	this->pos.y = load.child("slime").child("position").attribute("y").as_int();
+	this->pos.x = load.child("bat").child("position").attribute("x").as_int();
+	this->pos.y = load.child("bat").child("position").attribute("y").as_int();
 
 	return true;
 }
@@ -173,9 +172,10 @@ bool Bat::Load(pugi::xml_node& load)
 bool Bat::Save(pugi::xml_node& save) const
 {
 	pugi::xml_node bat = save.append_child("bat");
+	bat = bat.append_child("position");
 
-	bat.append_child("position").append_attribute("x") = this->pos.x;
-	bat.append_child("position").append_attribute("y") = this->pos.y;
+	bat.append_attribute("x").set_value(pos.x);
+	bat.append_attribute("y").set_value(pos.y);
 
 	return true;
 }

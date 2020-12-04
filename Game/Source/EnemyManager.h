@@ -5,6 +5,8 @@
 #include "List.h"
 #include "Point.h"
 
+struct SDL_Texture;
+
 class EnemyManager : public Module
 {
 public:
@@ -33,4 +35,5 @@ public:
 private:
 
 	List<Enemy*> enemyList;
+	SDL_Texture* texture = nullptr;
 };

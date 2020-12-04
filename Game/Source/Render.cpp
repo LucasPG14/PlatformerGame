@@ -150,7 +150,7 @@ void Render::ResetViewPort()
 
 void Render::ResetCam()
 {
-	offset = { app->player->position.x - 640, app->player->position.y };
+	offset = { 0, 0 };
 	camera.x = !(offset.x);
 	camera.y = !(offset.y);
 }
