@@ -7,12 +7,23 @@
   <:anonymous />
   <map />
   <player>
-    <position x="2830" y="236.160751" />
+    <position x="249" y="603.28064" />
   </player>
+  <enemies>
+    <slime>
+      <position x="0" />
+      <position y="668" />
+    </slime>
+    <slime>
+      <position x="100" />
+      <position y="500" />
+    </slime>
+  </enemies>
   <:anonymous />
   <fade />
   <:anonymous />
   <renderer>
-    <camera x="-2208" y="3" />
+    <camera x="2" y="-243" />
+    <offset x="-1" y="243.28064" />
   </renderer>
 </save_status>

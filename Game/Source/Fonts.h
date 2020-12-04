@@ -56,5 +56,4 @@ private:
 	// An array to keep track and store all loaded fonts
 };
 
-
 #endif // __Fonts_H__

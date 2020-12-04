@@ -5,7 +5,9 @@
 #include "App.h"
 
 EnemyManager::EnemyManager()
-{}
+{
+	name.Create("enemies");
+}
 
 EnemyManager::~EnemyManager()
 {}
@@ -45,6 +47,47 @@ void EnemyManager::Draw()
 		enemies->data->Draw();
 		enemies = enemies->next;
 	}
+}
+
+void EnemyManager::Lifes(Collider* coll)
+{
+	ListItem<Enemy*>* enemies = enemyList.start;
+
+	while (enemies != nullptr)
+	{
+		if (enemies->data->collider == coll)
+		{
+			enemies->data->lifes--;
+			break;
+		}
+		enemies = enemies->next;
+	}
+}
+
+bool EnemyManager::LoadState(pugi::xml_node& load)
+{
+	ListItem<Enemy*>* enemies = enemyList.start;
+
+	while (enemies != nullptr)
+	{
+		enemies->data->Load(load);
+		enemies = enemies->next;
+	}
+
+	return true;
+}
+
+bool EnemyManager::SaveState(pugi::xml_node& save) const
+{
+	ListItem<Enemy*>* enemies = enemyList.start;
+
+	while (enemies != nullptr)
+	{
+		enemies->data->Save(save);
+		enemies = enemies->next;
+	}
+
+	return true;
 }
 
 bool EnemyManager::CleanUp()

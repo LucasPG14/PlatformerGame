@@ -21,9 +21,13 @@ public:
 
 	bool CheckCollisionType(int idTile, std::string direction);
 
+	// Load and Save
+	bool Load(pugi::xml_node& load);
+
+	bool Save(pugi::xml_node& save) const;
+
 private:
 
-	Collider* collider;
 	SDL_Texture* tex = nullptr;
 	Animation animLeft;
 	Animation animRight;

@@ -24,6 +24,12 @@ public:
 
 	void Draw();
 
+	void Lifes(Collider* coll);
+
+	// Load / Save
+	bool LoadState(pugi::xml_node&);
+	bool SaveState(pugi::xml_node&) const;
+
 private:
 
 	List<Enemy*> enemyList;

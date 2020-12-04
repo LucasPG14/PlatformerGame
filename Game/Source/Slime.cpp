@@ -42,6 +42,11 @@ bool Slime::Update(float dt)
 
 	collider->SetPos(this->pos.x + 4, this->pos.y + 3, &collider->rect);
 
+	if (this->lifes == 0)
+	{
+		app->enemyManager->RemoveEnemy(this);
+	}
+
 	return true;
 }
 
@@ -69,6 +74,25 @@ void Slime::Gravity(float dt)
 			speedY = -5.0f;
 		}
 	}
+}
+
+bool Slime::Load(pugi::xml_node& load)
+{
+
+	this->pos.x = load.child("slime").child("position").attribute("x").as_int();
+	this->pos.y = load.child("slime").child("position").attribute("y").as_int();
+
+	return true;
+}
+
+bool Slime::Save(pugi::xml_node& save) const
+{
+	pugi::xml_node slime = save.append_child("slime");
+
+	slime.append_child("position").append_attribute("x") = this->pos.x;
+	slime.append_child("position").append_attribute("y") = this->pos.y;
+
+	return true;
 }
 
 bool Slime::Collision(const char* side)

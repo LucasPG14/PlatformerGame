@@ -40,12 +40,18 @@ bool Bat::Update(float dt)
 
 	collider->SetPos(this->pos.x + 6, this->pos.y + 4, &collider->rect);
 
+	if (this->lifes == 0)
+	{
+		app->enemyManager->RemoveEnemy(this);
+	}
+
 	return true;
 }
 
 void Bat::Draw()
 {
-	app->render->DrawTexture(tex, this->pos.x, this->pos.y, &animLeft.GetCurrentFrame());
+	if (this->collider != nullptr)
+		app->render->DrawTexture(tex, this->pos.x, this->pos.y, &animLeft.GetCurrentFrame());
 }
 
 bool Bat::CleanUp()
@@ -154,4 +160,22 @@ bool Bat::CheckCollisionType(int idTile, std::string direction)
 	}
 
 	return false;
+}
+
+bool Bat::Load(pugi::xml_node& load)
+{
+	this->pos.x = load.child("slime").child("position").attribute("x").as_int();
+	this->pos.y = load.child("slime").child("position").attribute("y").as_int();
+
+	return true;
+}
+
+bool Bat::Save(pugi::xml_node& save) const
+{
+	pugi::xml_node bat = save.append_child("bat");
+
+	bat.append_child("position").append_attribute("x") = this->pos.x;
+	bat.append_child("position").append_attribute("y") = this->pos.y;
+
+	return true;
 }
