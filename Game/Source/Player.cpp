@@ -12,6 +12,7 @@
 #include "Map.h"
 #include "FadeToBlack.h"
 #include "Log.h"
+#include "Fonts.h"
 
 
 Player::Player() : Module()
@@ -138,11 +139,15 @@ bool Player::Start()
 	if (this->active == true)
 	{
 		lifes = 3;
+		stars = 0;
+		score = 0;
 		SString tmp("%s%s", folder.GetString(), playerString.GetString());
 		player = app->tex->Load(tmp.GetString());
 		currentAnimation = &rightIdleAnim;
 		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
 		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
+		starTex = app->tex->Load("Assets/Textures/Characters/starTex.png");
+
 		jumping = false;
 		levelFinished = false;
 		checkPoint = false;
@@ -153,6 +158,10 @@ bool Player::Start()
 		app->render->offset = { 0,0 };
 		app->render->camera.x = !(app->render->offset.x);
 		app->render->camera.y = !(app->render->offset.y);
+
+		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
+		yellowFont = app->fonts->Load("Assets/Textures/Characters/FontY.png", lookupTable, 5);
+		
 	}
 
 	return true;
@@ -356,6 +365,7 @@ bool Player::Update(float dt)
 
 	currentAnimation->Update();
 
+
 	return true;
 }
 
@@ -373,6 +383,18 @@ bool Player::PostUpdate() {
 
 	switch (lifes)
 	{
+	case 6:
+		rect = { 0,0,222,49 };
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+		break;
+	case 5:
+		rect = { 0,0,186,49 };
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+		break;
+	case 4:
+		rect = { 0,0,152,49 };
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+		break;
 	case 3:
 		rect = { 0,0,115,49 };
 		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
@@ -388,7 +410,18 @@ bool Player::PostUpdate() {
 	default:
 		break;
 	}
-
+	//Stars in HUD
+	app->fonts->BlitText(1130, 10, yellowFont, "x");
+	std::string s = std::to_string(stars);
+	char const* pchar = s.c_str();
+	app->fonts->BlitText(1170, 10, yellowFont, pchar);
+	rect = { 0,0,1280,720 };
+	app->render->DrawTexture(starTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+	
+	//score in HUD
+	std::string d = std::to_string(score);
+	char const* dchar = d.c_str();
+	app->fonts->BlitText(650, 10, yellowFont, dchar);
 	return true;
 }
 
@@ -399,6 +432,8 @@ bool Player::CleanUp() {
 	app->tex->UnLoad(lifesTex);
 	leftDeadAnim.Reset();
 	rightDeadAnim.Reset();
+	app->fonts->UnLoad(yellowFont);
+	app->tex->UnLoad(starTex);
 	this->active = false;
 	return true;
 }

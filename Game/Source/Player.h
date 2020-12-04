@@ -52,7 +52,8 @@ public:
 	bool deadPlayer;
 
 	int lifes;
-
+	int stars;
+	int score;
 	bool playerChangePos;
 
 	// Player position
@@ -106,8 +107,11 @@ private:
 	Collider* swordCollider;
 
 	uint stepFx;
+		int yellowFont = -1;
 
 	//lifes
 	SDL_Texture* lifesTex = nullptr;
+	SDL_Texture* starTex = nullptr;
+
 };
 #endif

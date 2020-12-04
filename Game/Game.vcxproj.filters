@@ -39,6 +39,7 @@
     <ClCompile Include="Source\Pathfinding.cpp" />
     <ClCompile Include="Source\Bat.cpp" />
     <ClCompile Include="Source\Life.cpp" />
+    <ClCompile Include="Source\Star.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Window.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="Source\Pathfinding.h" />
     <ClInclude Include="Source\Bat.h" />
     <ClInclude Include="Source\Life.h" />
+    <ClInclude Include="Source\Star.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">

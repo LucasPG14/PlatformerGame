@@ -4,6 +4,7 @@
 #include "Bat.h"
 #include "Life.h"
 #include "App.h"
+#include "Star.h"
 
 EnemyManager::EnemyManager()
 {
@@ -125,6 +126,10 @@ Enemy* EnemyManager::AddEnemy(iPoint point, EnemyType enemyType)
 		break;
 	case LIFE:
 		ret = new Life(point);
+		ret;
+		break;
+	case STAR:
+		ret = new Star(point);
 		ret;
 		break;
 	}

@@ -49,6 +49,7 @@ bool Scene::Start()
 	app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
 	app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
 	app->enemyManager->AddEnemy(iPoint(0, 600), EnemyType::LIFE);
+	app->enemyManager->AddEnemy(iPoint(0, 630), EnemyType::STAR);
 
 	app->enemyManager->active = true;
 	app->enemyManager->Start();
@@ -62,6 +63,7 @@ bool Scene::Start()
 	// Load map
 	app->map->active = true;
 	app->map->Load("level1.tmx");
+
 
 	app->LoadGameRequest();
 

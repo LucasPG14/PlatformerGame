@@ -15,7 +15,8 @@ public:
 		SWORD,
 		ENEMY_WALK,
 		ENEMY_FLY,
-		LIFE
+		LIFE,
+		STAR
 	};
 
 	Collider(SDL_Rect rectangle, Type type);

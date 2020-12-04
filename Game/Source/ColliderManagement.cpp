@@ -64,7 +64,11 @@ void ColliderManagement::DrawColliders()
 			break;
 		case Collider::Type::ENEMY_FLY:
 			app->render->DrawRectangle(coll->data->rect, 255, 255, 0, alpha);
+			break;
 		case Collider::Type::LIFE:
+			app->render->DrawRectangle(coll->data->rect, 255, 0, 255, alpha);
+			break;
+		case Collider::Type::STAR:
 			app->render->DrawRectangle(coll->data->rect, 255, 0, 255, alpha);
 			break;
 		}
@@ -141,17 +145,26 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 		app->enemyManager->Lifes(coll2);
 		//RemoveCollider(coll2);
 		RemoveCollider(coll1);
+		app->player->score = app->player->score +100;
 	}
 	else if (coll2->type == Collider::Type::SWORD && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
 	{
 		app->enemyManager->Lifes(coll1);
 		//RemoveCollider(coll1);
 		RemoveCollider(coll2);
+		app->player->score = app->player->score + 100;
 	}
 	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::LIFE))
 	{
 		app->player->lifes++;
 		RemoveCollider(coll2);
+		
+	}
+	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::STAR))
+	{
+		app->player->stars++;
+		RemoveCollider(coll2);
+		
 	}
 }
 
