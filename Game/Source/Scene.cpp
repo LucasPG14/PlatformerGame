@@ -47,9 +47,26 @@ bool Scene::Start()
 
 	//Load Enemies
 	app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
+
 	app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
-	app->enemyManager->AddEnemy(iPoint(0, 600), EnemyType::LIFE);
-	app->enemyManager->AddEnemy(iPoint(10, 400), EnemyType::STAR);
+
+	app->enemyManager->AddEnemy(iPoint(4178, 633), EnemyType::LIFE);
+	app->enemyManager->AddEnemy(iPoint(3829, 1264), EnemyType::LIFE);
+	app->enemyManager->AddEnemy(iPoint(4211, 1070), EnemyType::LIFE);
+
+	app->enemyManager->AddEnemy(iPoint(1200, 300), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(1290, 955), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(505, 1025), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(2511, 1375), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(2719, 583), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(3414, 420), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(3446, 798), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(3933, 165), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(5373, 336), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(4426, 418), EnemyType::STAR);
+
+
+	
 
 	app->enemyManager->active = true;
 	app->enemyManager->Start();
