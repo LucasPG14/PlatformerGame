@@ -27,6 +27,5 @@ private:
 
 	Collider* lifeItem = nullptr;
 	Animation lifeAnim;
-	SDL_Texture* lifeTex;
 };
 #endif

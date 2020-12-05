@@ -96,11 +96,11 @@ bool Scene::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
 		//app->pathfinding->PropagateDijkstra();
-		app->pathfinding->PropagateAStar();
+		//app->pathfinding->PropagateAStar();
 
 	if (app->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
 		//app->pathfinding->PropagateDijkstra();
-		app->pathfinding->PropagateAStar();
+		//app->pathfinding->PropagateAStar();
 
 	if (app->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT)
 		app->pathfinding->ComputePathAStar(app->pathfinding->goalAStar.x, app->pathfinding->goalAStar.y);
@@ -139,6 +139,9 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
 
+	if (app->player->checkpoint == true)
+		app->render->DrawTexture(app->player->checkpointTex, 2830, 266, &app->player->checkpointAnim.GetCurrentFrame());
+
 	// Draw map
 	app->map->Draw();
 	app->pathfinding->DrawPath();
@@ -164,6 +167,7 @@ bool Scene::CleanUp()
 	app->enemyManager->CleanUp();
 	app->player->CleanUp();
 	app->map->CleanUp();
+	app->pathfinding->CleanUp();
 
 	return true;
 }

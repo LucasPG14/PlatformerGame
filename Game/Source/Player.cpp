@@ -120,6 +120,14 @@ Player::Player() : Module()
 	cooldownAtk.PushBack({ 114, 2, 27,27 });
 
 	cooldownAtk.loop = false;
+
+	checkpointAnim.PushBack({ 0, 0, 78, 54 });
+	checkpointAnim.PushBack({ 78, 0, 78, 54 });
+	checkpointAnim.PushBack({ 156, 0, 78, 54 });
+	checkpointAnim.PushBack({ 234, 0, 78, 54 });
+	checkpointAnim.PushBack({ 312, 0, 78, 54 });
+
+	checkpointAnim.loop = false;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -157,21 +165,19 @@ bool Player::Start()
 		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
 		starTex = app->tex->Load("Assets/Textures/Characters/starTex.png");
 		cooldownTex = app->tex->Load("Assets/Textures/Characters/cooldown_attack.png");
+		checkpointTex = app->tex->Load("Assets/Textures/Characters/checkpoint.png");
 
 		jumping = false;
 		levelFinished = false;
-		checkPoint = false;
+		checkpoint = false;
 		deadPlayer = false;
 		playerChangePos = false;
 		playerCollider = app->colliderManager->AddCollider({ (int)position.x + 12, (int)position.y + 30, 25, 51 }, Collider::PLAYER);
 
-		app->render->offset = { 0,0 };
-		app->render->camera.x = !(app->render->offset.x);
-		app->render->camera.y = !(app->render->offset.y);
+		app->render->ResetCam();
 
 		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
 		yellowFont = app->fonts->Load("Assets/Textures/Characters/FontY.png", lookupTable, 5);
-		
 	}
 
 	return true;
@@ -368,6 +374,9 @@ bool Player::Update(float dt)
 		}
 
 		playerCollider->SetPos(position.x + 12, position.y + 35, &playerCollider->rect);
+			
+		if (checkpoint == true)
+			checkpointAnim.Update();
 	}
 	else
 	{
@@ -608,10 +617,14 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 			if (lifes > 0) {
 				deadPlayer = false;
-				if (checkPoint == true)
+				if (checkpoint == true)
 					app->LoadGameRequest();
 				else
+				{
 					playerChangePos = true;
+					app->render->ResetCam();
+				}
+
 			}
 			if (lifes == 0)
 			{
@@ -640,9 +653,9 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 		levelFinished = true;
 		break;
 	case 293:
-		if(checkPoint == false)
+		if(checkpoint == false)
 			app->SaveGameRequest();
-		checkPoint = true;
+		checkpoint = true;
 		break;
 	}
 

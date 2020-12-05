@@ -13,6 +13,8 @@ enum EnemyType
 	STAR
 };
 
+class Player;
+
 class Enemy
 {
 public:
@@ -38,6 +40,10 @@ public:
 	virtual bool Load(pugi::xml_node&) { return true; }
 
 	virtual bool Save(pugi::xml_node&) const { return true; }
+
+	virtual bool FindGoal(Player* player) { return true; }
+
+	virtual bool Move() { return true; }
 
 
 	Collider* collider;

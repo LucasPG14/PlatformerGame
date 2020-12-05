@@ -2,7 +2,10 @@
 #include "App.h"
 #include "Textures.h"
 #include "Map.h"
+#include "Input.h"
+#include "Pathfinding.h"
 #include "EnemyManager.h"
+#include "Player.h"
 
 Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 2)
 {
@@ -41,8 +44,6 @@ bool Bat::Start()
 {
 	this->collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
 
-	//Speed = 
-
 	currentAnim = &animRight;
 
 	return true;
@@ -70,6 +71,12 @@ bool Bat::Update(float dt)
 		}
 	}
 
+	if (app->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		FindGoal(app->player);
+
+	if (app->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+		Move();
+
 	if (hitLeftAnim.HasFinished())
 	{
 		this->currentAnim = &animLeft;
@@ -77,7 +84,7 @@ bool Bat::Update(float dt)
 	}
 	else if (hitRightAnim.HasFinished())
 	{
-		currentAnim = &animRight;
+		this->currentAnim = &animRight;
 		hitRightAnim.Reset();
 	}
 
@@ -87,6 +94,8 @@ bool Bat::Update(float dt)
 bool Bat::CleanUp()
 {
 	app->colliderManager->RemoveCollider(this->collider);
+	app->enemyManager->RemoveEnemy(this);
+	batPath.Clear();
 
 	return true;
 }
@@ -108,6 +117,54 @@ void Bat::Hit()
 	}
 }
 
+bool Bat::FindGoal(Player* player)
+{
+	app->pathfinding->path.Clear();
+
+	int x = player->position.x;
+	int y = player->position.y + 32;
+	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
+	app->pathfinding->PropagateDijkstra(player);
+
+	batPath = *(app->pathfinding->ComputePath(x, y));
+
+	indexBat = batPath.Count() - 1;
+
+	return true;
+}
+
+bool Bat::Move()
+{
+	if (batPath[indexBat].x == this->pos.x / 16 && batPath[indexBat].y == this->pos.y / 16)
+	{
+		indexBat--;
+	}
+	else
+	{
+		if (batPath[indexBat].x > this->pos.x / 16)
+		{
+			this->pos.x += 6;
+		}
+
+		if (batPath[indexBat].x < this->pos.x / 16)
+		{
+			this->pos.x -= 6;
+		}
+
+		if (batPath[indexBat].y < this->pos.y / 16)
+		{
+			this->pos.y -= 6;
+		}
+
+		if (batPath[indexBat].y > this->pos.y / 16)
+		{
+			this->pos.y += 6;
+		}
+	}
+
+	return false;
+}
+
 bool Bat::Collision(const char* side)
 {
 	bool ret = false;
@@ -117,7 +174,6 @@ bool Bat::Collision(const char* side)
 	iPoint tilePos;
 
 	int idTile;
-
 
 	while (lay != NULL)
 	{
@@ -174,7 +230,6 @@ bool Bat::Collision(const char* side)
 		}
 		lay = lay->next;
 	}
-
 
 	return ret;
 }

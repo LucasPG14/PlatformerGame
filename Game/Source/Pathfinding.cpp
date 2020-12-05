@@ -2,6 +2,7 @@
 #include "App.h"
 #include "Map.h"
 #include "Render.h"
+#include "Player.h"
 #include "Input.h"
 #include "Textures.h"
 
@@ -40,8 +41,8 @@ void Pathfinding::DrawPath()
 
 		SDL_Rect rec = tileset->GetTileRect(290);
 		iPoint pos = app->map->MapToWorld(point.x, point.y);
-
-		app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
+		if (app->map->viewCollisions == true)
+			app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
 
 		item = item->next;
 	}
@@ -54,7 +55,8 @@ void Pathfinding::DrawPath()
 
 		SDL_Rect rec = tileset->GetTileRect(289);
 		iPoint pos = app->map->MapToWorld(point.x, point.y);
-		app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
+		if (app->map->viewCollisions == true)
+			app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
 	}
 
 	// Draw path
@@ -64,7 +66,7 @@ void Pathfinding::DrawPath()
 
 		SDL_Rect rec = tileset->GetTileRect(291);
 		iPoint pos = app->map->MapToWorld(path[i].x, path[i].y);
-		if (checkPath == true)
+		if (checkPath == true && app->map->viewCollisions == true)
 		{
 			app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
 		}
@@ -102,21 +104,23 @@ int Pathfinding::MovementCost(int x, int y) const
 	return ret;
 }
 
-void Pathfinding::ComputePath(int x, int y)
+DynArray<iPoint>* Pathfinding::ComputePath(int x, int y)
 {
 	path.Clear();
 	iPoint goal = app->map->WorldToMap(x, y);
 
-	ListItem<iPoint>* current = breadcrumbs.end;
 	int index = 0;
-	while (current != breadcrumbs.start)
+	path.PushBack(goal);
+	while (goal != visited.start->data)
 	{
-		index = visited.Find(current->data);
-		current = breadcrumbs.At(index);
-		path.PushBack(current->data);
+		index = visited.Find(goal);
+		goal = breadcrumbs[index];
+		path.PushBack(goal);
 	}
 
-	path.PushBack(breadcrumbs.start->data);
+	path.PushBack(visited.start->data);
+
+	return &path;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,21 +152,12 @@ void Pathfinding::ComputePathAStar(int x, int y)
 
 }
 
-void Pathfinding::PropagateAStar()
+void Pathfinding::PropagateAStar(Player* player)
 {
-	/*iPoint p;
-	app->input->GetMousePosition(p.x, p.y);
-	goalAStar = app->map->WorldToMap(p.x - app->render->camera.x - app->map->data.tileWidth / 2, p.y - app->render->camera.y - app->map->data.tileHeight / 2);*/
-
-	if (finishAStar == true)
-	{
-		ComputePathAStar(goalAStar.x, goalAStar.y);
-		return;
-	}
-
+	goalAStar = app->map->WorldToMap(player->GetPosition().x, player->GetPosition().y);
 
 	iPoint curr;
-	if (frontier.Pop(curr))
+	while (frontier.Pop(curr))
 	{
 		iPoint neighbors[4];
 		neighbors[0].Create(curr.x + 1, curr.y + 0);
@@ -171,8 +166,10 @@ void Pathfinding::PropagateAStar()
 		neighbors[3].Create(curr.x + 0, curr.y - 1);
 
 		if (curr == goalAStar)
+		{
 			finishAStar = true;
-
+			break;
+		}
 
 		for (uint i = 0; i < 4; ++i)
 		{
@@ -187,21 +184,25 @@ void Pathfinding::PropagateAStar()
 			}
 		}
 	}
-
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-void Pathfinding::PropagateBFS()
+void Pathfinding::PropagateBFS(Player* player)
 {
 	iPoint curr;
 
-	if (frontier.Pop(curr))
+	goalAStar = app->map->WorldToMap(player->GetPosition().x, player->GetPosition().y);
+
+	while (frontier.Pop(curr))
 	{
 		iPoint neighbors[4];
 		neighbors[0].Create(curr.x + 1, curr.y + 0);
 		neighbors[1].Create(curr.x + 0, curr.y + 1);
 		neighbors[2].Create(curr.x - 1, curr.y + 0);
 		neighbors[3].Create(curr.x + 0, curr.y - 1);
+
+		if (goalAStar == curr)
+			break;
 
 		for (uint i = 0; i < 4; ++i)
 		{
@@ -211,9 +212,6 @@ void Pathfinding::PropagateBFS()
 				{
 					frontier.Push(neighbors[i], 0);
 					visited.Add(neighbors[i]);
-
-					// L11: TODO 1: Record the direction to the previous node 
-					// with the new list "breadcrumps"
 					breadcrumbs.Add(curr);
 				}
 			}
@@ -221,17 +219,21 @@ void Pathfinding::PropagateBFS()
 	}
 }
 
-void Pathfinding::PropagateDijkstra()
+void Pathfinding::PropagateDijkstra(Player* player)
 {
 	iPoint curr;
+	goalAStar = app->map->WorldToMap(player->GetPosition().x, player->GetPosition().y + 32);
 
-	if (frontier.Pop(curr))
+	while (frontier.Pop(curr))
 	{
 		iPoint neighbors[4];
 		neighbors[0].Create(curr.x + 1, curr.y + 0);
 		neighbors[1].Create(curr.x + 0, curr.y + 1);
 		neighbors[2].Create(curr.x - 1, curr.y + 0);
 		neighbors[3].Create(curr.x + 0, curr.y - 1);
+
+		if (goalAStar == curr)
+			break;
 
 		for (uint i = 0; i < 4; ++i)
 		{
@@ -245,6 +247,8 @@ void Pathfinding::PropagateDijkstra()
 			}
 		}
 	}
+
+	
 }
 
 bool Pathfinding::Load(pugi::xml_node& load)

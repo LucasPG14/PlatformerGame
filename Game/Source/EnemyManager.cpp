@@ -20,6 +20,8 @@ bool EnemyManager::Start()
 	ListItem<Enemy*>* enemies = enemyList.start;
 
 	texture = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
+	lifeTexture = app->tex->Load("Assets/Textures/Characters/life_anim.png");
+	starTexture = app->tex->Load("Assets/Textures/Characters/star_anim.png");
 
 	while (enemies != nullptr)
 	{
@@ -106,7 +108,7 @@ bool EnemyManager::CleanUp()
 		enemies = enemies->next;
 	}
 
-	app->tex->UnLoad(texture);
+	//app->tex->UnLoad(texture);
 
 	return true;
 }
@@ -127,11 +129,11 @@ Enemy* EnemyManager::AddEnemy(iPoint point, EnemyType enemyType)
 		break;
 	case LIFE:
 		ret = new Life(point);
-		ret;
+		ret->texture = lifeTexture;
 		break;
 	case STAR:
 		ret = new Star(point);
-		ret;
+		ret->texture = starTexture;
 		break;
 	}
 
@@ -150,7 +152,6 @@ void EnemyManager::RemoveEnemy(Enemy* enemy)
 	if (index != -1)
 	{
 		aux = enemyList.At(index);
-		aux->data->CleanUp();
 		enemyList.Del(aux);
 	}
 }

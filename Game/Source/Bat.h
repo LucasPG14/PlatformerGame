@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enemy.h"
+#include "DynArray.h"
 
 class Bat : public Enemy
 {
@@ -23,6 +24,10 @@ public:
 
 	void Hit() override;
 
+	bool FindGoal(Player* player) override;
+
+	bool Move() override;
+
 	// Load and Save
 	bool Load(pugi::xml_node& load);
 
@@ -39,4 +44,6 @@ private:
 
 	int deadFx = 0;
 	uint speedMove;
+	DynArray<iPoint> batPath;
+	int indexBat;
 };

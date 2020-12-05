@@ -59,6 +59,13 @@ public:
 	// Player position
 	Position position;
 
+	// Checkpoint bool
+	bool checkpoint;
+
+	SDL_Texture* checkpointTex = nullptr;
+
+	Animation checkpointAnim;
+
 private:
 	// Player texture
 	SDL_Texture* player = nullptr;
@@ -98,9 +105,6 @@ private:
 
 	bool levelFinished = false;
 
-	// Checkpoint bool
-	bool checkPoint;
-
 	bool sword = false;
 
 	//Cooldown on attack
@@ -115,6 +119,5 @@ private:
 	//lifes
 	SDL_Texture* lifesTex = nullptr;
 	SDL_Texture* starTex = nullptr;
-
 };
 #endif

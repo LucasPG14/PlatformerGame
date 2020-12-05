@@ -14,6 +14,8 @@
 
 SceneManager::SceneManager() : Module()
 {
+	name.Create("scenes");
+
 	intro = new SceneIntro();
 	level1 = new Scene();
 	dieScene = new SceneDie();
@@ -144,6 +146,17 @@ bool SceneManager::PostUpdate()
 bool SceneManager::CleanUp()
 {
 	bool ret = true;
+
+	ListItem<Scenes*>* sceneItem = scenes.start;
+
+	while (sceneItem != nullptr)
+	{
+		RELEASE(sceneItem->data);
+
+		sceneItem = sceneItem->next;
+	}
+
+	scenes.Clear();
 
 	return ret;
 }

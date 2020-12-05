@@ -14,6 +14,7 @@ struct SDL_Texture;
 struct SDL_Color;
 struct SDL_Rect;
 struct TileSet;
+class Player;
 
 class Pathfinding : public Module
 {
@@ -34,13 +35,13 @@ public:
 
 	// More pathfinding methods
 	int MovementCost(int x, int y) const;
-	void ComputePath(int x, int y);
+	DynArray<iPoint>* ComputePath(int x, int y);
 	void ComputePathAStar(int x, int y);
 
 	// Propagation methods
-	void PropagateBFS();
-	void PropagateDijkstra();
-	void PropagateAStar();
+	void PropagateBFS(Player* player);
+	void PropagateDijkstra(Player* player);
+	void PropagateAStar(Player* player);
 
 
 	bool Load(pugi::xml_node& load);

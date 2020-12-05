@@ -36,4 +36,6 @@ private:
 
 	List<Enemy*> enemyList;
 	SDL_Texture* texture = nullptr;
+	SDL_Texture* lifeTexture = nullptr;
+	SDL_Texture* starTexture = nullptr;
 };

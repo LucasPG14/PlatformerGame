@@ -25,7 +25,7 @@ Star::~Star() {
 
 bool Star::Start()
 {
-	this->starTex = app->tex->Load("Assets/Textures/Characters/starAnim.png");
+	this->starTex = app->tex->Load("Assets/Textures/Characters/star_anim.png");
 	this->starItem = app->colliderManager->AddCollider({ this->pos.x + 7, this->pos.y, 10, 22 }, Collider::Type::STAR);
 
 	return false;
