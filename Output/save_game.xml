@@ -15,13 +15,13 @@
   <scenes />
   <map />
   <player>
-    <position x="2831" y="233.339722" />
+    <position x="2829" y="234.580154" />
   </player>
   <:anonymous />
   <fade />
   <fonts />
   <renderer>
-    <camera x="-2208" y="4" />
-    <offset x="2209" y="-4.8203125" />
+    <camera x="-2208" y="2" />
+    <offset x="2209" y="-2.7598877" />
   </renderer>
 </save_status>

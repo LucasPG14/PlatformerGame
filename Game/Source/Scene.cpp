@@ -83,9 +83,9 @@ bool Scene::Update(float dt)
 		app->player->playerChangePos = false;
 	}
 
-	//if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
-	//	app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-	//	app->fade->Fade(this, this, 1/dt);
+	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || 
+	app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+		app->fade->Fade(this, this, 1/dt);
 
 		// Pathfinding testing inputs
 	if (app->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
