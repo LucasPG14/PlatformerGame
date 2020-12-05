@@ -37,6 +37,7 @@ bool SceneIntro::Start()
 
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
 	logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
+	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_iron_is_laughter.ogg");
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
 
@@ -47,17 +48,18 @@ bool SceneIntro::Update(float dt)
 {
 	bool ret = true;
 
-	time++;
+	if (time < 1000) time++;
 
-	if (time == 1) 
+	if (time == 1) introAnim.speed = 0.05f * dt;
+
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		introAnim.speed = 0.5f * dt;
+		if (time < 120) time = 121;
+		else if (time > 120) app->fade->Fade(this, app->sceneManager->level1, 1 / dt);
+		
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, app->sceneManager->level1, 1/dt);
-
-	if (time > 300) introAnim.Update();
+	if (time > 120) introAnim.Update();
 
 	return ret;
 }
@@ -67,7 +69,7 @@ bool SceneIntro::PostUpdate()
 {
 	bool ret = true;
 	// Draw everything 
-	if (time > 300) 
+	if (time > 120) 
 		app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
 
 	else 
@@ -79,6 +81,8 @@ bool SceneIntro::PostUpdate()
 bool SceneIntro::CleanUp() 
 {
 	bool ret = true;
+
+	app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
 
 	app->tex->UnLoad(bgTexture);
 	app->tex->UnLoad(logoTexture);

@@ -38,7 +38,7 @@ public:
 	void Dead();
 	bool LevelFinished();
 	bool IsDead();
-	void SwordAttack();
+	void SwordAttack(float dt);
 	Position GetPosition();
 
 	// Load and Save
@@ -61,6 +61,7 @@ public:
 
 	// Checkpoint bool
 	bool checkpoint;
+	int whatCheckpoint;
 
 	SDL_Texture* checkpointTex = nullptr;
 
@@ -113,6 +114,7 @@ private:
 	Collider* playerCollider;
 	Collider* swordCollider;
 
+	uint swordFx;
 	uint stepFx;
 	int yellowFont = -1;
 

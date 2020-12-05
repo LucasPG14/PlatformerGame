@@ -9,12 +9,12 @@
 
 Star::Star(iPoint position) : Enemy(position, EnemyType::STAR, 3)
 {
-	starAnim.PushBack({ 7,7,42,42 });
-	starAnim.PushBack({ 63,7,37,42 });
-	starAnim.PushBack({ 114,7,20,42 });
-	starAnim.PushBack({ 148,7,6,42 });
-	starAnim.PushBack({ 168,7,20,42 });
-	starAnim.PushBack({ 202,7,37,42 });
+	starAnim.PushBack({ 3,7,42,42 });
+	starAnim.PushBack({ 49,7,42,42 });
+	starAnim.PushBack({ 91,7,42,42 });
+	starAnim.PushBack({ 122,7,42,42 });
+	starAnim.PushBack({ 157,7,42,42 });
+	starAnim.PushBack({ 199,7,42,42 });
 
 	starAnim.loop = true;
 
@@ -37,8 +37,8 @@ Star::~Star() {
 bool Star::Start()
 {
 	this->starTex = app->tex->Load("Assets/Textures/Characters/star_anim.png");
-	//this->shineTex = app->tex->Load("Assets/Textures/Characters/shineAnim.png");
-	this->starItem = app->colliderManager->AddCollider({ this->pos.x + 7, this->pos.y, 10, 22 }, Collider::Type::STAR);
+	//this->shineTex = app->tex->Load("Assets/Textures/Characters/shine_anim.png");
+	this->starItem = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 6, 30, 30 }, Collider::Type::STAR);
 	star = app->audio->LoadFx("Assets/Audio/Fx/star.wav");
 
 	return false;

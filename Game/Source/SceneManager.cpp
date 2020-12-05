@@ -107,10 +107,8 @@ bool SceneManager::Update(float dt)
 	// Cap the game to 30 FPS
 	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
 	{
-		if (app->cappedMs == 1000 / 60)
-		{
-			app->cappedMs = 30;
-		}
+		if (app->cappedMs == 1000 / 60)	app->cappedMs = 1000 / 30;
+		else app->cappedMs = 1000 / 60;
 	}
 
 	ListItem<Scenes*>* sceneItem = scenes.start;

@@ -113,11 +113,11 @@ Player::Player() : Module()
 	leftAttackAnim.loop = false;
 
 	//cooldownAtk.PushBack({ 114, 2, 27,27 });
-	cooldownAtk.PushBack({ 2, 2, 27,27 });
-	cooldownAtk.PushBack({ 30, 2, 27,27 });
-	cooldownAtk.PushBack({ 58, 2, 27,27 });
-	cooldownAtk.PushBack({ 86, 2, 27,27 });
-	cooldownAtk.PushBack({ 114, 2, 27,27 });
+	cooldownAtk.PushBack({ 6, 6, 91, 91 });
+	cooldownAtk.PushBack({ 99, 6, 91, 91 });
+	cooldownAtk.PushBack({ 193, 6, 91, 91 });
+	cooldownAtk.PushBack({ 286, 6, 91, 91 });
+	cooldownAtk.PushBack({ 379, 6, 91, 91 });
 
 	cooldownAtk.loop = false;
 
@@ -163,18 +163,20 @@ bool Player::Start()
 		currentAnimation = &rightIdleAnim;
 		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
 		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
-		starTex = app->tex->Load("Assets/Textures/Characters/starTex.png");
+		starTex = app->tex->Load("Assets/Textures/Characters/star_tex.png");
 		cooldownTex = app->tex->Load("Assets/Textures/Characters/cooldown_attack.png");
 		checkpointTex = app->tex->Load("Assets/Textures/Characters/checkpoint.png");
 
 		jumping = false;
 		levelFinished = false;
 		checkpoint = false;
+		whatCheckpoint = 0;
 		deadPlayer = false;
 		playerChangePos = false;
 		playerCollider = app->colliderManager->AddCollider({ (int)position.x + 12, (int)position.y + 30, 25, 51 }, Collider::PLAYER);
 		checkpointAudio = app->audio->LoadFx("Assets/Audio/Fx/checkpoint.wav");
 		jumpAudio = app->audio->LoadFx("Assets/Audio/Fx/jump.wav");
+		swordFx = app->audio->LoadFx("Assets/Audio/Fx/sword_swing_soundbible.com_639083727.wav");
 
 		app->render->ResetCam();
 
@@ -200,6 +202,7 @@ bool Player::Update(float dt)
 		leftDeadAnim.speed = 10.0f * dt;
 		rightAttackAnim.speed = 10.0f * dt;
 		leftAttackAnim.speed = 10.0f * dt;
+		checkpointAnim.speed = 5.0f * dt;
 
 		if (attackCooldown != 0) attackCooldown--;
 
@@ -240,7 +243,6 @@ bool Player::Update(float dt)
 
 		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
 		{
-
 			if (currentAnimation == &rightJumpAnim)
 			{
 				leftJumpAnim.Reset();
@@ -284,12 +286,6 @@ bool Player::Update(float dt)
 			}
 		}
 
-		if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
-		{
-			SwordAttack();
-			cooldownAtk.Reset();
-		}
-
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
 			app->audio->PlayFx(jumpAudio);
@@ -325,9 +321,10 @@ bool Player::Update(float dt)
 				lastAnimation = currentAnimation;
 			}
 
+			checkpoint = false;
 			jumping = true;
 			jump = true;
-			speedY = 12.0f;
+			speedY = floor(500.0f * dt);
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
@@ -351,6 +348,14 @@ bool Player::Update(float dt)
 			}
 		}
 
+		if ((app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_DOWN || app->input->GetMouseButtonDown(1) == KEY_DOWN) && attackCooldown == 0)
+		{
+			SwordAttack(dt);
+			cooldownAtk.Reset();
+			app->audio->PlayFx(swordFx);
+		}
+
+
 		// God mode
 		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN) 
 			godMode = !godMode;
@@ -363,14 +368,12 @@ bool Player::Update(float dt)
 
 		Gravity(dt);
 
-		//if (app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight));
 		if (position.y >= app->render->offset.y + 360 && !(app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight)))
 		{
 			app->render->offset.y = position.y - 360;
 			app->render->camera.y = -(position.y - 360);
 		}
 
-		//if (app->render->offset.y <= 0);
 		if (position.y < app->render->offset.y + 360 && !(app->render->offset.y <= 0))
 		{
 			app->render->offset.y = position.y - 360;
@@ -378,7 +381,7 @@ bool Player::Update(float dt)
 		}
 
 		playerCollider->SetPos(position.x + 12, position.y + 35, &playerCollider->rect);
-			
+
 		if (checkpoint == true)
 			checkpointAnim.Update();
 	}
@@ -466,7 +469,7 @@ bool Player::PostUpdate() {
 	app->fonts->BlitText(650, 10, yellowFont, dchar);
 
 	//Cooldown Attack HUD
-	app->render->DrawTexture(cooldownTex, app->render->offset.x + 5, app->render->offset.y + 685, &cooldownAtk.GetCurrentFrame());
+	app->render->DrawTexture(cooldownTex, app->render->offset.x + 1180, app->render->offset.y + 620, &cooldownAtk.GetCurrentFrame());
 
 	return true;
 }
@@ -518,7 +521,7 @@ bool Player::Collision(const char* side)
 				{
 					for (uint i = 0; i < 3; i++)
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 40);
+						tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 38);
 						idTile = lay->data->Get(tilePos.x, tilePos.y);
 						if (CheckCollisionType(idTile, "top"))
 						{
@@ -619,22 +622,22 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 	case 290:
 		lifes--;
 
-			if (lifes > 0) {
-				deadPlayer = false;
-				if (checkpoint == true)
-					app->LoadGameRequest();
-				else
-				{
-					playerChangePos = true;
-					app->render->ResetCam();
-				}
-
-			}
-			if (lifes == 0)
+		if (lifes > 0) {
+			deadPlayer = false;
+			if (checkpoint == true)
+				app->LoadGameRequest();
+			else
 			{
-				Dead();
+				playerChangePos = true;
+				app->render->ResetCam();
 			}
-		
+
+		}
+		if (lifes == 0)
+		{
+			Dead();
+		}
+
 		return true;
 		break;
 
@@ -657,12 +660,18 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 		levelFinished = true;
 		break;
 	case 293:
-		if(checkpoint == false)
+		if (position.y < 400) whatCheckpoint = 1;
+		else if (position.y < 1400) whatCheckpoint = 2;
+		else whatCheckpoint = 3;
+		if (checkpoint == false)
+		{
+			checkpointAnim.Reset();
 			app->SaveGameRequest();
-		app->audio->PlayFx(checkpoint);
+			app->audio->PlayFx(checkpointAudio);
 
-		checkpoint = true;
-		break;
+			checkpoint = true;
+			break;
+		}
 	}
 
 	return false;
@@ -683,7 +692,7 @@ Position Player::GetPosition()
 	return position;
 }
 
-void Player::SwordAttack()
+void Player::SwordAttack(float dt)
 {
 	lastAnimation = currentAnimation;
 	attackCooldown = 180;

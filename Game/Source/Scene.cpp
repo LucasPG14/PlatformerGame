@@ -139,8 +139,20 @@ bool Scene::PostUpdate()
 	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
 
-	if (app->player->checkpoint == true)
+	switch (app->player->whatCheckpoint)
+	{
+	case 0:
+		break;
+	case 1:
 		app->render->DrawTexture(app->player->checkpointTex, 2830, 266, &app->player->checkpointAnim.GetCurrentFrame());
+		break;
+	case 2:
+		app->render->DrawTexture(app->player->checkpointTex, 2835, 1070, &app->player->checkpointAnim.GetCurrentFrame());
+		break;
+	case 3:
+		app->render->DrawTexture(app->player->checkpointTex, 2831, 1500, &app->player->checkpointAnim.GetCurrentFrame());
+		break;
+	}
 
 
 	// Draw map

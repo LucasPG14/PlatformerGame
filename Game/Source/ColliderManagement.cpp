@@ -13,26 +13,29 @@ ColliderManagement::~ColliderManagement(){}
 
 bool ColliderManagement::Update(float dt)
 {
-	ListItem<Collider*>* coll1 = collidersList.start;
-	ListItem<Collider*>* coll2;
-
-	while (coll1 != nullptr)
+	if (app->player->godMode == false)
 	{
-		coll2 = coll1->next;
+		ListItem<Collider*>* coll1 = collidersList.start;
+		ListItem<Collider*>* coll2;
 
-		while (coll2 != nullptr)
+		while (coll1 != nullptr)
 		{
-			if (coll1->data->Intersects(&coll2->data->rect))
+			coll2 = coll1->next;
+
+			while (coll2 != nullptr)
 			{
-				OnCollision(coll1->data, coll2->data);
+				if (coll1->data->Intersects(&coll2->data->rect))
+				{
+					OnCollision(coll1->data, coll2->data);
+				}
+				else if (coll2->data->Intersects(&coll1->data->rect))
+				{
+					OnCollision(coll2->data, coll1->data);
+				}
+				coll2 = coll2->next;
 			}
-			else if (coll2->data->Intersects(&coll1->data->rect))
-			{
-				OnCollision(coll2->data, coll1->data);
-			}
-			coll2 = coll2->next;
+			coll1 = coll1->next;
 		}
-		coll1 = coll1->next;
 	}
 
 	return true;
