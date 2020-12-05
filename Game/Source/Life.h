@@ -27,5 +27,6 @@ private:
 
 	Collider* lifeItem = nullptr;
 	Animation lifeAnim;
+	uint life = -1;
 };
 #endif

@@ -6,6 +6,7 @@
 #include "Pathfinding.h"
 #include "EnemyManager.h"
 #include "Player.h"
+#include "Audio.h"
 
 Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 2)
 {
@@ -43,6 +44,7 @@ Bat::~Bat() {}
 bool Bat::Start()
 {
 	this->collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
+	bat = app->audio->LoadFx("Assets/Audio/Fx/FlyingEnemyDie.wav");
 
 	currentAnim = &animRight;
 
@@ -68,7 +70,9 @@ bool Bat::Update(float dt)
 		if (deathAnim.HasFinished())
 		{
 			app->enemyManager->RemoveEnemy(this);
+			app->audio->PlayFx(bat);
 		}
+
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
@@ -81,11 +85,15 @@ bool Bat::Update(float dt)
 	{
 		this->currentAnim = &animLeft;
 		hitLeftAnim.Reset();
+		app->audio->PlayFx(bat);
+
 	}
 	else if (hitRightAnim.HasFinished())
 	{
 		this->currentAnim = &animRight;
 		hitRightAnim.Reset();
+		app->audio->PlayFx(bat);
+
 	}
 
 	return true;

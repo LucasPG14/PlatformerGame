@@ -42,6 +42,7 @@ private:
 	Animation hitRightAnim;
 	Animation deathAnim;
 
+	uint bat = -1;
 	int deadFx = 0;
 	uint speedMove;
 	DynArray<iPoint> batPath;

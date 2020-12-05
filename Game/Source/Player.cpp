@@ -173,6 +173,8 @@ bool Player::Start()
 		deadPlayer = false;
 		playerChangePos = false;
 		playerCollider = app->colliderManager->AddCollider({ (int)position.x + 12, (int)position.y + 30, 25, 51 }, Collider::PLAYER);
+		checkpointAudio = app->audio->LoadFx("Assets/Audio/Fx/checkpoint.wav");
+		jumpAudio = app->audio->LoadFx("Assets/Audio/Fx/jump.wav");
 
 		app->render->ResetCam();
 
@@ -238,6 +240,7 @@ bool Player::Update(float dt)
 
 		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
 		{
+
 			if (currentAnimation == &rightJumpAnim)
 			{
 				leftJumpAnim.Reset();
@@ -289,6 +292,7 @@ bool Player::Update(float dt)
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
+			app->audio->PlayFx(jumpAudio);
 
 			if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 			{
@@ -655,6 +659,8 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 	case 293:
 		if(checkpoint == false)
 			app->SaveGameRequest();
+		app->audio->PlayFx(checkpoint);
+
 		checkpoint = true;
 		break;
 	}

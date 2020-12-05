@@ -142,6 +142,7 @@ bool Scene::PostUpdate()
 	if (app->player->checkpoint == true)
 		app->render->DrawTexture(app->player->checkpointTex, 2830, 266, &app->player->checkpointAnim.GetCurrentFrame());
 
+
 	// Draw map
 	app->map->Draw();
 	app->pathfinding->DrawPath();

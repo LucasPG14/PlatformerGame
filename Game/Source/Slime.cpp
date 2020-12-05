@@ -3,6 +3,7 @@
 #include "Textures.h"
 #include "Map.h"
 #include "EnemyManager.h"
+#include "Audio.h"
 
 Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
 {
@@ -47,6 +48,8 @@ bool Slime::Start()
 
 	this->currentAnim = &animRight;
 
+	slime = app->audio->LoadFx("Assets/Audio/Fx/WalkingEnemyDie.wav");
+
 	return true;
 }
 
@@ -70,6 +73,7 @@ bool Slime::Update(float dt)
 
 		if (deathAnim.HasFinished())
 		{
+			app->audio->PlayFx(slime);
 			app->enemyManager->RemoveEnemy(this);
 		}
 	}
@@ -78,11 +82,14 @@ bool Slime::Update(float dt)
 	{
 		this->currentAnim = &animLeft;
 		this->hitLeftAnim.Reset();
+		app->audio->PlayFx(slime);
+
 	}
 	else if (hitRightAnim.HasFinished())
 	{
 		this->currentAnim = &animRight;
 		this->hitRightAnim.Reset();
+		app->audio->PlayFx(slime);
 	}
 
 	return true;

@@ -114,7 +114,10 @@ private:
 	Collider* swordCollider;
 
 	uint stepFx;
-		int yellowFont = -1;
+	int yellowFont = -1;
+
+	uint checkpointAudio = -1;
+	uint jumpAudio = -1;
 
 	//lifes
 	SDL_Texture* lifesTex = nullptr;

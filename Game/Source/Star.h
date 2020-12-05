@@ -27,6 +27,10 @@ private:
 
 	Collider* starItem = nullptr;
 	Animation starAnim;
+	Animation shineAnim;
 	SDL_Texture* starTex;
+	SDL_Texture* shineTex;
+	uint star = -1;
+
 };
 #endif

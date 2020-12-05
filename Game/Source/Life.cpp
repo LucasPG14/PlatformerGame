@@ -4,6 +4,7 @@
 #include "Textures.h"
 #include "EnemyManager.h"
 #include "Map.h"
+#include "Audio.h"
 
 Life::Life(iPoint position) : Enemy(position, EnemyType::LIFE, 3)
 {
@@ -24,6 +25,7 @@ bool Life::Start()
 {
 	this->lifeItem = app->colliderManager->AddCollider({ this->pos.x + 11, this->pos.y, 20, 40 }, Collider::Type::LIFE);
 	this->lifeItem->active = true;
+	life = app->audio->LoadFx("Assets/Audio/Fx/life.wav");
 
 	return true;
 }
@@ -37,6 +39,7 @@ bool Life::Update(float dt)
 
 	if (this->lifeItem->active == false)
 	{
+		app->audio->PlayFx(life);
 		app->enemyManager->RemoveEnemy(this);
 	}
 

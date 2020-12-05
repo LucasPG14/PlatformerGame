@@ -39,6 +39,7 @@ private:
 	Animation hitRightAnim;
 	Animation deathAnim;
 
+	uint slime = -1;
 	int deadFx = 0;
 	uint speedX;
 	uint speedY;
