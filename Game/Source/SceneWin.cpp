@@ -4,6 +4,8 @@
 #include "Render.h"
 #include "SceneIntro.h"
 #include "SceneManager.h"
+#include "Fonts.h"
+#include "Player.h"
 
 #include "Input.h"
 #include "Audio.h"
@@ -35,6 +37,9 @@ bool SceneWin::Start()
 
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_win.png");
 	winFx = app->audio->LoadFx("Assets/Audio/Fx/you_win.ogg");
+	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
+	yellowFont = app->fonts->Load("Assets/Textures/Characters/yellow_font.png", lookupTable, 5);
+	starTex = app->tex->Load("Assets/Textures/Characters/star.png");
 	time = 0;
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
@@ -66,6 +71,14 @@ bool SceneWin::PostUpdate()
 	// Draw everything --------------------------------------
 	app->render->DrawTexture(bgTexture, 0, 0, &winAnim.GetCurrentFrame());
 
+	app->fonts->BlitText(300, 100, yellowFont, "SCORE:");
+	app->fonts->BlitText(550, 100, yellowFont, std::to_string(app->player->getScore()).c_str());
+	app->fonts->BlitText(700, 100, yellowFont, "x");
+	app->fonts->BlitText(750, 100, yellowFont, std::to_string(app->player->getStars()).c_str());
+	app->fonts->BlitText(870, 100, yellowFont, "=");
+	app->fonts->BlitText(925, 100, yellowFont, std::to_string(app->player->getfinalScore()).c_str());
+
+	app->render->DrawTexture(starTex, 810, 95, NULL);
 	return true;
 }
 

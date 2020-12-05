@@ -4,6 +4,8 @@
 #include "Render.h"
 #include "SceneIntro.h"
 #include "SceneManager.h"
+#include "Fonts.h"
+#include "Fonts.h"
 
 #include "Input.h"
 #include "Audio.h"
@@ -37,6 +39,10 @@ bool SceneDie::Start()
 
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_dead.png");
 	dieFx = app->audio->LoadFx("Assets/Audio/Fx/you_lose.ogg");
+	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
+	redFont = app->fonts->Load("Assets/Textures/Characters/red_font.png", lookupTable, 5);
+	starTex = app->tex->Load("Assets/Textures/Characters/star.png");
+
 	time = 0;
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
@@ -68,6 +74,15 @@ bool SceneDie::PostUpdate()
 	// Draw everything --------------------------------------
 	SDL_Rect rect = dieAnim.GetCurrentFrame();
 	app->render->DrawTexture(bgTexture, 0, 0, &rect);
+
+	app->fonts->BlitText(300,100,redFont, "SCORE:");
+	app->fonts->BlitText(550, 100, redFont, std::to_string(app->player->getScore()).c_str());
+	app->fonts->BlitText(700, 100, redFont, "x");
+	app->fonts->BlitText(750, 100, redFont, std::to_string(app->player->getStars()).c_str());
+	app->fonts->BlitText(870, 100, redFont, "=");
+	app->fonts->BlitText(925, 100, redFont, std::to_string(app->player->getfinalScore()).c_str());
+
+	app->render->DrawTexture(starTex, 810,95, NULL);
 
 	return true;
 }

@@ -35,6 +35,10 @@ public:
 	void Jump(float dt);
 	bool CheckCollisionType(int idTile, std::string direction);
 
+	int getScore() { return score; };
+	int getStars() { return stars; };
+	int getfinalScore() { return finalScore; };
+
 	void Dead();
 	bool LevelFinished();
 	bool IsDead();
@@ -51,6 +55,7 @@ public:
 
 	bool deadPlayer;
 
+	int finalScore;
 	int lifes;
 	int stars;
 	int score;

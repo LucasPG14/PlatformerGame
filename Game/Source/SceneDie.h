@@ -31,5 +31,8 @@ public:
 
 	int time = 0;
 	uint dieFx = -1;
+	int redFont = -1;
+	SDL_Texture* starTex = nullptr;
+
 };
 #endif

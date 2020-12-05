@@ -27,7 +27,8 @@ public:
 	SDL_Texture* bgTexture = nullptr;
 
 	Animation winAnim;
-
+	int yellowFont = -1;
+	SDL_Texture* starTex = nullptr;
 	int time = 0;
 	uint winFx = 0;
 };

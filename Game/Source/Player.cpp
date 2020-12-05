@@ -158,6 +158,8 @@ bool Player::Start()
 		lifes = 3;
 		stars = 0;
 		score = 0;
+		finalScore = 0;
+
 		SString tmp("%s%s", folder.GetString(), playerString.GetString());
 		player = app->tex->Load(tmp.GetString());
 		currentAnimation = &rightIdleAnim;
@@ -181,7 +183,7 @@ bool Player::Start()
 		app->render->ResetCam();
 
 		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
-		yellowFont = app->fonts->Load("Assets/Textures/Characters/FontY.png", lookupTable, 5);
+		yellowFont = app->fonts->Load("Assets/Textures/Characters/yellow_font.png", lookupTable, 5);
 	}
 
 	return true;
@@ -216,7 +218,7 @@ bool Player::Update(float dt)
 				lastAnimation = currentAnimation;
 			}
 
-			if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90) 
+			if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
 				position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
 
 
@@ -229,7 +231,7 @@ bool Player::Update(float dt)
 
 			if (Collision("right") == false)
 			{
- 				position.x += floor(speedX * dt);
+				position.x += floor(speedX * dt);
 				if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
 				else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
 				{
@@ -332,14 +334,14 @@ bool Player::Update(float dt)
 			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE &&
 			app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_IDLE)
 		{
-			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim || 
+			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim ||
 				(currentAnimation == &rightAttackAnim && rightAttackAnim.HasFinished() == true))
 			{
 				rightIdleAnim.Reset();
 				currentAnimation = &rightIdleAnim;
 				lastAnimation = currentAnimation;
 			}
-			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim || 
+			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim ||
 				(currentAnimation == &leftAttackAnim && leftAttackAnim.HasFinished() == true))
 			{
 				leftIdleAnim.Reset();
@@ -357,7 +359,7 @@ bool Player::Update(float dt)
 
 
 		// God mode
-		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN) 
+		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
 			godMode = !godMode;
 
 		if (jump == true) Jump(dt);
@@ -424,7 +426,7 @@ bool Player::PostUpdate() {
 	else if (rect.x == 156)
 		app->render->DrawTexture(player, position.x - 36, position.y, &rect);
 	else
-		app->render->DrawTexture(player, position.x , position.y, &rect);
+		app->render->DrawTexture(player, position.x, position.y, &rect);
 
 	switch (lifes)
 	{
@@ -462,12 +464,12 @@ bool Player::PostUpdate() {
 	app->fonts->BlitText(1170, 10, yellowFont, pchar);
 	rect = { 0,0,1280,50 };
 	app->render->DrawTexture(starTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-	
+
 	//score in HUD
 	std::string d = std::to_string(score);
 	char const* dchar = d.c_str();
 	app->fonts->BlitText(650, 10, yellowFont, dchar);
-
+	finalScore = score * stars;
 	//Cooldown Attack HUD
 	app->render->DrawTexture(cooldownTex, app->render->offset.x + 1180, app->render->offset.y + 620, &cooldownAtk.GetCurrentFrame());
 
@@ -563,7 +565,7 @@ bool Player::Collision(const char* side)
 
 void Player::Gravity(float dt)
 {
-	if(Collision("bottom") == false && godMode == false)
+	if (Collision("bottom") == false && godMode == false)
 	{
 		speedY -= gravity * dt;
 		position.y -= speedY;
@@ -603,7 +605,7 @@ bool Player::SaveState(pugi::xml_node& save) const
 	return ret;
 }
 
-void Player::Dead() 
+void Player::Dead()
 {
 	currentAnimation = &rightDeadAnim;
 	lastAnimation = currentAnimation;
