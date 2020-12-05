@@ -16,7 +16,23 @@ Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
 
 	animRight.loop = true;
 
-	currentAnim = &animRight;
+	hitLeftAnim.PushBack({ 2,48,36,20 });
+	hitLeftAnim.PushBack({ 44,48,34,20 });
+	hitLeftAnim.PushBack({ 82,48,36,20 });
+
+	hitLeftAnim.loop = false;
+
+	hitRightAnim.PushBack({ 121,48,36,20 });
+	hitRightAnim.PushBack({ 161,48,34,20 });
+	hitRightAnim.PushBack({ 201,48,36,20 });
+
+	hitRightAnim.loop = false;
+
+	deathAnim.PushBack({ 2,74, 32,20 });
+	deathAnim.PushBack({ 44,74, 32,20 });
+	deathAnim.PushBack({ 84,74, 32,20 });
+
+	deathAnim.loop = false;
 }
 
 Slime::~Slime() {}
@@ -24,35 +40,49 @@ Slime::~Slime() {}
 bool Slime::Start()
 {
 	//tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
-	collider = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::ENEMY_WALK);
+	this->collider = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::ENEMY_WALK);
 
 	//SpeedX = 
-	speedY = 0;
+	this->speedY = 0;
+
+	this->currentAnim = &animRight;
 
 	return true;
 }
 
 bool Slime::Update(float dt)
 {
-	animLeft.speed = 2.0f * dt;
-	animRight.speed = 2.0f * dt;
+	this->animLeft.speed = 2.0f * dt;
+	this->animRight.speed = 2.0f * dt;
+	this->hitLeftAnim.speed = 3.0f * dt;
+	this->hitRightAnim.speed = 3.0f * dt;
+	this->deathAnim.speed = 2.0f * dt;
 
-	if (this->currentAnim == &animRight)
-	{
-		currentAnim = &animLeft;
-	}
-	else if (this->currentAnim == &animLeft)
-	{
-		currentAnim == &animRight;
-	}
+	this->currentAnim->Update();
 
 	Gravity(dt);
 
-	collider->SetPos(this->pos.x + 4, this->pos.y + 3, &collider->rect);
+	this->collider->SetPos(this->pos.x + 4, this->pos.y + 3, &this->collider->rect);
 
 	if (this->lifes == 0)
 	{
-		app->enemyManager->RemoveEnemy(this);
+		this->currentAnim = &deathAnim;
+
+		if (deathAnim.HasFinished())
+		{
+			app->enemyManager->RemoveEnemy(this);
+		}
+	}
+
+	if (hitLeftAnim.HasFinished())
+	{
+		this->currentAnim = &animLeft;
+		this->hitLeftAnim.Reset();
+	}
+	else if (hitRightAnim.HasFinished())
+	{
+		this->currentAnim = &animRight;
+		this->hitRightAnim.Reset();
 	}
 
 	return true;
@@ -60,9 +90,25 @@ bool Slime::Update(float dt)
 
 bool Slime::CleanUp()
 {
-	app->colliderManager->RemoveCollider(collider);
-
+	app->colliderManager->RemoveCollider(this->collider);
 	return true;
+}
+
+void Slime::Draw()
+{
+	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->currentAnim->GetCurrentFrame());
+}
+
+void Slime::Hit()
+{
+	if (this->currentAnim == &animRight)
+	{
+		this->currentAnim = &hitRightAnim;
+	}
+	else if (this->currentAnim == &animLeft)
+	{
+		this->currentAnim = &hitLeftAnim;
+	}
 }
 
 void Slime::Gravity(float dt)

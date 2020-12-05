@@ -4,7 +4,7 @@
 #include "Map.h"
 #include "EnemyManager.h"
 
-Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 3)
+Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 2)
 {
 	animLeft.PushBack({ 44,170,32,30 });
 	animLeft.PushBack({ 2,170,36,30 });
@@ -16,39 +16,69 @@ Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 3)
 
 	animRight.loop = true;
 
-	currentAnim = &animRight;
+	hitLeftAnim.PushBack({ 2,135,36,30 });
+	hitLeftAnim.PushBack({ 44,135,32,30 });
+	hitLeftAnim.PushBack({ 84,135,36,30 });
+
+	hitLeftAnim.loop = false;
+
+	hitRightAnim.PushBack({ 125,135,36,30 });
+	hitRightAnim.PushBack({ 169,135,32,30 });
+	hitRightAnim.PushBack({ 207,135,36,30 });
+
+	hitRightAnim.loop = false;
+
+	deathAnim.PushBack({ 4,103,32,30 });
+	deathAnim.PushBack({ 44,103,32,30 });
+	deathAnim.PushBack({ 81,103,32,20 });
+
+	deathAnim.loop = false;
 }
 
 Bat::~Bat() {}
 
 bool Bat::Start()
 {
-	collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
-	//SpeedX = 
-	speedY = 0;
+	this->collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
+
+	//Speed = 
+
+	currentAnim = &animRight;
 
 	return true;
 }
 
 bool Bat::Update(float dt)
 {
-	animLeft.speed = 2.0f * dt;
-	animRight.speed = 2.0f * dt;
+	this->animLeft.speed = 2.0f * dt;
+	this->animRight.speed = 2.0f * dt;
+	this->hitLeftAnim.speed = 3.0f * dt;
+	this->hitRightAnim.speed = 3.0f * dt;
+	this->deathAnim.speed = 20.0f * dt;
 
-	if (currentAnim == &animRight)
-	{
-		currentAnim = &animLeft;
-	}
-	else if (currentAnim == &animLeft)
-	{
-		currentAnim == &animRight;
-	}
+	this->currentAnim->Update();
 
-	collider->SetPos(this->pos.x + 6, this->pos.y + 4, &collider->rect);
+	this->collider->SetPos(this->pos.x + 6, this->pos.y + 4, &collider->rect);
 
 	if (this->lifes == 0)
 	{
-		app->enemyManager->RemoveEnemy(this);
+		this->currentAnim = &deathAnim;
+
+		if (deathAnim.HasFinished())
+		{
+			app->enemyManager->RemoveEnemy(this);
+		}
+	}
+
+	if (hitLeftAnim.HasFinished())
+	{
+		this->currentAnim = &animLeft;
+		hitLeftAnim.Reset();
+	}
+	else if (hitRightAnim.HasFinished())
+	{
+		currentAnim = &animRight;
+		hitRightAnim.Reset();
 	}
 
 	return true;
@@ -56,9 +86,26 @@ bool Bat::Update(float dt)
 
 bool Bat::CleanUp()
 {
-	app->colliderManager->RemoveCollider(collider);
+	app->colliderManager->RemoveCollider(this->collider);
 
 	return true;
+}
+
+void Bat::Draw()
+{
+	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->currentAnim->GetCurrentFrame());
+}
+
+void Bat::Hit()
+{
+	if (this->currentAnim == &animRight)
+	{
+		this->currentAnim = &hitRightAnim;
+	}
+	else if (this->currentAnim == &animLeft)
+	{
+		this->currentAnim = &hitLeftAnim;
+	}
 }
 
 bool Bat::Collision(const char* side)

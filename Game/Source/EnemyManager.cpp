@@ -62,6 +62,7 @@ void EnemyManager::Lifes(Collider* coll)
 	{
 		if (enemies->data->collider == coll)
 		{
+			enemies->data->Hit();
 			enemies->data->lifes--;
 			break;
 		}

@@ -27,21 +27,13 @@ public:
 	
 	virtual bool Start() { return true; }
 
-	virtual bool Update(float dt) 
-	{ 
-		if (currentAnim != nullptr)
-			currentAnim->Update();
-
-		return true; 
-	}
+	virtual bool Update(float dt) { return true; }
 
 	virtual bool CleanUp() { return true; }
 
-	virtual void Draw()
-	{
-		if (this->currentAnim != nullptr && this->lifes != 0)
-			app->render->DrawTexture(texture, this->pos.x, this->pos.y, &(this->currentAnim->GetCurrentFrame()));
-	}
+	virtual void Draw() {}
+
+	virtual void Hit() {}
 
 	virtual bool Load(pugi::xml_node&) { return true; }
 

@@ -81,6 +81,9 @@ private:
 	Animation leftAttackAnim;
 	Animation rightAttackAnim;
 
+	Animation cooldownAtk;
+	SDL_Texture* cooldownTex;
+
 	// Jump mechanic
 	bool jump;
 

@@ -111,6 +111,15 @@ Player::Player() : Module()
 	leftAttackAnim.PushBack({ 0, 609, 42, 87 });
 
 	leftAttackAnim.loop = false;
+
+	//cooldownAtk.PushBack({ 114, 2, 27,27 });
+	cooldownAtk.PushBack({ 2, 2, 27,27 });
+	cooldownAtk.PushBack({ 30, 2, 27,27 });
+	cooldownAtk.PushBack({ 58, 2, 27,27 });
+	cooldownAtk.PushBack({ 86, 2, 27,27 });
+	cooldownAtk.PushBack({ 114, 2, 27,27 });
+
+	cooldownAtk.loop = false;
 }
 bool Player::Awake(pugi::xml_node& config)
 {
@@ -147,13 +156,14 @@ bool Player::Start()
 		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
 		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
 		starTex = app->tex->Load("Assets/Textures/Characters/starTex.png");
+		cooldownTex = app->tex->Load("Assets/Textures/Characters/cooldown_attack.png");
 
 		jumping = false;
 		levelFinished = false;
 		checkPoint = false;
 		deadPlayer = false;
 		playerChangePos = false;
-		playerCollider = app->colliderManager->AddCollider({ (int)position.x, (int)position.y + 20, 51, 66 }, Collider::PLAYER);
+		playerCollider = app->colliderManager->AddCollider({ (int)position.x + 12, (int)position.y + 30, 25, 51 }, Collider::PLAYER);
 
 		app->render->offset = { 0,0 };
 		app->render->camera.x = !(app->render->offset.x);
@@ -266,7 +276,10 @@ bool Player::Update(float dt)
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_REPEAT && attackCooldown == 0)
+		{
 			SwordAttack();
+			cooldownAtk.Reset();
+		}
 
 		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
 		{
@@ -340,22 +353,21 @@ bool Player::Update(float dt)
 
 		Gravity(dt);
 
-		if (app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight));
-
-		else if (position.y >= app->render->offset.y + 360)
+		//if (app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight));
+		if (position.y >= app->render->offset.y + 360 && !(app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight)))
 		{
 			app->render->offset.y = position.y - 360;
 			app->render->camera.y = -(position.y - 360);
 		}
 
-		if (app->render->offset.y <= 0);
-		else if (position.y < app->render->offset.y + 360)
+		//if (app->render->offset.y <= 0);
+		if (position.y < app->render->offset.y + 360 && !(app->render->offset.y <= 0))
 		{
 			app->render->offset.y = position.y - 360;
 			app->render->camera.y = -(position.y - 360);
 		}
 
-		playerCollider->SetPos(position.x, position.y + 20, &playerCollider->rect);
+		playerCollider->SetPos(position.x + 12, position.y + 35, &playerCollider->rect);
 	}
 	else
 	{
@@ -365,6 +377,23 @@ bool Player::Update(float dt)
 
 	currentAnimation->Update();
 
+	switch (attackCooldown)
+	{
+	case 299:
+		app->colliderManager->RemoveCollider(swordCollider);
+	case 135:
+		cooldownAtk.Update();
+		break;
+	case 90:
+		cooldownAtk.Update();
+		break;
+	case 45:
+		cooldownAtk.Update();
+		break;
+	case 0:
+		cooldownAtk.Update();
+		break;
+	}
 
 	return true;
 }
@@ -415,13 +444,17 @@ bool Player::PostUpdate() {
 	std::string s = std::to_string(stars);
 	char const* pchar = s.c_str();
 	app->fonts->BlitText(1170, 10, yellowFont, pchar);
-	rect = { 0,0,1280,720 };
+	rect = { 0,0,1280,50 };
 	app->render->DrawTexture(starTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
 	
 	//score in HUD
 	std::string d = std::to_string(score);
 	char const* dchar = d.c_str();
 	app->fonts->BlitText(650, 10, yellowFont, dchar);
+
+	//Cooldown Attack HUD
+	app->render->DrawTexture(cooldownTex, app->render->offset.x + 5, app->render->offset.y + 685, &cooldownAtk.GetCurrentFrame());
+
 	return true;
 }
 
@@ -634,7 +667,7 @@ Position Player::GetPosition()
 void Player::SwordAttack()
 {
 	lastAnimation = currentAnimation;
-	attackCooldown = 300;
+	attackCooldown = 180;
 	if (currentAnimation == &rightIdleAnim || currentAnimation == &rightRunAnim || currentAnimation == &rightJumpAnim)
 	{
 		rightAttackAnim.Reset();

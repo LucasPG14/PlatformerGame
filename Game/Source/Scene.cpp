@@ -49,7 +49,7 @@ bool Scene::Start()
 	app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
 	app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
 	app->enemyManager->AddEnemy(iPoint(0, 600), EnemyType::LIFE);
-	app->enemyManager->AddEnemy(iPoint(0, 630), EnemyType::STAR);
+	app->enemyManager->AddEnemy(iPoint(10, 400), EnemyType::STAR);
 
 	app->enemyManager->active = true;
 	app->enemyManager->Start();
@@ -65,7 +65,7 @@ bool Scene::Start()
 	app->map->Load("level1.tmx");
 
 
-	app->LoadGameRequest();
+	//app->LoadGameRequest();
 
 	return true;
 }
@@ -120,7 +120,6 @@ bool Scene::Update(float dt)
 	{
 		app->fade->Fade(this, app->sceneManager->dieScene, 1 / dt);
 		app->player->time = 0;
-		app->player->deadPlayer = false;
 	}
 
 	if (app->player->LevelFinished() == true)

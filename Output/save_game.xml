@@ -15,13 +15,13 @@
   <:anonymous />
   <map />
   <player>
-    <position x="2828" y="233.019318" />
+    <position x="2796" y="1465.27563" />
   </player>
   <:anonymous />
   <fade />
   <:anonymous />
   <renderer>
-    <camera x="-2206" y="5" />
-    <offset x="2207" y="-5.28039551" />
+    <camera x="-2175" y="-882" />
+    <offset x="2176" y="882.13916" />
   </renderer>
 </save_status>

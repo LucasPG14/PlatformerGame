@@ -19,6 +19,10 @@ public:
 
 	bool CheckCollisionType(int idTile, std::string direction);
 
+	void Draw() override;
+
+	void Hit() override;
+
 	// Load and Save
 	bool Load(pugi::xml_node& load);
 
@@ -29,7 +33,10 @@ private:
 	//SDL_Texture* tex = nullptr;
 	Animation animLeft;
 	Animation animRight;
+	Animation hitLeftAnim;
+	Animation hitRightAnim;
+	Animation deathAnim;
+
 	int deadFx = 0;
-	uint speedX;
-	uint speedY;
+	uint speedMove;
 };

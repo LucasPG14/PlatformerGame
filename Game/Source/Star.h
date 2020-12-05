@@ -25,8 +25,8 @@ public:
 
 private:
 
-	Collider* StarItem = nullptr;
-	Animation StarAnim;
-	SDL_Texture* StarTex;
+	Collider* starItem = nullptr;
+	Animation starAnim;
+	SDL_Texture* starTex;
 };
 #endif

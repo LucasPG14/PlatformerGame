@@ -143,28 +143,27 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 	else if (coll1->type == Collider::Type::SWORD && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
 	{
 		app->enemyManager->Lifes(coll2);
-		//RemoveCollider(coll2);
 		RemoveCollider(coll1);
 		app->player->score = app->player->score +100;
 	}
 	else if (coll2->type == Collider::Type::SWORD && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
 	{
 		app->enemyManager->Lifes(coll1);
-		//RemoveCollider(coll1);
 		RemoveCollider(coll2);
 		app->player->score = app->player->score + 100;
 	}
 	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::LIFE))
 	{
 		app->player->lifes++;
+		coll2->active = false;
 		RemoveCollider(coll2);
 		
 	}
 	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::STAR))
 	{
 		app->player->stars++;
+		coll2->active = false;
 		RemoveCollider(coll2);
-		
 	}
 }
 

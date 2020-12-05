@@ -7,11 +7,11 @@
 
 Life::Life(iPoint position) : Enemy(position, EnemyType::LIFE, 3)
 {
-	lifeAnim.PushBack({ 11,9,43,52 });
-	lifeAnim.PushBack({ 66,9,33,52 });
-	lifeAnim.PushBack({ 110,9,21,52 });
-	lifeAnim.PushBack({ 141,9,21,52 });
-	lifeAnim.PushBack({ 173,9,32,52 });
+	lifeAnim.PushBack({ 11,9,43,40 });
+	lifeAnim.PushBack({ 60,9,43,40 });
+	lifeAnim.PushBack({ 98,9,43,40 });
+	lifeAnim.PushBack({ 131,9,42,40 });
+	lifeAnim.PushBack({ 168,9,43,40 });
 
 	lifeAnim.loop = true;
 
@@ -23,8 +23,9 @@ Life::~Life() {
 
 bool Life::Start()
 {
-	lifeTex = app->tex->Load("Assets/Textures/Characters/lifeAnim.png");
-	lifeItem = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::LIFE);
+	this->lifeTex = app->tex->Load("Assets/Textures/Characters/life_anim.png");
+	this->lifeItem = app->colliderManager->AddCollider({ this->pos.x + 11, this->pos.y, 20, 40 }, Collider::Type::LIFE);
+	this->lifeItem->active = true;
 
 	return false;
 }
@@ -36,19 +37,24 @@ bool Life::Update(float dt)
 
 	lifeAnim.Update();
 
-	lifeItem->SetPos(this->pos.x + 6, this->pos.y + 4, &lifeItem->rect);
+	if (this->lifeItem->active == false)
+	{
+		app->enemyManager->RemoveEnemy(this);
+	}
 
 	return false;
 }
 
 bool Life::CleanUp()
 {
+	app->tex->UnLoad(this->lifeTex);
+	app->colliderManager->RemoveCollider(this->lifeItem);
 	return false;
 }
 
 void Life::Draw()
 {
-	app->render->DrawTexture(lifeTex, pos.x, pos.y, &lifeAnim.GetCurrentFrame());
+	app->render->DrawTexture(this->lifeTex, this->pos.x, this->pos.y, &this->lifeAnim.GetCurrentFrame());
 }
 
 bool Life::Collision(const char* side)
