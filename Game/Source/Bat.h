@@ -26,7 +26,9 @@ public:
 
 	bool FindGoal(Player* player) override;
 
-	bool Move() override;
+	bool Move(float dt) override;
+
+	bool Sleep(float dt) override;
 
 	// Load and Save
 	bool Load(pugi::xml_node& load);

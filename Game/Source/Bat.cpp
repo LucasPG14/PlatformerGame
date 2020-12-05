@@ -75,11 +75,27 @@ bool Bat::Update(float dt)
 
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		FindGoal(app->player);
+	if (this->state == SLEEP)
+	{
+		if (Sleep(dt) == true)
+			this->state = AWAKE;
+	}
 
-	if (app->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
-		Move();
+	else if (this->state == AWAKE)
+	{
+		//if (FindGoal(app->player) == true)
+		//{
+		//	this->state = ATTACK;
+		//}
+	}
+
+	else if (this->state == ATTACK)
+	{
+		if (Move(dt) == false)
+		{
+			this->state = SLEEP;
+		}
+	}
 
 	if (hitLeftAnim.HasFinished())
 	{
@@ -102,7 +118,6 @@ bool Bat::Update(float dt)
 bool Bat::CleanUp()
 {
 	app->colliderManager->RemoveCollider(this->collider);
-	app->enemyManager->RemoveEnemy(this);
 	batPath.Clear();
 
 	return true;
@@ -141,33 +156,76 @@ bool Bat::FindGoal(Player* player)
 	return true;
 }
 
-bool Bat::Move()
+bool Bat::Move(float dt)
 {
 	if (batPath[indexBat].x == this->pos.x / 16 && batPath[indexBat].y == this->pos.y / 16)
 	{
 		indexBat--;
+		return true;
 	}
 	else
 	{
 		if (batPath[indexBat].x > this->pos.x / 16)
 		{
-			this->pos.x += 6;
+			this->pos.x += 50 * dt;
+			this->currentAnim = &animRight;
+			return true;
 		}
 
 		if (batPath[indexBat].x < this->pos.x / 16)
 		{
-			this->pos.x -= 6;
+			this->pos.x -= 50 * dt;
+			this->currentAnim = &animLeft;
+			return true;
 		}
 
 		if (batPath[indexBat].y < this->pos.y / 16)
 		{
-			this->pos.y -= 6;
+			this->pos.y -= 50 * dt;
+			return true;
 		}
 
 		if (batPath[indexBat].y > this->pos.y / 16)
 		{
-			this->pos.y += 6;
+			this->pos.y += 50 * dt;
+			return true;
 		}
+	}
+
+	return false;
+}
+
+bool Bat::Sleep(float dt)
+{
+	//if (Collision("right") == true)
+	//{
+	//	moveRight = false;
+	//}
+	//else if (Collision("left") == true)
+	//{
+	//	moveRight = true;
+	//}
+
+	//if (moveRight == true)
+	//{
+	//	currentAnim = &animRight;
+	//	this->pos.x += 50 * dt;
+	//}
+	//else
+	//{
+	//	currentAnim = &animLeft;
+	//	this->pos.x -= 50 * dt;
+	//}
+
+	int pos1;
+	int pos2;
+
+	pos1 = app->player->GetPosition().x - this->pos.x;
+	pos2 = app->player->GetPosition().y - this->pos.y;
+
+	if (pos1 < 200 && (pos2 < 200 || -pos2 < 200))
+	{
+		return true;
 	}
 
 	return false;

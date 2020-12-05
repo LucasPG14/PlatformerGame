@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enemy.h"
+#include "DynArray.h"
 
 class Slime : public Enemy
 {
@@ -25,6 +26,12 @@ public:
 
 	void Hit() override;
 
+	bool FindGoal(Player* player) override;
+
+	bool Move(float dt);
+
+	bool Sleep(float dt);
+
 	// Load and Save
 	bool Load(pugi::xml_node& load);
 
@@ -43,4 +50,7 @@ private:
 	int deadFx = 0;
 	uint speedX;
 	uint speedY;
+	DynArray<iPoint> slimePath;
+	int indexSlime;
+	bool moveRight;
 };

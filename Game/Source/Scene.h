@@ -6,6 +6,8 @@
 #include "PugiXml\src\pugixml.hpp"
 
 struct SDL_Texture;
+class Bat;
+class Slime;
 
 class Scene : public Scenes
 {
@@ -36,11 +38,16 @@ public:
 
 	void PlayerPosition();
 
+	void ResetEnemiesPosition();
+
 private:
 	SDL_Texture* bg;
 	SDL_Texture* bg2;
 	SDL_Texture* bg3;
 	pugi::xml_node node;
+
+	Slime* slime;
+	Bat* bat;
 
 };
 #endif // __SCENE_H__

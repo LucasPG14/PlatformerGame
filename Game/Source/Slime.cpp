@@ -2,6 +2,8 @@
 #include "App.h"
 #include "Textures.h"
 #include "Map.h"
+#include "Pathfinding.h"
+#include "Player.h"
 #include "EnemyManager.h"
 #include "Audio.h"
 
@@ -45,8 +47,10 @@ bool Slime::Start()
 
 	//SpeedX = 
 	this->speedY = 0;
-
 	this->currentAnim = &animRight;
+	this->state = SLEEP;
+
+	this->moveRight = true;
 
 	slime = app->audio->LoadFx("Assets/Audio/Fx/WalkingEnemyDie.wav");
 
@@ -73,8 +77,29 @@ bool Slime::Update(float dt)
 
 		if (deathAnim.HasFinished())
 		{
-			app->audio->PlayFx(slime);
 			app->enemyManager->RemoveEnemy(this);
+		}
+	}
+
+	if (this->state == SLEEP && this->currentAnim != &deathAnim)
+	{
+		if (Sleep(dt) == true)
+			this->state = AWAKE;
+	}
+
+	else if (this->state == AWAKE && this->currentAnim != &deathAnim)
+	{
+		if (FindGoal(app->player) == true)
+		{
+			this->state = ATTACK;
+		}
+	}
+
+	else if (this->state == ATTACK && this->currentAnim != &deathAnim)
+	{
+		if (Move(dt) == false)
+		{
+			this->state = SLEEP;
 		}
 	}
 
@@ -111,11 +136,106 @@ void Slime::Hit()
 	if (this->currentAnim == &animRight)
 	{
 		this->currentAnim = &hitRightAnim;
+		app->audio->PlayFx(slime);
 	}
 	else if (this->currentAnim == &animLeft)
 	{
 		this->currentAnim = &hitLeftAnim;
+		app->audio->PlayFx(slime);
 	}
+}
+
+bool Slime::FindGoal(Player* player)
+{
+	app->pathfinding->path.Clear();
+
+	int x = player->position.x;
+	int y = player->position.y + 32;
+	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
+	app->pathfinding->PropagateDijkstra(player);
+
+	slimePath = *(app->pathfinding->ComputePath(x, y));
+
+	indexSlime = slimePath.Count() - 1;
+
+	return true;
+}
+
+bool Slime::Move(float dt)
+{
+	if (slimePath[indexSlime].x == this->pos.x / 16 && slimePath[indexSlime].y == this->pos.y / 16)
+	{
+		indexSlime--;
+		return true;
+	}
+	else
+	{
+		if (slimePath[indexSlime].x > this->pos.x / 16)
+		{
+			this->pos.x += 50 * dt;
+			if (hitRightAnim.HasFinished())
+			{
+				this->currentAnim = &animRight;
+				this->hitRightAnim.Reset();
+			}
+			else if (currentAnim == &animLeft)
+				this->currentAnim = &animRight;
+			return true;
+		}
+
+		if (slimePath[indexSlime].x < this->pos.x / 16)
+		{
+			this->pos.x -= 50 * dt;
+			if (hitLeftAnim.HasFinished())
+			{
+				this->currentAnim = &animLeft;
+				this->hitLeftAnim.Reset();
+			}
+			else if (currentAnim == &animRight)
+				this->currentAnim = &animLeft;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Slime::Sleep(float dt)
+{
+	if (Collision("right") == true)
+	{
+		moveRight = false;
+	}
+	else if (Collision("left") == true)
+	{
+		moveRight = true;
+	}
+
+	if (moveRight == true)
+	{
+		currentAnim = &animRight;
+		this->pos.x += 50 * dt;
+	}
+
+	else
+	{
+		currentAnim = &animLeft;
+		this->pos.x -= 50 * dt;
+	}
+
+	int pos1;
+	int pos2;
+
+	pos1 = app->player->GetPosition().x - this->pos.x;
+	pos2 = app->player->GetPosition().y - this->pos.y;
+
+	if (pos1 < 300)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void Slime::Gravity(float dt)
@@ -246,6 +366,11 @@ bool Slime::CheckCollisionType(int idTile, std::string direction)
 			return false;
 		}
 		break;
+	case 294:
+		if (direction == "right" || direction == "left")
+		{
+			return true;
+		}
 	}
 
 	return false;

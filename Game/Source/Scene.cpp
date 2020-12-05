@@ -10,6 +10,8 @@
 #include "SceneManager.h"
 #include "Pathfinding.h"
 #include "SceneDie.h"
+#include "Slime.h"
+#include "Bat.h"
 #include "SceneWin.h"
 #include "ColliderManagement.h"
 #include "EnemyManager.h"
@@ -46,9 +48,9 @@ bool Scene::Start()
 	app->player->Start();
 
 	//Load Enemies
-	app->enemyManager->AddEnemy(iPoint(0, 0), EnemyType::SLIME);
+	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(0, 600), EnemyType::SLIME);
 
-	app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
+	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
 
 	app->enemyManager->AddEnemy(iPoint(4178, 633), EnemyType::LIFE);
 	app->enemyManager->AddEnemy(iPoint(3829, 1264), EnemyType::LIFE);
@@ -64,9 +66,6 @@ bool Scene::Start()
 	app->enemyManager->AddEnemy(iPoint(3933, 165), EnemyType::STAR);
 	app->enemyManager->AddEnemy(iPoint(5373, 336), EnemyType::STAR);
 	app->enemyManager->AddEnemy(iPoint(4426, 418), EnemyType::STAR);
-
-
-	
 
 	app->enemyManager->active = true;
 	app->enemyManager->Start();
@@ -97,6 +96,7 @@ bool Scene::Update(float dt)
 	if (app->player->playerChangePos == true)
 	{
 		PlayerPosition();
+		ResetEnemiesPosition();
 		app->player->playerChangePos = false;
 	}
 
@@ -197,7 +197,7 @@ bool Scene::CleanUp()
 	app->enemyManager->CleanUp();
 	app->player->CleanUp();
 	app->map->CleanUp();
-	app->pathfinding->CleanUp();
+	//app->pathfinding->CleanUp();
 
 	return true;
 }
@@ -206,4 +206,13 @@ void Scene::PlayerPosition()
 {
 	app->player->position.x = 200;
 	app->player->position.y = 600;
+}
+
+void Scene::ResetEnemiesPosition()
+{
+	slime->pos.x = 0;
+	slime->pos.y = 600;
+
+	bat->pos.x = 100;
+	bat->pos.y = 500;
 }

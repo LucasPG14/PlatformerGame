@@ -152,6 +152,7 @@ void EnemyManager::RemoveEnemy(Enemy* enemy)
 	if (index != -1)
 	{
 		aux = enemyList.At(index);
+		aux->data->CleanUp();
 		enemyList.Del(aux);
 	}
 }

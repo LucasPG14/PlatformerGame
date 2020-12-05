@@ -13,6 +13,13 @@ enum EnemyType
 	STAR
 };
 
+enum EnemyState
+{
+	SLEEP,
+	AWAKE,
+	ATTACK
+};
+
 class Player;
 
 class Enemy
@@ -43,7 +50,9 @@ public:
 
 	virtual bool FindGoal(Player* player) { return true; }
 
-	virtual bool Move() { return true; }
+	virtual bool Move(float dt) { return true; }
+
+	virtual bool Sleep(float dt) { return true; }
 
 
 	Collider* collider;
@@ -51,6 +60,9 @@ public:
 	int lifes;
 	iPoint pos;
 	EnemyType type;
+	EnemyState state;
+	int time;
+	bool goalFound;
 	// A ptr to the current animation
 	Animation* currentAnim = nullptr;
 };
