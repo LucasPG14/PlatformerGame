@@ -80,7 +80,17 @@ bool SceneDie::PostUpdate()
 	app->fonts->BlitText(700, 100, redFont, "x");
 	app->fonts->BlitText(750, 100, redFont, std::to_string(app->player->GetStars()).c_str());
 	app->fonts->BlitText(870, 100, redFont, "=");
-	app->fonts->BlitText(925, 100, redFont, std::to_string(app->player->GetFinalScore()).c_str());
+
+	if ((app->player->stars) == 0) {
+		app->fonts->BlitText(925, 100, redFont, std::to_string(app->player->GetScore()).c_str());
+	}
+	else {
+		app->fonts->BlitText(925, 100, redFont, std::to_string(app->player->GetFinalScore()).c_str());
+	}
+
+
+
+	
 
 	app->render->DrawTexture(starTex, 810,95, NULL);
 

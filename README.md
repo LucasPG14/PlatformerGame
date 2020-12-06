@@ -2,7 +2,7 @@
 
 ## Description
 
-Adventure worlds 2D is a platform game developed by Real Ambient for the subject Game Development, where you play as a young adventurer whose goal is to reach the very end avoiding every hiccup along the way. Are you ready to dive into adventure world 2D?
+Adventure worlds 2D is a platform game developed by Real Ambient for the subject Game Development, where you play as a young knight whose goal is to reach the very end avoiding every hiccup along the way. Are you ready to dive into adventure world 2D?
 
 ## Key Features
 
@@ -16,9 +16,15 @@ Adventure worlds 2D is a platform game developed by Real Ambient for the subject
  - Camera Movement
  - Numerous scenes
  - Debug Keys
-
-
-
+ - Audio Feedback
+ - Score system
+ - Life system
+ - Enemies Pathfinding
+ - Sword to kill enemies
+ - Checkpoint autosave with feedback
+ - Checkpoint teleportation
+ - Delta time on move
+ - Sword cooldown 
  
 ## Controls
 
@@ -27,6 +33,7 @@ Adventure worlds 2D is a platform game developed by Real Ambient for the subject
  - [D] moves the player to the right
  - [SPACE] for jumping
  - [ESC] to quit the game
+ - [M] or [LEFT MOUSE CLICK] to attack enemies.
 
  GODMODE KEYS 
  - [A] moves the player to the left
@@ -41,6 +48,7 @@ Adventure worlds 2D is a platform game developed by Real Ambient for the subject
  - [F6] Load the previous state 
  - [F9] Show colliders
  - [F10] God Mode
+ - [F11] Enable/disable FPS cap to 30
 
 ## Developers
 
@@ -56,8 +64,38 @@ This project is licensed under an unmodified MIT license, which is an OSI-certif
 Tiles and background art: https://free-game-assets.itch.io/free-parallax-2d-backgrounds
 https://swapnilrane24.itch.io/snow-background
 
-License(Tiles and background): 
+Audio FX:
+
+- JumpFX: 
+Page: https://www.youtube.com/watch?v=_eqKyzxa0dM
+Artist: https://audionautix.com/ 
+
+- Enemies DieFX:
+Page: https://freesound.org/people/yummie/sounds/209731/
+Artist: https://freesound.org/people/yummie/
+Page: https://freesound.org/people/Breviceps/sounds/445958/
+Artist: https://freesound.org/people/Breviceps/
+
+- CheckpointFX
+Page: https://sfx.productioncrate.com/search.html#query=sword&ss=tab&_ga=2.164274815.1107425616.1575164446-1342997657.1575164446
+
+- Coin fx: 
+Page: https://freesound.org/people/ProjectsU012/sounds/341695/
+Artist: https://freesound.org/people/ProjectsU012/
+
+- LifeFX
+Page: https://opengameart.org/content/spell-3
+Artist: https://opengameart.org/users/bart
+
+- Life Animation Sprite
+Page: https://es.123rf.com/clipart-vector/sprite.html?sti=mytaw652i7f2aiqz8y|&mediapopup=76540289
+Artist: https://es.123rf.com/profile_sudowoodo
+
+- Coin Animation Sprite
+Page: https://opengameart.org/content/coin-animation
+Artist: https://opengameart.org/users/dan-sevenstar-dontmind8
 	
+License(Tiles and background): 
 
 	by  Kenney Vleugels (Kenney.nl)
 
