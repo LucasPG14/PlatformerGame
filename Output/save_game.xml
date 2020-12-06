@@ -6,28 +6,32 @@
   <audio />
   <enemies>
     <slime>
-      <position x="462" y="668" />
-    </slime>
-    <slime>
-      <position x="462" y="668" />
-    </slime>
-    <slime>
-      <position x="462" y="668" />
+      <position x="2537" y="732" />
+      <state value="0" />
+      <alive value="true" />
     </slime>
     <bat>
-      <position x="4070" y="1270" />
+      <position x="1157" y="1286" />
+      <state value="0" />
+      <alive value="true" />
     </bat>
+    <:anonymous />
+    <:anonymous />
+    <:anonymous />
+    <:anonymous />
+    <:anonymous />
+    <:anonymous />
   </enemies>
   <scenes />
   <map />
   <player>
-    <position x="648" y="523.919983" />
+    <position x="10" y="600" />
   </player>
   <:anonymous />
   <fade />
   <fonts />
   <renderer>
-    <camera x="-27" y="-163" />
-    <offset x="28" y="163.919983" />
+    <camera x="1" y="-240" />
+    <offset x="0" y="240" />
   </renderer>
 </save_status>

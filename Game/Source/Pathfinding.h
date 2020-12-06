@@ -30,7 +30,7 @@ public:
 
 	// BFS Pathfinding methods
 	void ResetPath(iPoint start);
-	void DrawPath();
+	void DrawPath(DynArray<iPoint>& path);
 	bool IsWalkable(int x, int y) const;
 
 	// More pathfinding methods

@@ -48,7 +48,10 @@ bool Life::Update(float dt)
 
 bool Life::CleanUp()
 {
-	app->colliderManager->RemoveCollider(this->lifeItem);
+	if (this->lifeItem)
+	{
+		app->colliderManager->RemoveCollider(this->lifeItem);
+	}
 	return true;
 }
 

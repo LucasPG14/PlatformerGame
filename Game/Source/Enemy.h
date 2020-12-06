@@ -54,14 +54,18 @@ public:
 
 	virtual bool Sleep(float dt) { return true; }
 
+public:
 
+	SString name;
 	Collider* collider;
 	SDL_Texture* texture = nullptr;
 	int lifes;
 	iPoint pos;
 	EnemyType type;
 	EnemyState state;
+	bool alive;
 	int time;
+	bool block;
 	// A ptr to the current animation
 	Animation* currentAnim = nullptr;
 };

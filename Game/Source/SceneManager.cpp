@@ -59,7 +59,8 @@ bool SceneManager::Update(float dt)
 {
 	bool ret = true;
 	// Quit the game
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) 
+		ret = false;
 
 	// Move the camera up
 	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
@@ -87,21 +88,6 @@ bool SceneManager::Update(float dt)
 	{
 		app->render->camera.x -= floor(200.0f * dt);
 		app->render->offset.x += floor(200.0f * dt);
-	}
-
-	// Save game
-	if (app->input->GetKey(SDL_SCANCODE_F5) == KeyState::KEY_DOWN)
-		app->SaveGameRequest();
-
-	// Load game
-	if (app->input->GetKey(SDL_SCANCODE_F6) == KeyState::KEY_DOWN)
-		app->LoadGameRequest();
-
-	// View colliders
-	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-	{
-		app->map->viewCollisions = !app->map->viewCollisions;
-		app->colliderManager->showColliders = !app->colliderManager->showColliders;
 	}
 
 	// Cap the game to 30 FPS

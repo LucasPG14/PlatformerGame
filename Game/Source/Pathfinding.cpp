@@ -29,38 +29,8 @@ void Pathfinding::ResetPath(iPoint start)
 	memset(costSoFar, 0, sizeof(uint) * COST_MAP_SIZE * COST_MAP_SIZE);
 }
 
-void Pathfinding::DrawPath()
+void Pathfinding::DrawPath(DynArray<iPoint>& path)
 {
-	iPoint point;
-
-	// Draw visited
-	ListItem<iPoint>* item = visited.start;
-
-	while (item)
-	{
-		point = item->data;
-		TileSet* tileset = app->map->GetTilesetFromTileId(290);
-
-		SDL_Rect rec = tileset->GetTileRect(290);
-		iPoint pos = app->map->MapToWorld(point.x, point.y);
-		if (app->map->viewCollisions == true)
-			app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
-
-		item = item->next;
-	}
-
-	// Draw frontier
-	for (uint i = 0; i < frontier.Count(); ++i)
-	{
-		point = *(frontier.Peek(i));
-		TileSet* tileset = app->map->GetTilesetFromTileId(289);
-
-		SDL_Rect rec = tileset->GetTileRect(289);
-		iPoint pos = app->map->MapToWorld(point.x, point.y);
-		if (app->map->viewCollisions == true)
-			app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
-	}
-
 	// Draw path
 	for (uint i = 0; i < path.Count(); ++i)
 	{
@@ -68,10 +38,7 @@ void Pathfinding::DrawPath()
 
 		SDL_Rect rec = tileset->GetTileRect(291);
 		iPoint pos = app->map->MapToWorld(path[i].x, path[i].y);
-		if (checkPath == true && app->map->viewCollisions == true)
-		{
-			app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
-		}
+		app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
 	}
 }
 
@@ -101,6 +68,8 @@ int Pathfinding::MovementCost(int x, int y) const
 
 		if (id == 289) ret = 0;
 		else if (id == 290) ret = 0;
+		else if (id == 294) ret = 0;
+		else if (id == 291) ret = 0;
 		else ret = 3;
 	}
 
@@ -180,8 +149,8 @@ bool Pathfinding::PropagateAStar(int x, int y)
 				newCost += costSoFar[curr.x][curr.y];
 				if ((visited.Find(neighbors[i]) == -1) || (newCost < costSoFar[neighbors[i].x][neighbors[i].y]))
 				{
-					costSoFar[neighbors[i].x][neighbors[i].y] = newCost;
 					int f = g + h;
+					costSoFar[neighbors[i].x][neighbors[i].y] = newCost;
 					frontier.Push(neighbors[i], h);
 					visited.Add(neighbors[i]);
 					breadcrumbs.Add(curr);

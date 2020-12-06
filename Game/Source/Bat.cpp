@@ -10,6 +10,8 @@
 
 Bat::Bat(iPoint position) : Enemy(position, EnemyType::BAT, 2)
 {
+	name.Create("bat");
+
 	animLeft.PushBack({ 44,170,32,30 });
 	animLeft.PushBack({ 2,170,36,30 });
 
@@ -49,6 +51,8 @@ bool Bat::Start()
 	currentAnim = &animRight;
 
 	this->state = SLEEP;
+	this->alive = true;
+	this->batPath.Clear();
 
 	return true;
 }
@@ -92,7 +96,10 @@ bool Bat::Update(float dt)
 	else if (this->state == ATTACK && this->currentAnim != &deathAnim)
 	{
 		if (Move(dt) == false)
+		{
 			this->state = SLEEP;
+			this->batPath.Clear();
+		}
 	}
 
 	if (hitLeftAnim.HasFinished())
@@ -113,7 +120,10 @@ bool Bat::Update(float dt)
 
 bool Bat::CleanUp()
 {
-	app->colliderManager->RemoveCollider(this->collider);
+	if (this->collider != nullptr)
+	{
+		app->colliderManager->RemoveCollider(this->collider);
+	}
 	batPath.Clear();
 
 	return true;
@@ -122,6 +132,8 @@ bool Bat::CleanUp()
 void Bat::Draw()
 {
 	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->currentAnim->GetCurrentFrame());
+	if(app->map->viewCollisions == true)
+		app->pathfinding->DrawPath(this->batPath);
 }
 
 void Bat::Hit()
@@ -138,16 +150,16 @@ void Bat::Hit()
 
 bool Bat::FindGoal(Player* player)
 {
-	app->pathfinding->path.Clear();
+	batPath.Clear();
 
 	int x = player->position.x;
 	int y = player->position.y;
 	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
-	bool found = app->pathfinding->PropagateAStar(x, y);
+	bool found = app->pathfinding->PropagateAStar(x, y + 35);
 
 	if (found == true)
 	{
-		this->batPath = *(app->pathfinding->ComputePath(x, y));
+		this->batPath = *(app->pathfinding->ComputePath(x, y + 35));
 		this->indexBat = this->batPath.Count() - 1;
 		return true;
 	}
@@ -258,8 +270,21 @@ bool Bat::Sleep(float dt)
 	int range;
 
 	range = sqrt(pow((double)app->player->GetPosition().x - this->pos.x, 2) + pow((double)app->player->GetPosition().y - this->pos.y, 2));
+	bool right = false;
+	bool left = false;
+	if (this->pos.x - app->player->GetPosition().x < 100 &&
+		this->pos.x > app->player->GetPosition().x)
+	{
+		right = true;
+	}
+	else if (app->player->GetPosition().x - this->pos.x < 100 &&
+		app->player->GetPosition().x > this->pos.x)
+	{
+		left = true;
+	}
 
-	if (range < 300 && app->player->godMode == false)
+	if (range < 300 && app->player->godMode == false &&
+		(right == true || left == true))
 	{
 		return true;
 	}
@@ -309,7 +334,7 @@ bool Bat::Collision(const char* side)
 			{
 				for (uint i = 0; i < 3; i++)
 				{
-					tilePos = app->map->WorldToMap(this->pos.x + 32, this->pos.y + (1 + (6 * i)));
+					tilePos = app->map->WorldToMap(this->pos.x + 33, this->pos.y + (1 + (6 * i)));
 					idTile = lay->data->Get(tilePos.x, tilePos.y);
 					if (CheckCollisionType(idTile, "right"))
 					{
@@ -321,7 +346,7 @@ bool Bat::Collision(const char* side)
 			{
 				for (uint i = 0; i < 3; i++)
 				{
-					tilePos = app->map->WorldToMap(this->pos.x + 2, this->pos.y + (1 + (6 * i)));
+					tilePos = app->map->WorldToMap(this->pos.x + 1, this->pos.y + (1 + (6 * i)));
 					idTile = lay->data->Get(tilePos.x, tilePos.y);
 					if (CheckCollisionType(idTile, "left"))
 					{
@@ -341,12 +366,10 @@ bool Bat::CheckCollisionType(int idTile, std::string direction)
 	switch (idTile)
 	{
 	case 289:
+		block = true;
 		return true;
 		break;
-
-
 	case 290:
-		app->enemyManager->RemoveEnemy(this);
 		return true;
 		break;
 
@@ -373,19 +396,26 @@ bool Bat::CheckCollisionType(int idTile, std::string direction)
 
 bool Bat::Load(pugi::xml_node& load)
 {
-	this->pos.x = load.child("bat").child("position").attribute("x").as_int();
-	this->pos.y = load.child("bat").child("position").attribute("y").as_int();
+	this->pos.x = load.child("position").attribute("x").as_int();
+	this->pos.y = load.child("position").attribute("y").as_int();
+	this->state = (EnemyState)load.child("state").attribute("value").as_int();
+	this->alive = load.child("alive").attribute("value").as_bool();
 
 	return true;
 }
 
 bool Bat::Save(pugi::xml_node& save) const
 {
-	pugi::xml_node bat = save.append_child("bat");
-	bat = bat.append_child("position");
+	pugi::xml_node bat = save.append_child("position");
+	
+	bat.append_attribute("x").set_value(this->pos.x);
+	bat.append_attribute("y").set_value(this->pos.y);
 
-	bat.append_attribute("x").set_value(pos.x);
-	bat.append_attribute("y").set_value(pos.y);
+	pugi::xml_node state = save.append_child("state");
+	state.append_attribute("value").set_value((int)this->state);
+
+	pugi::xml_node alive = save.append_child("alive");
+	alive.append_attribute("value").set_value(this->alive);
 
 	return true;
 }

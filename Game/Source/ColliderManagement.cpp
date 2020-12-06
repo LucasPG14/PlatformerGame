@@ -2,7 +2,6 @@
 #include "EnemyManager.h"
 #include "Render.h"
 #include "Player.h"
-#include "Audio.h"
 #include "App.h"
 
 ColliderManagement::ColliderManagement()
@@ -117,7 +116,7 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 	if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
 	{
 		app->player->lifes--;
-		app->audio->PlayFx(app->player->playerHurt);
+
 		if (app->player->lifes > 0) {
 			app->player->deadPlayer = false;
 			app->player->playerChangePos = true;
@@ -132,7 +131,7 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 	else if (coll2->type == Collider::Type::PLAYER && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
 	{
 		app->player->lifes--;
-		app->audio->PlayFx(app->player->playerHurt);
+
 		if (app->player->lifes > 0) {
 			app->player->deadPlayer = false;
 			app->player->playerChangePos = true;

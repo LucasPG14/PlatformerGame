@@ -47,7 +47,11 @@ bool Star::Update(float dt)
 
 bool Star::CleanUp()
 {
-	app->colliderManager->RemoveCollider(this->collider);
+	if (this->collider != nullptr)
+	{
+		app->colliderManager->RemoveCollider(this->collider);
+	}
+	
 	return false;
 }
 

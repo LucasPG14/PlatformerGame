@@ -43,31 +43,21 @@ bool Scene::Awake(pugi::xml_node& config)
 bool Scene::Start()
 {
 	//Load Player
-	app->player->active = true;
 	PlayerPosition();
-	app->player->Start();
+	app->player->Enable();
 
-	//Load Enemies and Entities
-	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(50, 650), EnemyType::SLIME);
-	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 680), EnemyType::SLIME);
-	slime3 = (Slime*)app->enemyManager->AddEnemy(iPoint(4122, 1466), EnemyType::SLIME);
+	//Load Enemies
+	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 667), EnemyType::SLIME);
 
-	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(4274, 1270), EnemyType::BAT);
+	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(1798, 1286), EnemyType::BAT);
 
-	app->enemyManager->AddEnemy(iPoint(4178, 633), EnemyType::LIFE);
-	app->enemyManager->AddEnemy(iPoint(3829, 1264), EnemyType::LIFE);
-	app->enemyManager->AddEnemy(iPoint(4211, 1070), EnemyType::LIFE);
+	app->enemyManager->AddEnemy(iPoint(1222, 1401), EnemyType::LIFE);
+	app->enemyManager->AddEnemy(iPoint(1572, 218), EnemyType::LIFE);
+	app->enemyManager->AddEnemy(iPoint(2080, 899), EnemyType::LIFE);
 
 	app->enemyManager->AddEnemy(iPoint(1200, 300), EnemyType::STAR);
 	app->enemyManager->AddEnemy(iPoint(1290, 955), EnemyType::STAR);
 	app->enemyManager->AddEnemy(iPoint(505, 1025), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(2511, 1375), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(2719, 583), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(3414, 420), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(3446, 798), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(3933, 165), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(5373, 336), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(4426, 418), EnemyType::STAR);
 
 	// Load music
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_8-8bit_march_10_minutes.ogg");
@@ -75,7 +65,6 @@ bool Scene::Start()
 	bg = app->tex->Load("Assets/Textures/Backgrounds/level1_dark_trees_background.png");
 	bg2 = app->tex->Load("Assets/Textures/Backgrounds/level1_trees_background.png");
 	bg3 = app->tex->Load("Assets/Textures/Backgrounds/level1_ground_background.png");
-
 	// Load map
 	app->map->active = true;
 	app->map->Load("level1.tmx");
@@ -96,7 +85,6 @@ bool Scene::Update(float dt)
 	if (app->player->playerChangePos == true)
 	{
 		PlayerPosition();
-		ResetEnemiesPosition();
 		app->player->playerChangePos = false;
 	}
 
@@ -104,30 +92,16 @@ bool Scene::Update(float dt)
 	app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		app->fade->Fade(this, this, 1/dt);
 
-		// Pathfinding testing inputs
-	if (app->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		app->SaveGameRequest();
+
+	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+		app->LoadGameRequest();
+
+	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 	{
-		app->pathfinding->ResetPath(iPoint(12, 40));
-		app->pathfinding->finishAStar = false;
-	}
-
-	if (app->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
-		//app->pathfinding->PropagateDijkstra();
-		//app->pathfinding->PropagateAStar();
-
-	if (app->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
-		//app->pathfinding->PropagateDijkstra();
-		//app->pathfinding->PropagateAStar();
-
-	if (app->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT)
-		app->pathfinding->ComputePathAStar(app->pathfinding->goalAStar.x, app->pathfinding->goalAStar.y);
-
-	if (app->input->GetMouseButtonDown(1) == KEY_DOWN)
-	{
-		iPoint p;
-		app->input->GetMousePosition(p.x, p.y);
-		app->pathfinding->goalAStar = app->map->WorldToMap(p.x - app->render->camera.x, p.y - app->render->camera.y);
-		app->pathfinding->checkPath = true;
+		app->map->viewCollisions = !app->map->viewCollisions;
+		app->colliderManager->showColliders = !app->colliderManager->showColliders;
 	}
 
 	if (app->player->IsDead() == true && app->player->time == 60)
@@ -138,8 +112,6 @@ bool Scene::Update(float dt)
 
 	if (app->player->LevelFinished() == true)
 		app->fade->Fade(this, app->sceneManager->winScene, 1 / dt);
-
-	//app->enemyManager->Update(dt);
 
 	return ret;
 }
@@ -168,15 +140,10 @@ bool Scene::PostUpdate()
 		break;
 	}
 
-
 	// Draw map
 	app->map->Draw();
-	app->pathfinding->DrawPath();
 
-	// Draw Enemies
 	app->enemyManager->Draw();
-
-	//Draw Colliders
 	app->colliderManager->DrawColliders();
 
 	return ret;
@@ -193,31 +160,17 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(bg);
 	app->tex->UnLoad(bg2);
 	app->tex->UnLoad(bg3);
-	app->colliderManager->CleanUp();
-	app->enemyManager->CleanUp();
-	app->player->CleanUp();
-	app->map->CleanUp();
+	app->colliderManager->Disable();
+	app->enemyManager->Disable();
+	app->player->Disable();
+	app->map->Disable();
+	app->pathfinding->Disable();
 
 	return true;
 }
 
 void Scene::PlayerPosition()
 {
-	app->player->position.x = 30;
+	app->player->position.x = 10;
 	app->player->position.y = 600;
-}
-
-void Scene::ResetEnemiesPosition()
-{
-	slime->pos.x = 300;
-	slime->pos.y = 650;
-
-	slime2->pos.x = 2829;
-	slime2->pos.y = 680;
-
-	slime3->pos.x = 4122; 
-	slime3->pos.y = 1466;
-
-	bat->pos.x = 4274;
-	bat->pos.y = 1270;
 }

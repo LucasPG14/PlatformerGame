@@ -67,6 +67,24 @@ public:
 		return true;
 	}
 
+	virtual void Enable()
+	{
+		if (this->active == false)
+		{
+			this->active = true;
+			this->Start();
+		}
+	}
+
+	virtual void Disable()
+	{
+		if (this->active == true)
+		{
+			this->active = false;
+			this->CleanUp();
+		}
+	}
+
 public:
 
 	SString name;

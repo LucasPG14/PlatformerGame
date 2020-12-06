@@ -525,8 +525,10 @@ bool Player::CleanUp() {
 	app->fonts->UnLoad(yellowFont);
 	leftDeadAnim.Reset();
 	rightDeadAnim.Reset();
-	app->colliderManager->RemoveCollider(playerCollider);
-	this->active = false;
+	if (playerCollider != nullptr)
+	{
+		app->colliderManager->RemoveCollider(playerCollider);
+	}
 	return true;
 }
 

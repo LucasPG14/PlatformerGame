@@ -75,10 +75,27 @@ void EnemyManager::Lifes(Collider* coll)
 bool EnemyManager::LoadState(pugi::xml_node& load)
 {
 	ListItem<Enemy*>* enemies = enemyList.start;
+	pugi::xml_node bat = load.child("bat");
+	pugi::xml_node slime = load.child("slime");
 
 	while (enemies != nullptr)
 	{
-		enemies->data->Load(load);
+		if (enemies->data->name == ("slime"))
+		{
+			if (enemies->data->alive)
+				enemies->data->Load(slime);
+
+			slime = slime.next_sibling("slime");
+		}
+		
+		if (enemies->data->name == ("bat"))
+		{
+			if (enemies->data->alive == true)
+				enemies->data->Load(bat);
+
+			bat = bat.next_sibling("bat");
+		}	
+		
 		enemies = enemies->next;
 	}
 
@@ -91,7 +108,8 @@ bool EnemyManager::SaveState(pugi::xml_node& save) const
 
 	while (enemies != nullptr)
 	{
-		enemies->data->Save(save);
+		enemies->data->Save(save.append_child(enemies->data->name.GetString()));
+
 		enemies = enemies->next;
 	}
 

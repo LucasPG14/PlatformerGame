@@ -9,6 +9,8 @@
 
 Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
 {
+	name.Create("slime");
+
 	animLeft.PushBack({ 44,20,34,20 });
 	animLeft.PushBack({ 2,20,36,20 });
 
@@ -51,66 +53,76 @@ bool Slime::Start()
 
 	this->moveRight = true;
 
+	this->alive = true;
+	this->slimePath.Clear();
+
 	this->slime = app->audio->LoadFx("Assets/Audio/Fx/walking_enemy_die.wav");
 
-return true;
+	return true;
 }
 
 bool Slime::Update(float dt)
 {
-	this->animLeft.speed = 5.0f * dt;
-	this->animRight.speed = 5.0f * dt;
-	this->hitLeftAnim.speed = 7.0f * dt;
-	this->hitRightAnim.speed = 7.0f * dt;
-	this->deathAnim.speed = 5.0f * dt;
-
-	this->currentAnim->Update();
-
-	Gravity(dt);
-
-	this->collider->SetPos(this->pos.x + 4, this->pos.y + 3, &this->collider->rect);
-
-	if (this->lifes == 0)
+	if (this->alive)
 	{
-		this->currentAnim = &deathAnim;
+		this->animLeft.speed = 5.0f * dt;
+		this->animRight.speed = 5.0f * dt;
+		this->hitLeftAnim.speed = 7.0f * dt;
+		this->hitRightAnim.speed = 7.0f * dt;
+		this->deathAnim.speed = 5.0f * dt;
 
-		if (this->deathAnim.HasFinished())
+		this->currentAnim->Update();
+
+		Gravity(dt);
+
+		this->collider->SetPos(this->pos.x + 4, this->pos.y + 3, &this->collider->rect);
+
+		if (this->lifes == 0)
 		{
-			app->enemyManager->RemoveEnemy(this);
+			this->currentAnim = &deathAnim;
+
+			if (this->deathAnim.HasFinished())
+			{
+				this->alive = false;
+				app->enemyManager->RemoveEnemy(this);
+			}
 		}
-	}
 
-	if (this->state == SLEEP && this->currentAnim != &deathAnim)
-	{
-		if (Sleep(dt) == true)
-			this->state = AWAKE;
-	}
+		if (this->state == SLEEP && this->currentAnim != &deathAnim)
+		{
+			if (Sleep(dt) == true)
+				this->state = AWAKE;
+		}
 
-	else if (this->state == AWAKE && this->currentAnim != &deathAnim)
-	{
-		if (FindGoal(app->player) == true)
-			this->state = ATTACK;
-		else this->state = SLEEP;
-	}
+		else if (this->state == AWAKE && this->currentAnim != &deathAnim)
+		{
+			if (FindGoal(app->player) == true)
+				this->state = ATTACK;
+			else this->state = SLEEP;
+		}
 
-	else if (this->state == ATTACK && this->currentAnim != &deathAnim)
-	{
-		if (Move(dt) == false)
-			this->state = SLEEP;
-	}
+		else if (this->state == ATTACK && this->currentAnim != &deathAnim)
+		{
+			if (Move(dt) == false)
+			{
+				this->state = SLEEP;
+				this->slimePath.Clear();
+			}
+		}
 
-	if (hitLeftAnim.HasFinished())
-	{
-		this->currentAnim = &animLeft;
-		this->hitLeftAnim.Reset();
-		app->audio->PlayFx(slime);
+		if (hitLeftAnim.HasFinished())
+		{
+			this->currentAnim = &animLeft;
+			this->hitLeftAnim.Reset();
+			app->audio->PlayFx(slime);
 
-	}
-	else if (hitRightAnim.HasFinished())
-	{
-		this->currentAnim = &animRight;
-		this->hitRightAnim.Reset();
-		app->audio->PlayFx(slime);
+		}
+		else if (hitRightAnim.HasFinished())
+		{
+			this->currentAnim = &animRight;
+			this->hitRightAnim.Reset();
+			app->audio->PlayFx(slime);
+		}
 	}
 
 	return true;
@@ -118,13 +130,20 @@ bool Slime::Update(float dt)
 
 bool Slime::CleanUp()
 {
-	app->colliderManager->RemoveCollider(this->collider);
+	if (this->collider != nullptr)
+	{
+		app->colliderManager->RemoveCollider(this->collider);
+	}
+
+	this->slimePath.Clear();
 	return true;
 }
 
 void Slime::Draw()
 {
 	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->currentAnim->GetCurrentFrame());
+	if (app->map->viewCollisions == true)
+		app->pathfinding->DrawPath(this->slimePath);
 }
 
 void Slime::Hit()
@@ -240,7 +259,21 @@ bool Slime::Sleep(float dt)
 
 	range = sqrt(pow((double)app->player->GetPosition().x - this->pos.x, 2) + pow((double)app->player->GetPosition().y - this->pos.y, 2));
 
-	if (range < 300 && app->player->godMode == false)
+	bool up = false;
+	bool down = false;
+	if (this->pos.y - app->player->GetPosition().y < 70 &&
+		this->pos.y > app->player->GetPosition().y)
+	{
+		up = true;
+	}
+	else if (app->player->GetPosition().y - this->pos.y < 10 &&
+		app->player->GetPosition().y > this->pos.y)
+	{
+		down = true;
+	}
+
+	if (range < 300 && app->player->godMode == false &&
+		(up == true || down == true))
 	{
 		return true;
 	}
@@ -263,20 +296,26 @@ void Slime::Gravity(float dt)
 
 bool Slime::Load(pugi::xml_node& load)
 {
-	pugi::xml_node slime = load.child("slime");
-	pos.x = slime.child("position").attribute("x").as_int();
-	pos.y = slime.child("position").attribute("y").as_int();
+	this->pos.x = load.child("position").attribute("x").as_int();
+	this->pos.y = load.child("position").attribute("y").as_int();
+	this->state = (EnemyState)load.child("state").attribute("value").as_int();
+	this->alive = load.child("alive").attribute("value").as_bool();
 
 	return true;
 }
 
 bool Slime::Save(pugi::xml_node& save) const
 {
-	pugi::xml_node slime = save.append_child("slime");
-	slime = slime.append_child("position");
+	pugi::xml_node slime = save.append_child("position");
 
-	slime.append_attribute("x").set_value(pos.x);
-	slime.append_attribute("y").set_value(pos.y);
+	slime.append_attribute("x").set_value(this->pos.x);
+	slime.append_attribute("y").set_value(this->pos.y);
+
+	pugi::xml_node state = save.append_child("state");
+	state.append_attribute("value").set_value((int)this->state);
+
+	pugi::xml_node alive = save.append_child("alive");
+	alive.append_attribute("value").set_value(this->alive);
 
 	return true;
 }

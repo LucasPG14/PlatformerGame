@@ -224,14 +224,8 @@ void App::FinishUpdate()
 
 	app->win->SetTitle(title);
 
-	// Use SDL_Delay to make sure you get your capped framerate
-	if ((cappedMs > 0) && (lastFrameMs < cappedMs))
-	{
-		// L08: TODO 3: Measure accurately the amount of time SDL_Delay() actually waits compared to what was expected
-		PERF_START(pTimer);
-		SDL_Delay(cappedMs);
-		LOG("We waited for %i ms and got back in %f", cappedMs, pTimer.ReadMs());
-	}
+	PERF_START(pTimer);
+	SDL_Delay(cappedMs);
 }
 
 // Call modules before each loop iteration

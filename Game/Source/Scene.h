@@ -38,8 +38,6 @@ public:
 
 	void PlayerPosition();
 
-	void ResetEnemiesPosition();
-
 private:
 	SDL_Texture* bg;
 	SDL_Texture* bg2;
@@ -51,6 +49,7 @@ private:
 	Slime* slime3;
 	Slime* slime4;
 	Bat* bat;
+	Bat* bat2;
 
 };
 #endif // __SCENE_H__
