@@ -47,8 +47,8 @@ bool Scene::Start()
 	PlayerPosition();
 	app->player->Start();
 
-	//Load Enemies
-	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(100, 650), EnemyType::SLIME);
+	//Load Enemies and Entities
+	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(50, 650), EnemyType::SLIME);
 	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 680), EnemyType::SLIME);
 	slime3 = (Slime*)app->enemyManager->AddEnemy(iPoint(4122, 1466), EnemyType::SLIME);
 
@@ -69,18 +69,19 @@ bool Scene::Start()
 	app->enemyManager->AddEnemy(iPoint(5373, 336), EnemyType::STAR);
 	app->enemyManager->AddEnemy(iPoint(4426, 418), EnemyType::STAR);
 
-	app->enemyManager->active = true;
-	app->enemyManager->Start();
-
 	// Load music
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_8-8bit_march_10_minutes.ogg");
 
 	bg = app->tex->Load("Assets/Textures/Backgrounds/level1_dark_trees_background.png");
 	bg2 = app->tex->Load("Assets/Textures/Backgrounds/level1_trees_background.png");
 	bg3 = app->tex->Load("Assets/Textures/Backgrounds/level1_ground_background.png");
+
 	// Load map
 	app->map->active = true;
 	app->map->Load("level1.tmx");
+
+	app->enemyManager->active = true;
+	app->enemyManager->Start();
 
 	return true;
 }
@@ -127,9 +128,6 @@ bool Scene::Update(float dt)
 		app->input->GetMousePosition(p.x, p.y);
 		app->pathfinding->goalAStar = app->map->WorldToMap(p.x - app->render->camera.x, p.y - app->render->camera.y);
 		app->pathfinding->checkPath = true;
-		
-		//app->pathfinding->ComputePath(p.x - app->render->camera.x - app->map->data.tileWidth, p.y - app->render->camera.y - app->map->data.tileHeight);
-		//app->pathfinding->ComputePath(p.x, p.y);
 	}
 
 	if (app->player->IsDead() == true && app->player->time == 60)
@@ -141,7 +139,7 @@ bool Scene::Update(float dt)
 	if (app->player->LevelFinished() == true)
 		app->fade->Fade(this, app->sceneManager->winScene, 1 / dt);
 
-	app->enemyManager->Update(dt);
+	//app->enemyManager->Update(dt);
 
 	return ret;
 }
@@ -175,7 +173,10 @@ bool Scene::PostUpdate()
 	app->map->Draw();
 	app->pathfinding->DrawPath();
 
+	// Draw Enemies
 	app->enemyManager->Draw();
+
+	//Draw Colliders
 	app->colliderManager->DrawColliders();
 
 	return ret;

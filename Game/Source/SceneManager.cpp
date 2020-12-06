@@ -149,8 +149,8 @@ bool SceneManager::CleanUp()
 
 	while (sceneItem != nullptr)
 	{
+		sceneItem->data->CleanUp();
 		RELEASE(sceneItem->data);
-
 		sceneItem = sceneItem->next;
 	}
 

@@ -32,7 +32,6 @@ Star::~Star() {}
 
 bool Star::Start()
 {
-	this->starTex = app->tex->Load("Assets/Textures/Characters/star_anim.png");
 	//this->shineTex = app->tex->Load("Assets/Textures/Characters/shine_anim.png");
 	this->starItem = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 6, 30, 30 }, Collider::Type::STAR);
 	star = app->audio->LoadFx("Assets/Audio/Fx/star.wav");
@@ -58,10 +57,11 @@ bool Star::Update(float dt)
 
 bool Star::CleanUp()
 {
+	app->colliderManager->RemoveCollider(this->collider);
 	return false;
 }
 
 void Star::Draw()
 {
-	app->render->DrawTexture(this->starTex, this->pos.x, this->pos.y, &this->starAnim.GetCurrentFrame());
+	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->starAnim.GetCurrentFrame());
 }

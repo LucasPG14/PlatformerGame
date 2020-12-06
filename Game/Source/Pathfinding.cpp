@@ -126,7 +126,6 @@ DynArray<iPoint>* Pathfinding::ComputePath(int x, int y)
 	return &path;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
 DynArray<iPoint>* Pathfinding::ComputePathAStar(int x, int y)
 {
 	// L12a: Compute AStart pathfinding
@@ -191,7 +190,6 @@ bool Pathfinding::PropagateAStar(int x, int y)
 		}
 	}
 }
-//////////////////////////////////////////////////////////////////////////////////////////////
 
 void Pathfinding::PropagateBFS(Player* player)
 {

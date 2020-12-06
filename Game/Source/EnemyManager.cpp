@@ -108,8 +108,6 @@ bool EnemyManager::CleanUp()
 		enemies = enemies->next;
 	}
 
-	//app->tex->UnLoad(texture);
-
 	return true;
 }
 

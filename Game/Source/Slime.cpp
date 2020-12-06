@@ -52,18 +52,18 @@ bool Slime::Start()
 
 	this->moveRight = true;
 
-	this->slime = app->audio->LoadFx("Assets/Audio/Fx/WalkingEnemyDie.wav");
+	this->slime = app->audio->LoadFx("Assets/Audio/Fx/walking_enemy_die.wav");
 
 return true;
 }
 
 bool Slime::Update(float dt)
 {
-	this->animLeft.speed = 2.0f * dt;
-	this->animRight.speed = 2.0f * dt;
-	this->hitLeftAnim.speed = 3.0f * dt;
-	this->hitRightAnim.speed = 3.0f * dt;
-	this->deathAnim.speed = 2.0f * dt;
+	this->animLeft.speed = 5.0f * dt;
+	this->animRight.speed = 5.0f * dt;
+	this->hitLeftAnim.speed = 7.0f * dt;
+	this->hitRightAnim.speed = 7.0f * dt;
+	this->deathAnim.speed = 5.0f * dt;
 
 	this->currentAnim->Update();
 
@@ -176,7 +176,7 @@ bool Slime::Move(float dt)
 			{
 				if (Collision("right") == false)
 				{
-					this->pos.x += 70 * dt;
+					this->pos.x += 125 * dt;
 				}
 				else
 					return false;
@@ -194,7 +194,7 @@ bool Slime::Move(float dt)
 			{
 				if (Collision("left") == false)
 				{
-					this->pos.x -= 35 * dt;
+					this->pos.x -= 100 * dt;
 				}
 				else
 					return false;
@@ -228,13 +228,13 @@ bool Slime::Sleep(float dt)
 	if (moveRight == true)
 	{
 		this->currentAnim = &animRight;
-		this->pos.x += 50 * dt;
+		this->pos.x += 100 * dt;
 	}
 
 	else
 	{
 		this->currentAnim = &animLeft;
-		this->pos.x -= 25 * dt;
+		this->pos.x -= 75 * dt;
 	}
 
 	int range;

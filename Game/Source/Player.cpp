@@ -180,6 +180,7 @@ bool Player::Start()
 		jumpAudio = app->audio->LoadFx("Assets/Audio/Fx/jump.wav");
 		swordFx = app->audio->LoadFx("Assets/Audio/Fx/sword_swing_soundbible.com_639083727.wav");
 		playerHurt = app->audio->LoadFx("Assets/Audio/Fx/impactplate_heavy_004.wav");
+
 		app->render->ResetCam();
 
 		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
@@ -509,10 +510,13 @@ bool Player::CleanUp() {
 	//Unload textures
 	app->tex->UnLoad(player);
 	app->tex->UnLoad(lifesTex);
+	app->tex->UnLoad(starTex);
+	app->tex->UnLoad(checkpointTex);
+	app->tex->UnLoad(cooldownTex);
+	app->fonts->UnLoad(yellowFont);
 	leftDeadAnim.Reset();
 	rightDeadAnim.Reset();
-	app->fonts->UnLoad(yellowFont);
-	app->tex->UnLoad(starTex);
+	app->colliderManager->RemoveCollider(playerCollider);
 	this->active = false;
 	return true;
 }

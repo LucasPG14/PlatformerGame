@@ -44,7 +44,7 @@ Bat::~Bat() {}
 bool Bat::Start()
 {
 	this->collider = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 4, 24, 21 }, Collider::Type::ENEMY_FLY);
-	bat = app->audio->LoadFx("Assets/Audio/Fx/FlyingEnemyDie.wav");
+	bat = app->audio->LoadFx("Assets/Audio/Fx/flying_enemy_die.wav");
 
 	currentAnim = &animRight;
 
@@ -55,11 +55,11 @@ bool Bat::Start()
 
 bool Bat::Update(float dt)
 {
-	this->animLeft.speed = 2.0f * dt;
-	this->animRight.speed = 2.0f * dt;
-	this->hitLeftAnim.speed = 3.0f * dt;
-	this->hitRightAnim.speed = 3.0f * dt;
-	this->deathAnim.speed = 20.0f * dt;
+	this->animLeft.speed = 5.0f * dt;
+	this->animRight.speed = 5.0f * dt;
+	this->hitLeftAnim.speed = 7.0f * dt;
+	this->hitRightAnim.speed = 7.0f * dt;
+	this->deathAnim.speed = 5.0f * dt;
 
 	this->currentAnim->Update();
 
@@ -171,7 +171,7 @@ bool Bat::Move(float dt)
 			{
 				if (Collision("right") == false)
 				{
-					this->pos.x += 70 * dt;
+					this->pos.x += 150 * dt;
 				}
 				else
 					return false;
@@ -189,7 +189,7 @@ bool Bat::Move(float dt)
 			{
 				if (Collision("left") == false)
 				{
-					this->pos.x -= 35 * dt;
+					this->pos.x -= 125 * dt;
 				}
 				else
 					return false;
@@ -208,7 +208,7 @@ bool Bat::Move(float dt)
 			{
 				if (Collision("top") == false)
 				{
-					this->pos.y -= 50 * dt;
+					this->pos.y -= 125 * dt;
 				}
 				else
 					return false;
@@ -220,7 +220,7 @@ bool Bat::Move(float dt)
 			{
 				if (Collision("bottom") == false)
 				{
-					this->pos.y += 50 * dt;
+					this->pos.y += 125 * dt;
 				}
 				else
 					return false;
@@ -247,12 +247,12 @@ bool Bat::Sleep(float dt)
 	if (this->moveRight == true)
 	{
 		this->currentAnim = &animRight;
-		this->pos.x += 50 * dt;
+		this->pos.x += 125 * dt;
 	}
 	else
 	{
 		this->currentAnim = &animLeft;
-		this->pos.x -= 50 * dt;
+		this->pos.x -= 100 * dt;
 	}
 
 	int range;
