@@ -13,6 +13,8 @@
 Map::Map() : Module(), mapLoaded(false)
 {
 	name.Create("map");
+
+	viewCollisions = false;
 }
 
 // Destructor
