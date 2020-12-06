@@ -26,13 +26,9 @@ Star::Star(iPoint position) : Enemy(position, EnemyType::STAR, 3)
 	//shineAnim.PushBack({7689,13,39,39});
 
 	//starAnim.loop = true;
-
-
 }
 
-Star::~Star() {
-
-}
+Star::~Star() {}
 
 bool Star::Start()
 {
@@ -46,7 +42,6 @@ bool Star::Start()
 
 bool Star::Update(float dt)
 {
-
 	this->starAnim.speed = 2.0f * dt;
 
 	this->starAnim.Update();
@@ -56,9 +51,6 @@ bool Star::Update(float dt)
 		app->audio->PlayFx(star);
 		app->enemyManager->RemoveEnemy(this);
 	}
-
-
-
 	return false;
 }
 
@@ -70,21 +62,4 @@ bool Star::CleanUp()
 void Star::Draw()
 {
 	app->render->DrawTexture(this->starTex, this->pos.x, this->pos.y, &this->starAnim.GetCurrentFrame());
-
-
-
-}
-
-bool Star::Collision(const char* side)
-{
-	return false;
-}
-
-bool Star::CheckCollisionType(int idTile, std::string direction)
-{
-	return false;
-}
-
-void Star::Gravity(float dt)
-{
 }

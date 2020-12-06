@@ -17,12 +17,6 @@ public:
 
 	void Draw() override;
 
-	bool Collision(const char* side);
-
-	bool CheckCollisionType(int idTile, std::string direction);
-
-	void Gravity(float dt);
-
 private:
 
 	Collider* starItem = nullptr;

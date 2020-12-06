@@ -40,7 +40,7 @@ public:
 
 	// Propagation methods
 	void PropagateBFS(Player* player);
-	void PropagateDijkstra(Player* player);
+	bool PropagateDijkstra(Player* player);
 	void PropagateAStar(Player* player);
 
 

@@ -62,7 +62,6 @@ public:
 	EnemyType type;
 	EnemyState state;
 	int time;
-	bool goalFound;
 	// A ptr to the current animation
 	Animation* currentAnim = nullptr;
 };

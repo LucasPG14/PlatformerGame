@@ -90,17 +90,15 @@ bool Slime::Update(float dt)
 	else if (this->state == AWAKE && this->currentAnim != &deathAnim)
 	{
 		if (FindGoal(app->player) == true)
-		{
 			this->state = ATTACK;
-		}
+		else this->state = SLEEP;
+		
 	}
 
 	else if (this->state == ATTACK && this->currentAnim != &deathAnim)
 	{
 		if (Move(dt) == false)
-		{
 			this->state = SLEEP;
-		}
 	}
 
 	if (hitLeftAnim.HasFinished())
@@ -152,13 +150,16 @@ bool Slime::FindGoal(Player* player)
 	int x = player->position.x;
 	int y = player->position.y + 32;
 	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
-	app->pathfinding->PropagateDijkstra(player);
+	bool found = app->pathfinding->PropagateDijkstra(player);
 
-	slimePath = *(app->pathfinding->ComputePath(x, y));
+	if (found == true)
+	{
+		slimePath = *(app->pathfinding->ComputePath(x, y));
+		indexSlime = slimePath.Count() - 1;
+		return true;
+	}
 
-	indexSlime = slimePath.Count() - 1;
-
-	return true;
+	return false;
 }
 
 bool Slime::Move(float dt)
@@ -172,7 +173,11 @@ bool Slime::Move(float dt)
 	{
 		if (slimePath[indexSlime].x > this->pos.x / 16)
 		{
-			this->pos.x += 50 * dt;
+			if (Collision("right") == false)
+			{
+				this->pos.x += 70 * dt;
+			}
+			else this->state = SLEEP;
 			if (hitRightAnim.HasFinished())
 			{
 				this->currentAnim = &animRight;
@@ -185,7 +190,11 @@ bool Slime::Move(float dt)
 
 		if (slimePath[indexSlime].x < this->pos.x / 16)
 		{
-			this->pos.x -= 50 * dt;
+			if (Collision("left") == false)
+			{
+				this->pos.x -= 35 * dt;
+			}
+			else this->state = SLEEP;
 			if (hitLeftAnim.HasFinished())
 			{
 				this->currentAnim = &animLeft;
@@ -221,16 +230,14 @@ bool Slime::Sleep(float dt)
 	else
 	{
 		currentAnim = &animLeft;
-		this->pos.x -= 50 * dt;
+		this->pos.x -= 25 * dt;
 	}
 
-	int pos1;
-	int pos2;
+	int range;
 
-	pos1 = app->player->GetPosition().x - this->pos.x;
-	pos2 = app->player->GetPosition().y - this->pos.y;
+	range = sqrt(pow(app->player->GetPosition().x - this->pos.x, 2) + pow(app->player->GetPosition().y - this->pos.y, 2));
 
-	if (pos1 < 300)
+	if (range < 300)
 	{
 		return true;
 	}

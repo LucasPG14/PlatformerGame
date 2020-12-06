@@ -56,17 +56,3 @@ void Life::Draw()
 {
 	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->lifeAnim.GetCurrentFrame());
 }
-
-bool Life::Collision(const char* side)
-{
-	return true;
-}
-
-bool Life::CheckCollisionType(int idTile, std::string direction)
-{
-	return true;
-}
-
-void Life::Gravity(float dt)
-{
-}

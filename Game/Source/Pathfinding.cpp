@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "Input.h"
 #include "Textures.h"
+#include "Enemy.h"
+#include "EnemyManager.h"
 
 Pathfinding::Pathfinding()
 {
@@ -219,7 +221,7 @@ void Pathfinding::PropagateBFS(Player* player)
 	}
 }
 
-void Pathfinding::PropagateDijkstra(Player* player)
+bool Pathfinding::PropagateDijkstra(Player* player)
 {
 	iPoint curr;
 	goalAStar = app->map->WorldToMap(player->GetPosition().x, player->GetPosition().y + 32);
@@ -233,14 +235,16 @@ void Pathfinding::PropagateDijkstra(Player* player)
 		neighbors[3].Create(curr.x + 0, curr.y - 1);
 
 		if (goalAStar == curr)
-			break;
+		{
+			return true;
+		}
 
 		for (uint i = 0; i < 4; ++i)
 		{
 			newCost = costSoFar[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
 			if (newCost > costSoFar[curr.x][curr.y] && visited.Find(neighbors[i]) == -1)
 			{
-				frontier.Push(neighbors[i], 0);
+				frontier.Push(neighbors[i], newCost);
 				visited.Add(neighbors[i]);
 				breadcrumbs.Add(curr);
 				costSoFar[neighbors[i].x][neighbors[i].y] = newCost;
@@ -248,7 +252,7 @@ void Pathfinding::PropagateDijkstra(Player* player)
 		}
 	}
 
-	
+	return false;
 }
 
 bool Pathfinding::Load(pugi::xml_node& load)
