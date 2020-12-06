@@ -1,0 +1,44 @@
+///////////////////////////Enemies, player, stars and lifes textures
+
+- "star_anim.png"
+Page: https://opengameart.org/content/coin-animation
+Artist: https://opengameart.org/users/dan-sevenstar-dontmind8
+
+- "life_anim.png"
+Page: https://es.123rf.com/clipart-vector/sprite.html?sti=mytaw652i7f2aiqz8y|&mediapopup=76540289
+Artist: https://es.123rf.com/profile_sudowoodo
+
+- "dark_knight_spritesheet.png" & "checkpoint.png"
+Artwork created by Raphael Gonçalves 
+twitter: @rgs_dev
+email: rgsdev83@gmail.com
+License for Everyone. 
+Public domain and free to use on whatever you want, personal or commercial. Credit is not required but appreciated.
+Please, don't resell or redistribute this asset.
+
+- "enemies_spritesheet.png"
+Bought to you by Rotting Pixels. 
+Follow us and subscribe for more cool free graphics!
+patreon.com/RottingPixels
+facebook.com/Rotting-Pixels
+twitter.com/PixelsRotting
+rottingpixels.itch.io
+
+//////////////////////////Backgrounds textures
+
+- "level1_dark_trees_background.png" & "level1_ground_background.png" & "level1_trees_background.png"
+https://craftpix.net/file-licenses/
+Page: https://craftpix.net/freebies/free-swamp-game-tileset-pixel-art/
+
+- "background_intro.png"
+by  Kenney Vleugels (Kenney.nl)
+            ------------------------------
+    License (Creative Commons Zero, CC0)
+    http://creativecommons.org/publicdomain/zero/1.0/
+    You may use these assets in personal and commercial projects.
+    Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
+            ------------------------------
+    Donate:   http://support.kenney.nl/
+    Request:  http://request.kenney.nl/
+    Follow on Twitter for updates:
+    @KenneyWings

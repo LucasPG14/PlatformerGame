@@ -1,47 +1,45 @@
-{Big Birds Date Night Full Version / 8-bit March 10 Minutes / Mega Rust / Iron is Laughter} by Twin Musicom (twinmusicom.org)
+//////////////////////Music Licenses
 
+{8-bit March 10 Minutes / Iron is Laughter} by Twin Musicom (twinmusicom.org)
+
+//////////////////////FX Licenses
+
+- "sword_swing_soundbible.com_639083727"
 "Sword Swing Sound" by Mike Koenig on http://soundbible.com under Creative Commons Attribution 3.0 (http://soundbible.com/1176-Sword-Swing.html)
 
+- "impactplate_heavy_004"
 Impact Sounds (1.0)
-
 Created/distributed by Kenney (www.kenney.nl)
 Creation date: 19-12-2019
-
 ------------------------------
-
 License: (Creative Commons Zero, CC0)
 http://creativecommons.org/publicdomain/zero/1.0/
-
 This content is free to use in personal, educational and commercial projects.
-
 Support us by crediting Kenney or www.kenney.nl (this is not mandatory)
-
 ------------------------------
-
 Donate:   http://support.kenney.nl
 Request:  http://request.kenney.nl
 Patreon:  http://patreon.com/kenney/
-
 Follow on Twitter for updates:
 http://twitter.com/KenneyNL
 
-- JumpFX: 
+- "jump.wav":
 Page: https://www.youtube.com/watch?v=_eqKyzxa0dM
 Artist: https://audionautix.com/ 
 
-- Enemies DieFX:
+- "walking_enemy_die" original name: "minion_hit_2.wav"
 Page: https://freesound.org/people/yummie/sounds/209731/
 Artist: https://freesound.org/people/yummie/
 Page: https://freesound.org/people/Breviceps/sounds/445958/
 Artist: https://freesound.org/people/Breviceps/
 
-- CheckpointFX
+- "checkpoint.wav"
 Page: https://sfx.productioncrate.com/search.html#query=sword&ss=tab&_ga=2.164274815.1107425616.1575164446-1342997657.1575164446
 
-- Coin fx: 
+- "star.wav" original name: "Coins 1"
 Page: https://freesound.org/people/ProjectsU012/sounds/341695/
 Artist: https://freesound.org/people/ProjectsU012/
 
-- LifeFX
+- "life.wav" original name: "Spell 3"
 Page: https://opengameart.org/content/spell-3
 Artist: https://opengameart.org/users/bart

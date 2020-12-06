@@ -302,11 +302,7 @@ bool Player::Update(float dt)
 						app->render->camera.x += floor(speedX * dt);
 					}
 				}
-
-
-
 			}
-
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 		}
 
@@ -666,7 +662,7 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 
 	case 290:
 		lifes--;
-
+		app->audio->PlayFx(playerHurt);
 		if (lifes > 0) {
 			deadPlayer = false;
 			if (whatCheckpoint != 0)

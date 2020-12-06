@@ -60,60 +60,7 @@ Adventure worlds 2D is a platform game developed by Real Ambient for the subject
 
 This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check [LICENSE](LICENSE) for further details.
 
-
-Tiles and background art: https://free-game-assets.itch.io/free-parallax-2d-backgrounds
-https://swapnilrane24.itch.io/snow-background
-
-Audio FX:
-
-- JumpFX: 
-Page: https://www.youtube.com/watch?v=_eqKyzxa0dM
-Artist: https://audionautix.com/ 
-
-- Enemies DieFX:
-Page: https://freesound.org/people/yummie/sounds/209731/
-Artist: https://freesound.org/people/yummie/
-Page: https://freesound.org/people/Breviceps/sounds/445958/
-Artist: https://freesound.org/people/Breviceps/
-
-- CheckpointFX
-Page: https://sfx.productioncrate.com/search.html#query=sword&ss=tab&_ga=2.164274815.1107425616.1575164446-1342997657.1575164446
-
-- Coin fx: 
-Page: https://freesound.org/people/ProjectsU012/sounds/341695/
-Artist: https://freesound.org/people/ProjectsU012/
-
-- LifeFX
-Page: https://opengameart.org/content/spell-3
-Artist: https://opengameart.org/users/bart
-
-- Life Animation Sprite
-Page: https://es.123rf.com/clipart-vector/sprite.html?sti=mytaw652i7f2aiqz8y|&mediapopup=76540289
-Artist: https://es.123rf.com/profile_sudowoodo
-
-- Coin Animation Sprite
-Page: https://opengameart.org/content/coin-animation
-Artist: https://opengameart.org/users/dan-sevenstar-dontmind8
-	
-License(Tiles and background): 
-
-	by  Kenney Vleugels (Kenney.nl)
-
-			------------------------------
-
-	License (Creative Commons Zero, CC0)
-	http://creativecommons.org/publicdomain/zero/1.0/
-
-	You may use these assets in personal and commercial projects.
-	Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
-
-			------------------------------
-
-	Donate:   http://support.kenney.nl
-	Request:  http://request.kenney.nl
-
-	Follow on Twitter for updates:
-	@KenneyWings
+All the liceses are on their respective folder, go watch for them.
 
 
 

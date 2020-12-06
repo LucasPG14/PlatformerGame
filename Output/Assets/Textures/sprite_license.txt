@@ -1,7 +1,0 @@
-- Life Animation Sprite
-Page: https://es.123rf.com/clipart-vector/sprite.html?sti=mytaw652i7f2aiqz8y|&mediapopup=76540289
-Artist: https://es.123rf.com/profile_sudowoodo
-
-- Coin Animation Sprite
-Page: https://opengameart.org/content/coin-animation
-Artist: https://opengameart.org/users/dan-sevenstar-dontmind8
