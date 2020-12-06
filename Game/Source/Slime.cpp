@@ -42,7 +42,6 @@ Slime::~Slime() {}
 
 bool Slime::Start()
 {
-	//tex = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
 	this->collider = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::ENEMY_WALK);
 
 	//SpeedX = 

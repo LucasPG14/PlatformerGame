@@ -6,25 +6,28 @@
   <audio />
   <enemies>
     <slime>
-      <position x="57" y="668" />
+      <position x="462" y="668" />
     </slime>
     <slime>
-      <position x="4183" y="1532" />
+      <position x="462" y="668" />
+    </slime>
+    <slime>
+      <position x="462" y="668" />
     </slime>
     <bat>
-      <position x="4045" y="1270" />
+      <position x="4070" y="1270" />
     </bat>
   </enemies>
   <scenes />
   <map />
   <player>
-    <position x="2831" y="236.637802" />
+    <position x="648" y="523.919983" />
   </player>
   <:anonymous />
   <fade />
   <fonts />
   <renderer>
-    <camera x="-2211" y="2" />
-    <offset x="2212" y="-2.94216919" />
+    <camera x="-27" y="-163" />
+    <offset x="28" y="163.919983" />
   </renderer>
 </save_status>

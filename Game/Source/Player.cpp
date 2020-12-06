@@ -164,10 +164,10 @@ bool Player::Start()
 		player = app->tex->Load(tmp.GetString());
 		currentAnimation = &rightIdleAnim;
 		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
-		lifesTex = app->tex->Load("Assets/Textures/Characters/lifes.png");
-		starTex = app->tex->Load("Assets/Textures/Characters/star_tex.png");
-		cooldownTex = app->tex->Load("Assets/Textures/Characters/cooldown_attack.png");
-		checkpointTex = app->tex->Load("Assets/Textures/Characters/checkpoint.png");
+		lifesTex = app->tex->Load("Assets/Hud/lifes.png");
+		starTex = app->tex->Load("Assets/Hud/star_tex.png");
+		cooldownTex = app->tex->Load("Assets/Hud/cooldown_attack.png");
+		checkpointTex = app->tex->Load("Assets/Textures/checkpoint.png");
 
 		jumping = false;
 		levelFinished = false;
@@ -184,7 +184,7 @@ bool Player::Start()
 		app->render->ResetCam();
 
 		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
-		yellowFont = app->fonts->Load("Assets/Textures/Characters/yellow_font.png", lookupTable, 5);
+		yellowFont = app->fonts->Load("Assets/Hud/yellow_font.png", lookupTable, 5);
 	}
 
 	return true;
@@ -212,24 +212,26 @@ bool Player::Update(float dt)
 		// Input to move the player
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
 		{
-			if (currentAnimation == &leftJumpAnim)
+			if (currentAnimation != &rightAttackAnim || rightAttackAnim.HasFinished())
 			{
-				rightJumpAnim.Reset();
-				currentAnimation = &rightJumpAnim;
-				lastAnimation = currentAnimation;
+				if (currentAnimation == &leftJumpAnim)
+				{
+					rightJumpAnim.Reset();
+					currentAnimation = &rightJumpAnim;
+					lastAnimation = currentAnimation;
+				}
+
+				if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
+					position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
+
+
+				if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
+				{
+					rightRunAnim.Reset();
+					currentAnimation = &rightRunAnim;
+					lastAnimation = currentAnimation;
+				}
 			}
-
-			if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
-				position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
-
-
-			if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
-			{
-				rightRunAnim.Reset();
-				currentAnimation = &rightRunAnim;
-				lastAnimation = currentAnimation;
-			}
-
 			if (Collision("right") == false)
 			{
 				if (godMode == true)
@@ -239,7 +241,7 @@ bool Player::Update(float dt)
 					else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
 					{
 						app->render->offset.x += floor((speedX * 3) * dt);
-						app->render->camera.x -= floor((speedX * 3)* dt);
+						app->render->camera.x -= floor((speedX * 3) * dt);
 					}
 				}
 				else
@@ -253,24 +255,29 @@ bool Player::Update(float dt)
 					}
 				}
 			}
-
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 		}
 
 		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
 		{
-			if (currentAnimation == &rightJumpAnim)
+			if (currentAnimation != &leftAttackAnim || leftAttackAnim.HasFinished())
 			{
-				leftJumpAnim.Reset();
-				currentAnimation = &leftJumpAnim;
-				lastAnimation = currentAnimation;
-			}
+				if (currentAnimation == &rightJumpAnim)
+				{
+					leftJumpAnim.Reset();
+					currentAnimation = &leftJumpAnim;
+					lastAnimation = currentAnimation;
+				}
 
-			else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
-			{
-				leftRunAnim.Reset();
-				currentAnimation = &leftRunAnim;
-				lastAnimation = currentAnimation;
+				if (position.x <= 0)
+					position.x = 0;
+
+				else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
+				{
+					leftRunAnim.Reset();
+					currentAnimation = &leftRunAnim;
+					lastAnimation = currentAnimation;
+				}
 			}
 
 			if (Collision("left") == false)
@@ -297,8 +304,9 @@ bool Player::Update(float dt)
 				}
 
 
-				
+
 			}
+
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 		}
 
@@ -309,7 +317,7 @@ bool Player::Update(float dt)
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 			position.y += floor((speedX * 3) * dt);
 
-		if (rightAttackAnim.HasFinished() == true || leftAttackAnim.HasFinished() == true)
+		if (currentAnimation != &leftAttackAnim || currentAnimation != &rightAttackAnim)
 		{
 			if (swordCollider != nullptr)
 			{
@@ -385,6 +393,7 @@ bool Player::Update(float dt)
 			cooldownAtk.Reset();
 			app->audio->PlayFx(swordFx);
 		}
+
 
 
 		// God mode

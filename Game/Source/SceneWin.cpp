@@ -38,8 +38,8 @@ bool SceneWin::Start()
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_win.png");
 	winFx = app->audio->LoadFx("Assets/Audio/Fx/you_win.ogg");
 	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
-	yellowFont = app->fonts->Load("Assets/Textures/Characters/yellow_font.png", lookupTable, 5);
-	starTex = app->tex->Load("Assets/Textures/Characters/star.png");
+	yellowFont = app->fonts->Load("Assets/Hud/yellow_font.png", lookupTable, 5);
+	starTex = app->tex->Load("Assets/Hud/star.png");
 	time = 0;
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;

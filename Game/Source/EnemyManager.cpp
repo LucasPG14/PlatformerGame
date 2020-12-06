@@ -19,9 +19,9 @@ bool EnemyManager::Start()
 {
 	ListItem<Enemy*>* enemies = enemyList.start;
 
-	texture = app->tex->Load("Assets/Textures/Characters/enemies_spritesheet.png");
-	lifeTexture = app->tex->Load("Assets/Textures/Characters/life_anim.png");
-	starTexture = app->tex->Load("Assets/Textures/Characters/star_anim.png");
+	texture = app->tex->Load("Assets/Textures/enemies_spritesheet.png");
+	lifeTexture = app->tex->Load("Assets/Textures/life_anim.png");
+	starTexture = app->tex->Load("Assets/Textures/star_anim.png");
 
 	while (enemies != nullptr)
 	{

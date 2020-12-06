@@ -40,8 +40,8 @@ bool SceneDie::Start()
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_dead.png");
 	dieFx = app->audio->LoadFx("Assets/Audio/Fx/you_lose.ogg");
 	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
-	redFont = app->fonts->Load("Assets/Textures/Characters/red_font.png", lookupTable, 5);
-	starTex = app->tex->Load("Assets/Textures/Characters/star.png");
+	redFont = app->fonts->Load("Assets/Hud/red_font.png", lookupTable, 5);
+	starTex = app->tex->Load("Assets/Hud/star.png");
 
 	time = 0;
 	app->render->camera.x = 0;
