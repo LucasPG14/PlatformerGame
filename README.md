@@ -28,7 +28,7 @@ Adventure worlds 2D is a platform game developed by Real Ambient for the subject
  
 ## Controls
 
- ADVENTURER MOVEMENT
+ KNIGHT MOVEMENT
  - [A] moves the player to the left
  - [D] moves the player to the right
  - [SPACE] for jumping

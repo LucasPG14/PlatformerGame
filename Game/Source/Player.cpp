@@ -179,7 +179,7 @@ bool Player::Start()
 		checkpointAudio = app->audio->LoadFx("Assets/Audio/Fx/checkpoint.wav");
 		jumpAudio = app->audio->LoadFx("Assets/Audio/Fx/jump.wav");
 		swordFx = app->audio->LoadFx("Assets/Audio/Fx/sword_swing_soundbible.com_639083727.wav");
-
+		playerHurt = app->audio->LoadFx("Assets/Audio/Fx/impactplate_heavy_004.wav");
 		app->render->ResetCam();
 
 		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };

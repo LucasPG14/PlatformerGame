@@ -49,6 +49,7 @@ public:
 	bool LoadState(pugi::xml_node& load);
 	bool SaveState(pugi::xml_node& save) const;
 
+	uint playerHurt = -1;
 	bool godMode;
 
 	int time;
