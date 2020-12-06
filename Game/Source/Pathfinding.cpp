@@ -99,8 +99,9 @@ int Pathfinding::MovementCost(int x, int y) const
 	{
 		int id = app->map->data.layers.start->next->data->Get(x, y);
 
-		if (id == 0) ret = 3;
-		else ret = 0;
+		if (id == 289) ret = 0;
+		else if (id == 290) ret = 0;
+		else ret = 3;
 	}
 
 	return ret;
@@ -126,11 +127,11 @@ DynArray<iPoint>* Pathfinding::ComputePath(int x, int y)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-void Pathfinding::ComputePathAStar(int x, int y)
+DynArray<iPoint>* Pathfinding::ComputePathAStar(int x, int y)
 {
 	// L12a: Compute AStart pathfinding
 	path.Clear();
-	iPoint goal = { x,y };
+	iPoint goal = app->map->WorldToMap(x, y);
 
 	if (finishAStar == true || visited.Find(goal) > -1)
 	{
@@ -152,34 +153,37 @@ void Pathfinding::ComputePathAStar(int x, int y)
 		path.PushBack(visited.start->data);
 	}
 
+	return &path;
 }
 
-void Pathfinding::PropagateAStar(Player* player)
+bool Pathfinding::PropagateAStar(int x, int y)
 {
-	goalAStar = app->map->WorldToMap(player->GetPosition().x, player->GetPosition().y);
-
 	iPoint curr;
+	goalAStar = app->map->WorldToMap(x, y);
 	while (frontier.Pop(curr))
 	{
+		if (curr == goalAStar)
+			return true;
+
 		iPoint neighbors[4];
 		neighbors[0].Create(curr.x + 1, curr.y + 0);
 		neighbors[1].Create(curr.x + 0, curr.y + 1);
 		neighbors[2].Create(curr.x - 1, curr.y + 0);
 		neighbors[3].Create(curr.x + 0, curr.y - 1);
 
-		if (curr == goalAStar)
-		{
-			finishAStar = true;
-			break;
-		}
-
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (visited.Find(neighbors[i]) == -1)
+			int newCost = MovementCost(neighbors[i].x, neighbors[i].y);
+			int g = neighbors[i].DistanceManhattan(visited.start->data);
+			int h = neighbors[i].DistanceManhattan(goalAStar);
+			if (newCost > 0)
 			{
-				if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
+				newCost += costSoFar[curr.x][curr.y];
+				if ((visited.Find(neighbors[i]) == -1) || (newCost < costSoFar[neighbors[i].x][neighbors[i].y]))
 				{
-					frontier.Push(neighbors[i], neighbors[i].DistanceManhattan(goalAStar));
+					costSoFar[neighbors[i].x][neighbors[i].y] = newCost;
+					int f = g + h;
+					frontier.Push(neighbors[i], h);
 					visited.Add(neighbors[i]);
 					breadcrumbs.Add(curr);
 				}

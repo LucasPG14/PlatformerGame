@@ -34,6 +34,6 @@
 		<jump value="false"/>
 		<position x="200" y="607"/>
 		<level_finished value="false"/>
-    <attack_cooldown value="0"/>
+	<attack_cooldown value="0"/>
   </player>
 </config>

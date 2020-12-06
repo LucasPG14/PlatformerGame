@@ -48,6 +48,8 @@ bool Bat::Start()
 
 	currentAnim = &animRight;
 
+	this->state = SLEEP;
+
 	return true;
 }
 
@@ -67,49 +69,43 @@ bool Bat::Update(float dt)
 	{
 		this->currentAnim = &deathAnim;
 
-		if (deathAnim.HasFinished())
+		if (this->deathAnim.HasFinished())
 		{
 			app->enemyManager->RemoveEnemy(this);
 			app->audio->PlayFx(bat);
 		}
-
 	}
 
-	if (this->state == SLEEP)
+	if (this->state == SLEEP && this->currentAnim != &deathAnim)
 	{
 		if (Sleep(dt) == true)
 			this->state = AWAKE;
 	}
 
-	else if (this->state == AWAKE)
+	else if (this->state == AWAKE && this->currentAnim != &deathAnim)
 	{
-		//if (FindGoal(app->player) == true)
-		//{
-		//	this->state = ATTACK;
-		//}
+		if (FindGoal(app->player) == true)
+			this->state = ATTACK;
+		else this->state = SLEEP;
 	}
 
-	else if (this->state == ATTACK)
+	else if (this->state == ATTACK && this->currentAnim != &deathAnim)
 	{
 		if (Move(dt) == false)
-		{
 			this->state = SLEEP;
-		}
 	}
 
 	if (hitLeftAnim.HasFinished())
 	{
 		this->currentAnim = &animLeft;
-		hitLeftAnim.Reset();
+		this->hitLeftAnim.Reset();
 		app->audio->PlayFx(bat);
-
 	}
 	else if (hitRightAnim.HasFinished())
 	{
 		this->currentAnim = &animRight;
-		hitRightAnim.Reset();
+		this->hitRightAnim.Reset();
 		app->audio->PlayFx(bat);
-
 	}
 
 	return true;
@@ -145,50 +141,92 @@ bool Bat::FindGoal(Player* player)
 	app->pathfinding->path.Clear();
 
 	int x = player->position.x;
-	int y = player->position.y + 32;
+	int y = player->position.y;
 	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
-	app->pathfinding->PropagateDijkstra(player);
+	bool found = app->pathfinding->PropagateAStar(x, y);
 
-	batPath = *(app->pathfinding->ComputePath(x, y));
+	if (found == true)
+	{
+		this->batPath = *(app->pathfinding->ComputePath(x, y));
+		this->indexBat = this->batPath.Count() - 1;
+		return true;
+	}
 
-	indexBat = batPath.Count() - 1;
-
-	return true;
+	return false;
 }
 
 bool Bat::Move(float dt)
 {
-	if (batPath[indexBat].x == this->pos.x / 16 && batPath[indexBat].y == this->pos.y / 16)
+	if (this->batPath.Count() > 0 && this->indexBat >= 0)
 	{
-		indexBat--;
-		return true;
-	}
-	else
-	{
-		if (batPath[indexBat].x > this->pos.x / 16)
+		if (this->batPath[this->indexBat].x == this->pos.x / 16 &&
+			this->batPath[this->indexBat].y == this->pos.y / 16)
 		{
-			this->pos.x += 50 * dt;
-			this->currentAnim = &animRight;
+			this->indexBat--;
 			return true;
 		}
-
-		if (batPath[indexBat].x < this->pos.x / 16)
+		else
 		{
-			this->pos.x -= 50 * dt;
-			this->currentAnim = &animLeft;
-			return true;
-		}
+			if (this->batPath[this->indexBat].x > this->pos.x / 16)
+			{
+				if (Collision("right") == false)
+				{
+					this->pos.x += 70 * dt;
+				}
+				else
+					return false;
+				if (this->hitRightAnim.HasFinished())
+				{
+					this->currentAnim = &animRight;
+					this->hitRightAnim.Reset();
+				}
+				else if (currentAnim == &animLeft)
+					this->currentAnim = &animRight;
+				return true;
+			}
 
-		if (batPath[indexBat].y < this->pos.y / 16)
-		{
-			this->pos.y -= 50 * dt;
-			return true;
-		}
+			if (this->batPath[this->indexBat].x < this->pos.x / 16)
+			{
+				if (Collision("left") == false)
+				{
+					this->pos.x -= 35 * dt;
+				}
+				else
+					return false;
+				if (this->hitLeftAnim.HasFinished())
+				{
+					this->currentAnim = &animLeft;
+					this->hitLeftAnim.Reset();
+				}
+				else if (currentAnim == &animRight)
+					this->currentAnim = &animLeft;
 
-		if (batPath[indexBat].y > this->pos.y / 16)
-		{
-			this->pos.y += 50 * dt;
-			return true;
+				return true;
+			}
+
+			if (this->batPath[this->indexBat].y < this->pos.y / 16)
+			{
+				if (Collision("top") == false)
+				{
+					this->pos.y -= 50 * dt;
+				}
+				else
+					return false;
+
+				return true;
+			}
+
+			if (this->batPath[this->indexBat].y > this->pos.y / 16)
+			{
+				if (Collision("bottom") == false)
+				{
+					this->pos.y += 50 * dt;
+				}
+				else
+					return false;
+
+				return true;
+			}
 		}
 	}
 
@@ -197,33 +235,31 @@ bool Bat::Move(float dt)
 
 bool Bat::Sleep(float dt)
 {
-	//if (Collision("right") == true)
-	//{
-	//	moveRight = false;
-	//}
-	//else if (Collision("left") == true)
-	//{
-	//	moveRight = true;
-	//}
+	if (Collision("right") == true)
+	{
+		this->moveRight = false;
+	}
+	else if (Collision("left") == true)
+	{
+		this->moveRight = true;
+	}
 
-	//if (moveRight == true)
-	//{
-	//	currentAnim = &animRight;
-	//	this->pos.x += 50 * dt;
-	//}
-	//else
-	//{
-	//	currentAnim = &animLeft;
-	//	this->pos.x -= 50 * dt;
-	//}
+	if (this->moveRight == true)
+	{
+		this->currentAnim = &animRight;
+		this->pos.x += 50 * dt;
+	}
+	else
+	{
+		this->currentAnim = &animLeft;
+		this->pos.x -= 50 * dt;
+	}
 
-	int pos1;
-	int pos2;
+	int range;
 
-	pos1 = app->player->GetPosition().x - this->pos.x;
-	pos2 = app->player->GetPosition().y - this->pos.y;
+	range = sqrt(pow((double)app->player->GetPosition().x - this->pos.x, 2) + pow((double)app->player->GetPosition().y - this->pos.y, 2));
 
-	if (pos1 < 200 && (pos2 < 200 || -pos2 < 200))
+	if (range < 300 && app->player->godMode == false)
 	{
 		return true;
 	}
@@ -322,6 +358,12 @@ bool Bat::CheckCollisionType(int idTile, std::string direction)
 		else
 		{
 			return false;
+		}
+		break;
+	case 294:
+		if (direction == "right" || direction == "left")
+		{
+			return true;
 		}
 		break;
 	}

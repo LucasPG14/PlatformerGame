@@ -231,7 +231,10 @@ bool Player::Update(float dt)
 
 			if (Collision("right") == false)
 			{
-				position.x += floor(speedX * dt);
+				if (godMode == true)
+					position.x += floor((speedX * 4) * dt);
+				else
+					position.x += floor(speedX * dt);
 				if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
 				else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
 				{
@@ -261,7 +264,10 @@ bool Player::Update(float dt)
 
 			if (Collision("left") == false)
 			{
-				position.x -= floor(speedX * dt);
+				if (godMode == true)
+					position.x -= floor((speedX * 4) * dt);
+				else
+					position.x -= floor(speedX * dt);
 
 				if (app->render->offset.x <= 0);
 				else if (position.x < app->render->offset.x + 640)

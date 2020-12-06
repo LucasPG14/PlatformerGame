@@ -52,9 +52,9 @@ bool Slime::Start()
 
 	this->moveRight = true;
 
-	slime = app->audio->LoadFx("Assets/Audio/Fx/WalkingEnemyDie.wav");
+	this->slime = app->audio->LoadFx("Assets/Audio/Fx/WalkingEnemyDie.wav");
 
-	return true;
+return true;
 }
 
 bool Slime::Update(float dt)
@@ -75,7 +75,7 @@ bool Slime::Update(float dt)
 	{
 		this->currentAnim = &deathAnim;
 
-		if (deathAnim.HasFinished())
+		if (this->deathAnim.HasFinished())
 		{
 			app->enemyManager->RemoveEnemy(this);
 		}
@@ -92,7 +92,6 @@ bool Slime::Update(float dt)
 		if (FindGoal(app->player) == true)
 			this->state = ATTACK;
 		else this->state = SLEEP;
-		
 	}
 
 	else if (this->state == ATTACK && this->currentAnim != &deathAnim)
@@ -148,14 +147,14 @@ bool Slime::FindGoal(Player* player)
 	app->pathfinding->path.Clear();
 
 	int x = player->position.x;
-	int y = player->position.y + 32;
+	int y = player->position.y;
 	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
-	bool found = app->pathfinding->PropagateDijkstra(player);
+	bool found = app->pathfinding->PropagateAStar(x, y);
 
 	if (found == true)
 	{
-		slimePath = *(app->pathfinding->ComputePath(x, y));
-		indexSlime = slimePath.Count() - 1;
+		this->slimePath = *(app->pathfinding->ComputePath(x, y));
+		this->indexSlime = this->slimePath.Count() - 1;
 		return true;
 	}
 
@@ -164,46 +163,51 @@ bool Slime::FindGoal(Player* player)
 
 bool Slime::Move(float dt)
 {
-	if (slimePath[indexSlime].x == this->pos.x / 16 && slimePath[indexSlime].y == this->pos.y / 16)
+	if (this->slimePath.Count() > 0 && this->indexSlime >= 0)
 	{
-		indexSlime--;
-		return true;
-	}
-	else
-	{
-		if (slimePath[indexSlime].x > this->pos.x / 16)
+		if (this->slimePath[this->indexSlime].x == this->pos.x / 16 && this->slimePath[this->indexSlime].y == this->pos.y / 16)
 		{
-			if (Collision("right") == false)
-			{
-				this->pos.x += 70 * dt;
-			}
-			else this->state = SLEEP;
-			if (hitRightAnim.HasFinished())
-			{
-				this->currentAnim = &animRight;
-				this->hitRightAnim.Reset();
-			}
-			else if (currentAnim == &animLeft)
-				this->currentAnim = &animRight;
+			this->indexSlime--;
 			return true;
 		}
-
-		if (slimePath[indexSlime].x < this->pos.x / 16)
+		else
 		{
-			if (Collision("left") == false)
+			if (this->slimePath[this->indexSlime].x > this->pos.x / 16)
 			{
-				this->pos.x -= 35 * dt;
+				if (Collision("right") == false)
+				{
+					this->pos.x += 70 * dt;
+				}
+				else
+					return false;
+				if (this->hitRightAnim.HasFinished())
+				{
+					this->currentAnim = &animRight;
+					this->hitRightAnim.Reset();
+				}
+				else if (currentAnim == &animLeft)
+					this->currentAnim = &animRight;
+				return true;
 			}
-			else this->state = SLEEP;
-			if (hitLeftAnim.HasFinished())
-			{
-				this->currentAnim = &animLeft;
-				this->hitLeftAnim.Reset();
-			}
-			else if (currentAnim == &animRight)
-				this->currentAnim = &animLeft;
 
-			return true;
+			if (this->slimePath[this->indexSlime].x < this->pos.x / 16)
+			{
+				if (Collision("left") == false)
+				{
+					this->pos.x -= 35 * dt;
+				}
+				else
+					return false;
+				if (this->hitLeftAnim.HasFinished())
+				{
+					this->currentAnim = &animLeft;
+					this->hitLeftAnim.Reset();
+				}
+				else if (currentAnim == &animRight)
+					this->currentAnim = &animLeft;
+
+				return true;
+			}
 		}
 	}
 
@@ -214,30 +218,30 @@ bool Slime::Sleep(float dt)
 {
 	if (Collision("right") == true)
 	{
-		moveRight = false;
+		this->moveRight = false;
 	}
 	else if (Collision("left") == true)
 	{
-		moveRight = true;
+		this->moveRight = true;
 	}
 
 	if (moveRight == true)
 	{
-		currentAnim = &animRight;
+		this->currentAnim = &animRight;
 		this->pos.x += 50 * dt;
 	}
 
 	else
 	{
-		currentAnim = &animLeft;
+		this->currentAnim = &animLeft;
 		this->pos.x -= 25 * dt;
 	}
 
 	int range;
 
-	range = sqrt(pow(app->player->GetPosition().x - this->pos.x, 2) + pow(app->player->GetPosition().y - this->pos.y, 2));
+	range = sqrt(pow((double)app->player->GetPosition().x - this->pos.x, 2) + pow((double)app->player->GetPosition().y - this->pos.y, 2));
 
-	if (range < 300)
+	if (range < 300 && app->player->godMode == false)
 	{
 		return true;
 	}
@@ -249,11 +253,11 @@ void Slime::Gravity(float dt)
 {
 	if (Collision("bottom") == false)
 	{
-		speedY -= 20.0f * dt;
-		this->pos.y -= speedY;
-		if (speedY < -5.0f)
+		this->speedY -= 20.0f * dt;
+		this->pos.y -= this->speedY;
+		if (this->speedY < -5.0f)
 		{
-			speedY = -5.0f;
+			this->speedY = -5.0f;
 		}
 	}
 }
@@ -378,7 +382,7 @@ bool Slime::CheckCollisionType(int idTile, std::string direction)
 		{
 			return true;
 		}
+		break;
 	}
-
 	return false;
 }

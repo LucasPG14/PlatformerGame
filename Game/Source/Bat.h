@@ -49,4 +49,6 @@ private:
 	uint speedMove;
 	DynArray<iPoint> batPath;
 	int indexBat;
+
+	bool moveRight;
 };

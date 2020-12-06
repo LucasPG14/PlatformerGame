@@ -48,9 +48,11 @@ bool Scene::Start()
 	app->player->Start();
 
 	//Load Enemies
-	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(0, 600), EnemyType::SLIME);
+	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(100, 650), EnemyType::SLIME);
+	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 667), EnemyType::SLIME);
+	slime3 = (Slime*)app->enemyManager->AddEnemy(iPoint(4122, 1466), EnemyType::SLIME);
 
-	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(100, 500), EnemyType::BAT);
+	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(4274, 1270), EnemyType::BAT);
 
 	app->enemyManager->AddEnemy(iPoint(4178, 633), EnemyType::LIFE);
 	app->enemyManager->AddEnemy(iPoint(3829, 1264), EnemyType::LIFE);
@@ -79,9 +81,6 @@ bool Scene::Start()
 	// Load map
 	app->map->active = true;
 	app->map->Load("level1.tmx");
-
-
-	//app->LoadGameRequest();
 
 	return true;
 }
@@ -197,22 +196,27 @@ bool Scene::CleanUp()
 	app->enemyManager->CleanUp();
 	app->player->CleanUp();
 	app->map->CleanUp();
-	//app->pathfinding->CleanUp();
 
 	return true;
 }
 
 void Scene::PlayerPosition()
 {
-	app->player->position.x = 200;
+	app->player->position.x = 10;
 	app->player->position.y = 600;
 }
 
 void Scene::ResetEnemiesPosition()
 {
-	slime->pos.x = 0;
-	slime->pos.y = 600;
+	slime->pos.x = 300;
+	slime->pos.y = 650;
 
-	bat->pos.x = 100;
-	bat->pos.y = 500;
+	slime2->pos.x = 2829;
+	slime2->pos.y = 235;
+
+	slime3->pos.x = 4122; 
+	slime3->pos.y = 1466;
+
+	bat->pos.x = 4274;
+	bat->pos.y = 1270;
 }

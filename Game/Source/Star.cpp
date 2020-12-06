@@ -37,6 +37,8 @@ bool Star::Start()
 	this->starItem = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 6, 30, 30 }, Collider::Type::STAR);
 	star = app->audio->LoadFx("Assets/Audio/Fx/star.wav");
 
+	this->starItem->active = true;
+
 	return false;
 }
 

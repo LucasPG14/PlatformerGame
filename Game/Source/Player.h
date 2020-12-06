@@ -35,9 +35,9 @@ public:
 	void Jump(float dt);
 	bool CheckCollisionType(int idTile, std::string direction);
 
-	int getScore() { return score; };
-	int getStars() { return stars; };
-	int getfinalScore() { return finalScore; };
+	int GetScore() { return score; };
+	int GetStars() { return stars; };
+	int GetFinalScore() { return finalScore; };
 
 	void Dead();
 	bool LevelFinished();

@@ -47,6 +47,9 @@ private:
 	pugi::xml_node node;
 
 	Slime* slime;
+	Slime* slime2;
+	Slime* slime3;
+	Slime* slime4;
 	Bat* bat;
 
 };

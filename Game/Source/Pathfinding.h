@@ -36,12 +36,12 @@ public:
 	// More pathfinding methods
 	int MovementCost(int x, int y) const;
 	DynArray<iPoint>* ComputePath(int x, int y);
-	void ComputePathAStar(int x, int y);
+	DynArray<iPoint>* ComputePathAStar(int x, int y);
 
 	// Propagation methods
 	void PropagateBFS(Player* player);
 	bool PropagateDijkstra(Player* player);
-	void PropagateAStar(Player* player);
+	bool PropagateAStar(int x, int y);
 
 
 	bool Load(pugi::xml_node& load);
