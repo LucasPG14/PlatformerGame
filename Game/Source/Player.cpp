@@ -232,14 +232,24 @@ bool Player::Update(float dt)
 			if (Collision("right") == false)
 			{
 				if (godMode == true)
-					position.x += floor((speedX * 4) * dt);
-				else
-					position.x += floor(speedX * dt);
-				if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
-				else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
 				{
-					app->render->offset.x += floor(speedX * dt);
-					app->render->camera.x -= floor(speedX * dt);
+					position.x += floor((speedX * 3) * dt);
+					if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
+					else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
+					{
+						app->render->offset.x += floor((speedX * 3) * dt);
+						app->render->camera.x -= floor((speedX * 3)* dt);
+					}
+				}
+				else
+				{
+					position.x += floor(speedX * dt);
+					if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
+					else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
+					{
+						app->render->offset.x += floor(speedX * dt);
+						app->render->camera.x -= floor(speedX * dt);
+					}
 				}
 			}
 
@@ -265,26 +275,38 @@ bool Player::Update(float dt)
 			if (Collision("left") == false)
 			{
 				if (godMode == true)
-					position.x -= floor((speedX * 4) * dt);
-				else
-					position.x -= floor(speedX * dt);
-
-				if (app->render->offset.x <= 0);
-				else if (position.x < app->render->offset.x + 640)
 				{
-					app->render->offset.x -= floor(speedX * dt);
-					app->render->camera.x += floor(speedX * dt);
+					position.x -= floor((speedX * 3) * dt);
+					if (app->render->offset.x <= 0);
+					else if (position.x < app->render->offset.x + 640)
+					{
+						app->render->offset.x -= floor((speedX * 3) * dt);
+						app->render->camera.x += floor((speedX * 3) * dt);
+					}
 				}
+				else
+				{
+					position.x -= floor(speedX * dt);
+					if (app->render->offset.x <= 0);
+					else if (position.x < app->render->offset.x + 640)
+					{
+						app->render->offset.x -= floor(speedX * dt);
+						app->render->camera.x += floor(speedX * dt);
+					}
+				}
+
+
+				
 			}
 			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
-			position.y -= floor(speedX * dt);
+			position.y -= floor((speedX * 3) * dt);
 
 
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
-			position.y += floor(speedX * dt);
+			position.y += floor((speedX * 3) * dt);
 
 		if (rightAttackAnim.HasFinished() == true || leftAttackAnim.HasFinished() == true)
 		{

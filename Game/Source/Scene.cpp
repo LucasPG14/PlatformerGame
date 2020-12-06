@@ -49,7 +49,7 @@ bool Scene::Start()
 
 	//Load Enemies
 	slime = (Slime*)app->enemyManager->AddEnemy(iPoint(100, 650), EnemyType::SLIME);
-	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 667), EnemyType::SLIME);
+	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 680), EnemyType::SLIME);
 	slime3 = (Slime*)app->enemyManager->AddEnemy(iPoint(4122, 1466), EnemyType::SLIME);
 
 	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(4274, 1270), EnemyType::BAT);
@@ -202,7 +202,7 @@ bool Scene::CleanUp()
 
 void Scene::PlayerPosition()
 {
-	app->player->position.x = 10;
+	app->player->position.x = 30;
 	app->player->position.y = 600;
 }
 
@@ -212,7 +212,7 @@ void Scene::ResetEnemiesPosition()
 	slime->pos.y = 650;
 
 	slime2->pos.x = 2829;
-	slime2->pos.y = 235;
+	slime2->pos.y = 680;
 
 	slime3->pos.x = 4122; 
 	slime3->pos.y = 1466;
