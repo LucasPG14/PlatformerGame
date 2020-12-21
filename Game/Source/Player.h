@@ -3,7 +3,6 @@
 
 #include "App.h"
 #include "Render.h"
-#include "Textures.h"
 #include "Animation.h"
 #include "Module.h"
 
@@ -29,41 +28,43 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 
+	// Load and Save
+	bool LoadState(pugi::xml_node& load);
+	bool SaveState(pugi::xml_node& save) const;
+
 	bool Collision(const char* side);
 
 	void Gravity(float dt);
 	void Jump(float dt);
-	bool CheckCollisionType(int idTile, std::string direction);
-
-	int GetScore() { return score; };
-	int GetStars() { return stars; };
-	int GetFinalScore() { return finalScore; };
+	bool CheckCollisionType(int idTile, SString direction);
 
 	void Dead();
-	bool LevelFinished();
-	bool IsDead();
 	void SwordAttack(float dt);
-	Position GetPosition();
+	void SpeedAnimations(float dt);
 
-	// Load and Save
-	bool LoadState(pugi::xml_node& load);
-	bool SaveState(pugi::xml_node& save) const;
+	inline bool LevelFinished() { return levelFinished; }
+	inline bool IsDead() { return deadPlayer; }
+	inline Position GetPosition() { return position; }
+	inline int GetScore() { return score; };
+	inline int GetStars() { return stars; };
+	inline int GetFinalScore() { return finalScore; };
+
+	inline void SetScore(int points) { score += points; }
+	inline void SetStars(int starAchieved) { stars += starAchieved; }
+
+	inline void SetPosition(int x, int y)
+	{ 
+		position.x = x;
+		position.y = y;
+	}
 
 	uint playerHurt;
 	bool godMode;
 
 	int time;
 
-	bool deadPlayer;
-
-	int finalScore;
 	int lifes;
-	int stars;
-	int score;
 	bool playerChangePos;
-
-	// Player position
-	Position position;
 
 	// Checkpoint bool
 	bool checkpoint;
@@ -73,7 +74,13 @@ public:
 
 	Animation checkpointAnim;
 
+	bool deadPlayer;
+
 private:
+
+	// Player position
+	Position position;
+
 	// Player texture
 	SDL_Texture* player = nullptr;
 
@@ -130,5 +137,9 @@ private:
 	//lifes
 	SDL_Texture* lifesTex = nullptr;
 	SDL_Texture* starTex = nullptr;
+
+	int stars;
+	int score;
+	int finalScore;
 };
 #endif

@@ -22,7 +22,7 @@ public:
 	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
-	bool Start();
+	bool Load();
 
 	// Called before all Updates
 	bool PreUpdate();
@@ -31,10 +31,10 @@ public:
 	bool Update(float dt);
 
 	// Called before all updates
-	bool PostUpdate();
+	bool Draw();
 
 	// Called before quitting
-	bool CleanUp();
+	bool Unload();
 
 	void PlayerPosition();
 

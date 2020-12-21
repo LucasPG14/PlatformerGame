@@ -13,13 +13,13 @@ public:
 
 	~SceneIntro();
 
-	bool Start();
+	bool Load();
 
 	bool Update(float dt);
 
-	bool PostUpdate();
+	bool Draw();
 
-	bool CleanUp();
+	bool Unload();
 
 private:
 

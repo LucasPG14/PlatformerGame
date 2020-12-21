@@ -31,7 +31,7 @@ SceneIntro::~SceneIntro()
 }
 
 // Load assets
-bool SceneIntro::Start()
+bool SceneIntro::Load()
 {
 	bool ret = true;
 
@@ -65,7 +65,7 @@ bool SceneIntro::Update(float dt)
 }
 
 // PostUpdate: draw background
-bool SceneIntro::PostUpdate()
+bool SceneIntro::Draw()
 {
 	bool ret = true;
 	// Draw everything 
@@ -78,7 +78,7 @@ bool SceneIntro::PostUpdate()
 	return ret;
 }
 
-bool SceneIntro::CleanUp() 
+bool SceneIntro::Unload() 
 {
 	bool ret = true;
 

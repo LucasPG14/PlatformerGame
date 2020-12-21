@@ -1,6 +1,6 @@
 #include "ColliderManagement.h"
-#include "EnemyManager.h"
 #include "Render.h"
+#include "EntityManager.h"
 #include "Player.h"
 #include "Audio.h"
 #include "App.h"
@@ -44,9 +44,6 @@ bool ColliderManagement::Update(float dt)
 
 void ColliderManagement::DrawColliders()
 {
-	if (showColliders == false)
-		return;
-
 	Uint8 alpha = 80;
 	ListItem<Collider*>* coll = collidersList.start;
 
@@ -63,16 +60,10 @@ void ColliderManagement::DrawColliders()
 		case Collider::Type::SWORD:
 			app->render->DrawRectangle(coll->data->rect, 0, 0, 255, alpha);
 			break;
-		case Collider::Type::ENEMY_WALK:
+		case Collider::Type::ENEMY:
 			app->render->DrawRectangle(coll->data->rect, 0, 255, 0, alpha);
 			break;
-		case Collider::Type::ENEMY_FLY:
-			app->render->DrawRectangle(coll->data->rect, 255, 255, 0, alpha);
-			break;
-		case Collider::Type::LIFE:
-			app->render->DrawRectangle(coll->data->rect, 255, 0, 255, alpha);
-			break;
-		case Collider::Type::STAR:
+		case Collider::Type::ITEM:
 			app->render->DrawRectangle(coll->data->rect, 255, 0, 255, alpha);
 			break;
 		}
@@ -114,12 +105,12 @@ void ColliderManagement::RemoveCollider(Collider* collider)
 
 void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 {
-	if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
+	if (coll1->type == Collider::Type::PLAYER && coll2->type == Collider::Type::ENEMY)
 	{
 		app->player->lifes--;
 		app->audio->PlayFx(app->player->playerHurt);
-		if (app->player->lifes > 0) {
-			app->player->deadPlayer = false;
+		if (app->player->lifes > 0) 
+		{
 			app->player->playerChangePos = true;
 			app->render->ResetCam();
 		}
@@ -129,12 +120,12 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 			app->player->Dead();
 		}
 	}
-	else if (coll2->type == Collider::Type::PLAYER && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
+	else if (coll2->type == Collider::Type::PLAYER && coll1->type == Collider::Type::ENEMY)
 	{
 		app->player->lifes--;
 		app->audio->PlayFx(app->player->playerHurt);
-		if (app->player->lifes > 0) {
-			app->player->deadPlayer = false;
+		if (app->player->lifes > 0) 
+		{
 			app->player->playerChangePos = true;
 			app->render->ResetCam();
 		}
@@ -144,28 +135,20 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
 			app->player->Dead();
 		}
 	}
-	else if (coll1->type == Collider::Type::SWORD && (coll2->type == Collider::Type::ENEMY_WALK || coll2->type == Collider::Type::ENEMY_FLY))
+	else if (coll1->type == Collider::Type::SWORD && coll2->type == Collider::Type::ENEMY)
 	{
-		app->enemyManager->Lifes(coll2);
+		app->entityManager->EnemyLifes(coll2);
 		RemoveCollider(coll1);
-		app->player->score = app->player->score +100;
+		app->player->SetScore(100);
 	}
-	else if (coll2->type == Collider::Type::SWORD && (coll1->type == Collider::Type::ENEMY_WALK || coll1->type == Collider::Type::ENEMY_FLY))
+	else if (coll2->type == Collider::Type::SWORD && coll1->type == Collider::Type::ENEMY)
 	{
-		app->enemyManager->Lifes(coll1);
+		app->entityManager->EnemyLifes(coll1);
 		RemoveCollider(coll2);
-		app->player->score = app->player->score + 100;
+		app->player->SetScore(100);
 	}
-	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::LIFE))
+	else if (coll1->type == Collider::Type::PLAYER && coll2->type == Collider::Type::ITEM)
 	{
-		app->player->lifes++;
-		coll2->active = false;
-		RemoveCollider(coll2);
-		
-	}
-	else if (coll1->type == Collider::Type::PLAYER && (coll2->type == Collider::Type::STAR))
-	{
-		app->player->stars++;
 		coll2->active = false;
 		RemoveCollider(coll2);
 	}

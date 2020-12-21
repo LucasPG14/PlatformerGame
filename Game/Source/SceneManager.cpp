@@ -1,16 +1,13 @@
+#include "Input.h"
 #include "SceneManager.h"
 #include "App.h"
-#include "Input.h"
 #include "Scene.h"
-#include "SceneIntro.h"
-#include "SceneDie.h"
-#include "SceneWin.h"
-#include "Map.h"
 #include "FadeToBlack.h"
 #include "Render.h"
 #include "Scenes.h"
-
-#include "SDL/include/SDL_scancode.h"
+#include "SceneIntro.h"
+#include "SceneDie.h"
+#include "SceneWin.h"
 
 SceneManager::SceneManager() : Module()
 {
@@ -46,8 +43,11 @@ bool SceneManager::Start()
 
 	while (sceneItem != nullptr)
 	{
-		if(sceneItem->data->active == true)
-			sceneItem->data->Start();
+		if (sceneItem->data->active == true)
+		{
+			sceneItem->data->Load();
+			break;
+		}
 
 		sceneItem = sceneItem->next;
 	}
@@ -58,9 +58,9 @@ bool SceneManager::Start()
 bool SceneManager::Update(float dt)
 {
 	bool ret = true;
+	
 	// Quit the game
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) 
-		ret = false;
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
 
 	// Move the camera up
 	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
@@ -90,19 +90,15 @@ bool SceneManager::Update(float dt)
 		app->render->offset.x += floor(200.0f * dt);
 	}
 
-	// Cap the game to 30 FPS
-	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
-	{
-		if (app->cappedMs == 1000 / 60)	app->cappedMs = 1000 / 30;
-		else app->cappedMs = 1000 / 60;
-	}
-
 	ListItem<Scenes*>* sceneItem = scenes.start;
 
 	while (sceneItem != nullptr)
 	{
 		if (sceneItem->data->active == true)
+		{
 			sceneItem->data->Update(dt);
+			break;
+		}
 
 		sceneItem = sceneItem->next;
 	}
@@ -119,7 +115,10 @@ bool SceneManager::PostUpdate()
 	while (sceneItem != nullptr)
 	{
 		if (sceneItem->data->active == true)
-			sceneItem->data->PostUpdate();
+		{
+			sceneItem->data->Draw();
+			break;
+		}
 
 		sceneItem = sceneItem->next;
 	}
@@ -135,7 +134,7 @@ bool SceneManager::CleanUp()
 
 	while (sceneItem != nullptr)
 	{
-		sceneItem->data->CleanUp();
+		ret = sceneItem->data->Unload();
 		RELEASE(sceneItem->data);
 		sceneItem = sceneItem->next;
 	}

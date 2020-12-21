@@ -7,30 +7,24 @@ class Slime : public Enemy
 {
 public:
 
-	Slime(iPoint position);
+	Slime(iPoint position, EntityType entityType);
 	~Slime();
-
-	bool Start() override;
 
 	bool Update(float dt) override;
 
-	bool CleanUp() override;
-
 	bool Collision(const char* side);
 
-	bool CheckCollisionType(int idTile, std::string direction);
+	bool CheckCollisionType(int idTile, SString direction);
 
 	void Gravity(float dt);
-
-	void Draw() override;
 
 	void Hit() override;
 
 	bool FindGoal(Player* player) override;
 
-	bool Move(float dt);
+	bool Move(float dt) override;
 
-	bool Sleep(float dt);
+	bool Sleep(float dt) override;
 
 	// Load and Save
 	bool Load(pugi::xml_node& load);
@@ -39,18 +33,12 @@ public:
 
 private:
 
-	//SDL_Texture* tex = nullptr;
 	Animation animLeft;
 	Animation animRight;
 	Animation hitLeftAnim;
 	Animation hitRightAnim;
 	Animation deathAnim;
 
-	uint slime = -1;
-	int deadFx = 0;
-	uint speedX;
 	uint speedY;
-	DynArray<iPoint> slimePath;
-	int indexSlime;
 	bool moveRight;
 };

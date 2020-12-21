@@ -1,7 +1,5 @@
 #include "SceneWin.h"
-#include "App.h"
 #include "Textures.h"
-#include "Render.h"
 #include "SceneIntro.h"
 #include "SceneManager.h"
 #include "Fonts.h"
@@ -11,8 +9,6 @@
 #include "Audio.h"
 
 #include "FadeToBlack.h"
-
-#include "SDL/include/SDL_scancode.h"
 
 
 SceneWin::SceneWin() : Scenes()
@@ -27,11 +23,10 @@ SceneWin::SceneWin() : Scenes()
 
 SceneWin::~SceneWin()
 {
-
 }
 
 // Load assets
-bool SceneWin::Start()
+bool SceneWin::Load()
 {
 	bool ret = true;
 
@@ -66,7 +61,7 @@ bool SceneWin::Update(float dt)
 }
 
 // PostUpdate: draw background
-bool SceneWin::PostUpdate()
+bool SceneWin::Draw()
 {
 	// Draw everything --------------------------------------
 	app->render->DrawTexture(bgTexture, 0, 0, &winAnim.GetCurrentFrame());
@@ -77,7 +72,7 @@ bool SceneWin::PostUpdate()
 	app->fonts->BlitText(750, 100, yellowFont, std::to_string(app->player->GetStars()).c_str());
 	app->fonts->BlitText(870, 100, yellowFont, "=");
 
-	if ((app->player->stars) == 0) {
+	if ((app->player->GetStars()) == 0) {
 		app->fonts->BlitText(925, 100, yellowFont, std::to_string(app->player->GetScore()).c_str());
 	}
 	else {
@@ -85,15 +80,19 @@ bool SceneWin::PostUpdate()
 	}
 
 	app->render->DrawTexture(starTex, 810, 95, NULL);
+
 	return true;
 }
 
-bool SceneWin::CleanUp() 
+bool SceneWin::Unload() 
 {
 	bool ret = true;
 
 	app->tex->UnLoad(bgTexture);
+	app->fonts->UnLoad(yellowFont);
+	app->tex->UnLoad(starTex);
 	winAnim.Reset();
 	this->active = false;
+
 	return true;
 }

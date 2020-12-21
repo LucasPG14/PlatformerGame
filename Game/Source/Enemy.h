@@ -1,17 +1,12 @@
 #pragma once
 #include "Animation.h"
-#include "App.h"
 #include "Render.h"
 #include "ColliderManagement.h"
 #include "Animation.h"
-
-enum EnemyType
-{
-	SLIME,
-	BAT,
-	LIFE,
-	STAR
-};
+#include "Entity.h"
+#include "Map.h"
+#include "Pathfinding.h"
+#include "DynArray.h"
 
 enum EnemyState
 {
@@ -22,50 +17,51 @@ enum EnemyState
 
 class Player;
 
-class Enemy
+class Enemy : public Entity
 {
 public:
+	Enemy(iPoint pos, EntityType t) : Entity(pos, type) {};
+	virtual ~Enemy() {};
 
-	Enemy(iPoint position, EnemyType enemyType, int life) 
-	{ 
-		pos = position;
-		type = enemyType;
-		lifes = life;
-	};
-	~Enemy() {};
-	
-	virtual bool Start() { return true; }
-
-	virtual bool Update(float dt) { return true; }
-
-	virtual bool CleanUp() { return true; }
-
-	virtual void Draw() {}
-
-	virtual void Hit() {}
-
-	virtual bool Load(pugi::xml_node&) { return true; }
-
-	virtual bool Save(pugi::xml_node&) const { return true; }
+	virtual void Hit() { return; }
 
 	virtual bool FindGoal(Player* player) { return true; }
+
+	void Draw() override
+	{
+		if (this->alive)
+			app->render->DrawTexture(this->texture, this->position.x, this->position.y, &this->currentAnimation->GetCurrentFrame());
+
+		if (app->map->viewCollisions == true)
+			app->pathfinding->DrawPath(this->path);
+	}
+
+	bool CleanUp() override
+	{
+		if (this->collider != nullptr)
+			app->colliderManager->RemoveCollider(this->collider);
+		path.Clear();
+
+		return true;
+	}
 
 	virtual bool Move(float dt) { return true; }
 
 	virtual bool Sleep(float dt) { return true; }
 
+	virtual void Lifes()
+	{
+		this->lifes--;
+	}
+
+	virtual bool Load(pugi::xml_node& entity) { return true; }
+
+	virtual bool Save(pugi::xml_node& entity) const { return true; }
+
 public:
 
-	SString name;
-	Collider* collider;
-	SDL_Texture* texture = nullptr;
 	int lifes;
-	iPoint pos;
-	EnemyType type;
+	DynArray<iPoint> path;
+	int index;
 	EnemyState state;
-	bool alive;
-	int time;
-	bool block;
-	// A ptr to the current animation
-	Animation* currentAnim = nullptr;
 };

@@ -1,26 +1,20 @@
 #ifndef __LIFE_H__
 #define __LIFE_H__
-#include "Animation.h"
-#include "Enemy.h"
 
-class Life : public Enemy
+#include "Animation.h"
+#include "Item.h"
+
+class Life : public Item
 {
 public:
 
-	Life(iPoint position);
+	Life(iPoint position, EntityType entityType);
 	~Life();
-	bool Start() override;
 
 	bool Update(float dt) override;
 
-	bool CleanUp() override;
-
-	void Draw() override;
-
 private:
 
-	Collider* lifeItem = nullptr;
 	Animation lifeAnim;
-	uint life = -1;
 };
 #endif

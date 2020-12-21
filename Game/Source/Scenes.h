@@ -5,6 +5,8 @@
 
 #include "PugiXml\src\pugixml.hpp"
 
+class GuiControl;
+
 class Scenes 
 {
 public:
@@ -15,32 +17,23 @@ public:
 	virtual ~Scenes() {};
 
 	// Called before the first frame
-	virtual bool Start()
-	{
-		return true;
-	}
+	virtual bool Load() { return true; }
 
 	// Called each loop iteration
-	virtual bool Update(float dt)
-	{
-		return true;
-	}
+	virtual bool Update(float dt) { return true; }
 
 	// Called before all updates
-	virtual bool PostUpdate()
-	{
-		return true;
-	}
+	virtual bool Draw() { return true; }
 
 	// Called before quitting
-	virtual bool CleanUp()
+	virtual bool Unload() { return true; }
+
+	virtual void PlayerPosition() {}
+
+	// Define multiple Gui Event methods
+	virtual bool OnGuiMouseClickEvent(GuiControl* control)
 	{
 		return true;
-	}
-
-	virtual void PlayerPosition()
-	{
-		return;
 	}
 
 
@@ -49,7 +42,7 @@ public:
 		if (!this->active)
 		{
 			this->active = true;
-			this->Start();
+			this->Load();
 		}
 	}
 
@@ -59,7 +52,7 @@ public:
 		if (this->active)
 		{
 			this->active = false;
-			this->CleanUp();
+			this->Unload();
 		}
 	}
 

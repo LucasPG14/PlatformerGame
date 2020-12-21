@@ -163,7 +163,6 @@ bool Player::Start()
 		SString tmp("%s%s", folder.GetString(), playerString.GetString());
 		player = app->tex->Load(tmp.GetString());
 		currentAnimation = &rightIdleAnim;
-		//stepFx = app->audio->LoadFx("Assets/Audio/Fx/footstep_grass_004.wav");
 		lifesTex = app->tex->Load("Assets/Hud/lifes.png");
 		starTex = app->tex->Load("Assets/Hud/star_tex.png");
 		cooldownTex = app->tex->Load("Assets/Hud/cooldown_attack.png");
@@ -189,23 +188,14 @@ bool Player::Start()
 
 	return true;
 }
+
 bool Player::Update(float dt)
 {
 	if (deadPlayer == false)
 	{
 		if (lastAnimation == &rightDeadAnim) currentAnimation = &rightIdleAnim;
 
-		rightIdleAnim.speed = 10.0f * dt;
-		leftIdleAnim.speed = 10.0f * dt;
-		rightRunAnim.speed = 10.0f * dt;
-		leftRunAnim.speed = 10.0f * dt;
-		rightJumpAnim.speed = 10.0f * dt;
-		leftJumpAnim.speed = 10.0f * dt;
-		rightDeadAnim.speed = 10.0f * dt;
-		leftDeadAnim.speed = 10.0f * dt;
-		rightAttackAnim.speed = 10.0f * dt;
-		leftAttackAnim.speed = 10.0f * dt;
-		checkpointAnim.speed = 5.0f * dt;
+		SpeedAnimations(dt);
 
 		if (attackCooldown != 0) attackCooldown--;
 
@@ -217,8 +207,8 @@ bool Player::Update(float dt)
 				if (currentAnimation == &leftJumpAnim)
 				{
 					rightJumpAnim.Reset();
-					currentAnimation = &rightJumpAnim;
 					lastAnimation = currentAnimation;
+					currentAnimation = &rightJumpAnim;
 				}
 
 				if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
@@ -228,13 +218,13 @@ bool Player::Update(float dt)
 				if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
 				{
 					rightRunAnim.Reset();
-					currentAnimation = &rightRunAnim;
 					lastAnimation = currentAnimation;
+ 					currentAnimation = &rightRunAnim;
 				}
 			}
 			if (Collision("right") == false)
 			{
-				if (godMode == true)
+ 				if (godMode == true)
 				{
 					position.x += floor((speedX * 3) * dt);
 					if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
@@ -255,7 +245,6 @@ bool Player::Update(float dt)
 					}
 				}
 			}
-			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 		}
 
 		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
@@ -265,18 +254,17 @@ bool Player::Update(float dt)
 				if (currentAnimation == &rightJumpAnim)
 				{
 					leftJumpAnim.Reset();
-					currentAnimation = &leftJumpAnim;
 					lastAnimation = currentAnimation;
+					currentAnimation = &leftJumpAnim;
 				}
 
-				if (position.x <= 0)
-					position.x = 0;
+				if (position.x <= 0) position.x = 0;
 
 				else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
 				{
 					leftRunAnim.Reset();
-					currentAnimation = &leftRunAnim;
 					lastAnimation = currentAnimation;
+					currentAnimation = &leftRunAnim;
 				}
 			}
 
@@ -303,7 +291,6 @@ bool Player::Update(float dt)
 					}
 				}
 			}
-			//if (Collision("bottom") == true) app->audio->PlayFx(stepFx);
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
@@ -359,7 +346,7 @@ bool Player::Update(float dt)
 			checkpoint = false;
 			jumping = true;
 			jump = true;
-			speedY = floor(500.0f * dt);
+			speedY = 650.0f;
 		}
 
 		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
@@ -390,19 +377,17 @@ bool Player::Update(float dt)
 			app->audio->PlayFx(swordFx);
 		}
 
-
-
 		// God mode
 		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
 			godMode = !godMode;
 
 		if (jump == true) Jump(dt);
 
-		if (Collision("top") == true) speedY = 0.0f;
+		Gravity(dt);
+
+		if (Collision("top") == true && speedY > 0) speedY = -speedY + 100;
 
 		if (speedY <= 0.0f) jumping = false;
-
-		Gravity(dt);
 
 		if (position.y >= app->render->offset.y + 360 && !(app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight)))
 		{
@@ -418,21 +403,17 @@ bool Player::Update(float dt)
 
 		playerCollider->SetPos(position.x + 12, position.y + 35, &playerCollider->rect);
 
-		if (checkpoint == true)
-			checkpointAnim.Update();
+		if (checkpoint == true) checkpointAnim.Update();
 	}
 	else
 	{
 		time++;
-		Dead();
 	}
 
 	currentAnimation->Update();
 
 	switch (attackCooldown)
 	{
-	case 299:
-		app->colliderManager->RemoveCollider(swordCollider);
 	case 135:
 		cooldownAtk.Update();
 		break;
@@ -462,49 +443,21 @@ bool Player::PostUpdate() {
 	else
 		app->render->DrawTexture(player, position.x, position.y, &rect);
 
-	switch (lifes)
+	for (int i = 0; i < lifes; i++)
 	{
-	case 6:
-		rect = { 0,0,222,49 };
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-		break;
-	case 5:
-		rect = { 0,0,186,49 };
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-		break;
-	case 4:
-		rect = { 0,0,152,49 };
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-		break;
-	case 3:
-		rect = { 0,0,115,49 };
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-		break;
-	case 2:
-		rect = { 0,0,76,49 };
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-		break;
-	case 1:
-		rect = { 0,0,41,49 };
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
-		break;
-	default:
-		break;
+		app->render->DrawTexture(lifesTex, app->render->camera.x * -1 + (36 * i + 10), (app->render->camera.y * -1) + 10 );
 	}
+
 	//Stars in HUD
 	app->fonts->BlitText(1130, 10, yellowFont, "x");
-	std::string s = std::to_string(stars);
-	char const* pchar = s.c_str();
-	app->fonts->BlitText(1170, 10, yellowFont, pchar);
+	app->fonts->BlitText(1170, 10, yellowFont, std::to_string(stars).c_str());
 	rect = { 0,0,1280,50 };
-	app->render->DrawTexture(starTex, app->render->camera.x * -1, app->render->camera.y * -1, &rect);
+	app->render->DrawTexture(starTex, ((app->render->camera.x * -1) + app->render->camera.w - 69), (app->render->camera.y * -1) + 5);
 
-	//score in HUD
-	std::string d = std::to_string(score);
-	char const* dchar = d.c_str();
-	app->fonts->BlitText(650, 10, yellowFont, dchar);
-	finalScore = score * stars;
-	//Cooldown Attack HUD
+	// Score in HUD
+	app->fonts->BlitText(650, 10, yellowFont, std::to_string(score).c_str());
+
+	// Cooldown Attack HUD
 	app->render->DrawTexture(cooldownTex, app->render->offset.x + 1180, app->render->offset.y + 620, &cooldownAtk.GetCurrentFrame());
 
 	return true;
@@ -512,19 +465,22 @@ bool Player::PostUpdate() {
 
 bool Player::CleanUp() {
 
-	//Unload textures
+	// Unload textures
 	app->tex->UnLoad(player);
 	app->tex->UnLoad(lifesTex);
 	app->tex->UnLoad(starTex);
 	app->tex->UnLoad(checkpointTex);
 	app->tex->UnLoad(cooldownTex);
+	// Unload fonts
 	app->fonts->UnLoad(yellowFont);
+	// Reset dead animations
 	leftDeadAnim.Reset();
 	rightDeadAnim.Reset();
+	
+	// Removing collider
 	if (playerCollider != nullptr)
-	{
 		app->colliderManager->RemoveCollider(playerCollider);
-	}
+
 	return true;
 }
 
@@ -534,68 +490,62 @@ bool Player::Collision(const char* side)
 
 	if (godMode == false)
 	{
-
-		ListItem<MapLayer*>* lay = app->map->data.layers.start;
+		ListItem<MapLayer*>* lay = app->map->data.layers.start->next;
 
 		iPoint tilePos;
 
 		int idTile;
 
-
-		while (lay != NULL)
+		if (lay->data->properties.GetProperty("Collision") == 1)
 		{
-			if (lay->data->properties.GetProperty("Collision") == 1)
+			if (side == "bottom")
 			{
-				if (side == "bottom")
+				for (uint i = 0; i < 3; i++)
 				{
-					for (uint i = 0; i < 3; i++)
+					tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 88);
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "bottom"))
 					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 88);
-						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile, "bottom"))
-						{
-							return true;
-						}
-					}
-				}
-				else if (side == "top")
-				{
-					for (uint i = 0; i < 3; i++)
-					{
-						tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 38);
-						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile, "top"))
-						{
-							return true;
-						}
-					}
-				}
-				else if (side == "right")
-				{
-					for (uint i = 0; i < 3; i++)
-					{
-						tilePos = app->map->WorldToMap(position.x + 40, position.y + (42 + (14 * i)));
-						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile, "right"))
-						{
-							return true;
-						}
-					}
-				}
-				else if (side == "left")
-				{
-					for (uint i = 0; i < 3; i++)
-					{
-						tilePos = app->map->WorldToMap(position.x + 6, position.y + (42 + (14 * i)));
-						idTile = lay->data->Get(tilePos.x, tilePos.y);
-						if (CheckCollisionType(idTile, "left"))
-						{
-							return true;
-						}
+						return true;
 					}
 				}
 			}
-			lay = lay->next;
+			else if (side == "top")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 38);
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "top"))
+					{
+						return true;
+					}
+				}
+			}
+			else if (side == "right")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + 40, position.y + (42 + (14 * i)));
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "right"))
+					{
+						return true;
+					}
+				}
+			}
+			else if (side == "left")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + 6, position.y + (42 + (14 * i)));
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "left"))
+					{
+						return true;
+					}
+				}
+			}
 		}
 	}
 
@@ -607,10 +557,10 @@ void Player::Gravity(float dt)
 	if (Collision("bottom") == false && godMode == false)
 	{
 		speedY -= gravity * dt;
-		position.y -= speedY;
-		if (speedY < -5.0f)
+		position.y -= speedY * dt;
+		if (speedY < -300.0f)
 		{
-			speedY = -5.0f;
+			speedY = -300.0f;
 		}
 	}
 }
@@ -618,7 +568,7 @@ void Player::Gravity(float dt)
 void Player::Jump(float dt)
 {
 	speedY -= gravity * dt;
-	position.y -= speedY;
+	position.y -= speedY * dt;
 	jump = false;
 }
 
@@ -646,20 +596,21 @@ bool Player::SaveState(pugi::xml_node& save) const
 
 void Player::Dead()
 {
+	if (stars > 0) finalScore = score * stars;
+	else finalScore = score;
+	
 	currentAnimation = &rightDeadAnim;
 	lastAnimation = currentAnimation;
 	deadPlayer = true;
 }
 
-bool Player::CheckCollisionType(int idTile, std::string direction)
+bool Player::CheckCollisionType(int idTile, SString direction)
 {
 	switch (idTile)
 	{
 	case 289:
 		return true;
 		break;
-
-
 	case 290:
 		lifes--;
 		app->audio->PlayFx(playerHurt);
@@ -678,10 +629,8 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 		{
 			Dead();
 		}
-
 		return true;
 		break;
-
 	case 291:
 		if (direction == "bottom" && jumping == true)
 		{
@@ -718,19 +667,19 @@ bool Player::CheckCollisionType(int idTile, std::string direction)
 	return false;
 }
 
-bool Player::LevelFinished()
+void Player::SpeedAnimations(float dt)
 {
-	return levelFinished;
-}
-
-bool Player::IsDead()
-{
-	return deadPlayer;
-}
-
-Position Player::GetPosition()
-{
-	return position;
+	rightIdleAnim.speed = 10.0f * dt;
+	leftIdleAnim.speed = 10.0f * dt;
+	rightRunAnim.speed = 10.0f * dt;
+	leftRunAnim.speed = 10.0f * dt;
+	rightJumpAnim.speed = 10.0f * dt;
+	leftJumpAnim.speed = 10.0f * dt;
+	rightDeadAnim.speed = 10.0f * dt;
+	leftDeadAnim.speed = 10.0f * dt;
+	rightAttackAnim.speed = 10.0f * dt;
+	leftAttackAnim.speed = 10.0f * dt;
+	checkpointAnim.speed = 5.0f * dt;
 }
 
 void Player::SwordAttack(float dt)

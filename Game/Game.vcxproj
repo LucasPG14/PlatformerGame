@@ -91,8 +91,12 @@
   <ItemGroup>
     <ClCompile Include="Source\Bat.cpp" />
     <ClCompile Include="Source\ColliderManagement.cpp" />
-    <ClCompile Include="Source\EnemyManager.cpp" />
+    <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\Fonts.cpp" />
+    <ClCompile Include="Source\GuiButton.cpp" />
+    <ClCompile Include="Source\GuiCheckBox.cpp" />
+    <ClCompile Include="Source\GuiManager.cpp" />
+    <ClCompile Include="Source\GuiSlider.cpp" />
     <ClCompile Include="Source\Life.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\App.cpp" />
@@ -118,8 +122,15 @@
     <ClInclude Include="Source\Bat.h" />
     <ClInclude Include="Source\ColliderManagement.h" />
     <ClInclude Include="Source\Enemy.h" />
-    <ClInclude Include="Source\EnemyManager.h" />
+    <ClInclude Include="Source\Entity.h" />
+    <ClInclude Include="Source\EntityManager.h" />
     <ClInclude Include="Source\Fonts.h" />
+    <ClInclude Include="Source\GuiButton.h" />
+    <ClInclude Include="Source\GuiCheckBox.h" />
+    <ClInclude Include="Source\GuiControl.h" />
+    <ClInclude Include="Source\GuiManager.h" />
+    <ClInclude Include="Source\GuiSlider.h" />
+    <ClInclude Include="Source\Item.h" />
     <ClInclude Include="Source\Life.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\FadeToBlack.h" />

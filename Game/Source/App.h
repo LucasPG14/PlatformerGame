@@ -23,9 +23,9 @@ class FadeToBlack;
 class Map;
 class SceneManager;
 class ColliderManagement;
+class EntityManager;
 class Pathfinding;
 class Fonts;
-class EnemyManager;
 
 class App
 {
@@ -58,7 +58,7 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
-	// L02: DONE 1: Create methods to request Load / Save
+	// Methods to request Load / Save
 	void LoadGameRequest();
 	void SaveGameRequest() const;
 
@@ -102,7 +102,7 @@ public:
 	ColliderManagement* colliderManager;
 	Fonts* fonts;
 	Pathfinding* pathfinding;
-	EnemyManager* enemyManager;
+	EntityManager* entityManager;
 
 	int	cappedMs = -1;
 

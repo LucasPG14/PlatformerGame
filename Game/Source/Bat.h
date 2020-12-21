@@ -7,20 +7,14 @@ class Bat : public Enemy
 {
 public:
 
-	Bat(iPoint position);
+	Bat(iPoint position, EntityType entityType);
 	~Bat();
-
-	bool Start() override;
 
 	bool Update(float dt) override;
 
-	bool CleanUp() override;
-
 	bool Collision(const char* side);
 
-	bool CheckCollisionType(int idTile, std::string direction);
-
-	void Draw() override;
+	bool CheckCollisionType(int idTile, SString direction);
 
 	void Hit() override;
 
@@ -37,18 +31,11 @@ public:
 
 private:
 
-	//SDL_Texture* tex = nullptr;
 	Animation animLeft;
 	Animation animRight;
 	Animation hitLeftAnim;
 	Animation hitRightAnim;
 	Animation deathAnim;
-
-	uint bat = -1;
-	int deadFx = 0;
-	uint speedMove;
-	DynArray<iPoint> batPath;
-	int indexBat;
 
 	bool moveRight;
 };

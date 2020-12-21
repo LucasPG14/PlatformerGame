@@ -1,13 +1,12 @@
-#include "Slime.h"
 #include "App.h"
 #include "Textures.h"
+#include "Slime.h"
 #include "Map.h"
 #include "Pathfinding.h"
 #include "Player.h"
-#include "EnemyManager.h"
 #include "Audio.h"
 
-Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
+Slime::Slime(iPoint pos, EntityType entityType) : Enemy(pos, entityType)
 {
 	name.Create("slime");
 
@@ -38,28 +37,18 @@ Slime::Slime(iPoint position) : Enemy(position, EnemyType::SLIME, 3)
 	deathAnim.PushBack({ 84,74, 32,20 });
 
 	deathAnim.loop = false;
+
+	this->collider = app->colliderManager->AddCollider({ this->position.x + 4, this->position.y + 3, 27, 17 }, Collider::Type::ENEMY);
+	this->speedY = 0;
+	this->currentAnimation = &animRight;
+	this->lifes = 3;
+	this->state = SLEEP;
+	this->alive = true;
+	this->moveRight = true;
+	this->path.Clear();
 }
 
 Slime::~Slime() {}
-
-bool Slime::Start()
-{
-	this->collider = app->colliderManager->AddCollider({ this->pos.x + 4, this->pos.y + 3, 27, 17 }, Collider::Type::ENEMY_WALK);
-
-	//SpeedX = 
-	this->speedY = 0;
-	this->currentAnim = &animRight;
-	this->state = SLEEP;
-
-	this->moveRight = true;
-
-	this->alive = true;
-	this->slimePath.Clear();
-
-	this->slime = app->audio->LoadFx("Assets/Audio/Fx/walking_enemy_die.wav");
-
-	return true;
-}
 
 bool Slime::Update(float dt)
 {
@@ -71,92 +60,74 @@ bool Slime::Update(float dt)
 		this->hitRightAnim.speed = 7.0f * dt;
 		this->deathAnim.speed = 5.0f * dt;
 
-		this->currentAnim->Update();
-
-		Gravity(dt);
-
-		this->collider->SetPos(this->pos.x + 4, this->pos.y + 3, &this->collider->rect);
-
 		if (this->lifes == 0)
 		{
-			this->currentAnim = &deathAnim;
+			this->currentAnimation = &deathAnim;
 
 			if (this->deathAnim.HasFinished())
 			{
 				this->alive = false;
-				app->enemyManager->RemoveEnemy(this);
+				this->CleanUp();
 			}
 		}
 
-		if (this->state == SLEEP && this->currentAnim != &deathAnim)
+		if (this->state == SLEEP && this->currentAnimation != &deathAnim)
 		{
 			if (Sleep(dt) == true)
 				this->state = AWAKE;
 		}
 
-		else if (this->state == AWAKE && this->currentAnim != &deathAnim)
+		else if (this->state == AWAKE && this->currentAnimation != &deathAnim)
 		{
 			if (FindGoal(app->player) == true)
 				this->state = ATTACK;
 			else this->state = SLEEP;
 		}
 
-		else if (this->state == ATTACK && this->currentAnim != &deathAnim)
+		else if (this->state == ATTACK && this->currentAnimation != &deathAnim)
 		{
 			if (Move(dt) == false)
 			{
 				this->state = SLEEP;
-				this->slimePath.Clear();
+				this->path.Clear();
 			}
 		}
 
 		if (hitLeftAnim.HasFinished())
 		{
-			this->currentAnim = &animLeft;
+			this->currentAnimation = &animLeft;
 			this->hitLeftAnim.Reset();
-			app->audio->PlayFx(slime);
+			app->audio->PlayFx(this->fx);
 
 		}
 		else if (hitRightAnim.HasFinished())
 		{
-			this->currentAnim = &animRight;
+			this->currentAnimation = &animRight;
 			this->hitRightAnim.Reset();
-			app->audio->PlayFx(slime);
+			app->audio->PlayFx(this->fx);
 		}
+
+		this->currentAnimation->Update();
+
+		Gravity(dt);
+
+		this->collider->SetPos(this->position.x + 4, this->position.y + 3, &this->collider->rect);
 	}
 
 	return true;
-}
-
-bool Slime::CleanUp()
-{
-	if (this->collider != nullptr)
-	{
-		app->colliderManager->RemoveCollider(this->collider);
-	}
-
-	this->slimePath.Clear();
-	return true;
-}
-
-void Slime::Draw()
-{
-	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->currentAnim->GetCurrentFrame());
-	if (app->map->viewCollisions == true)
-		app->pathfinding->DrawPath(this->slimePath);
 }
 
 void Slime::Hit()
 {
-	if (this->currentAnim == &animRight)
+	if (this->currentAnimation == &animRight)
 	{
-		this->currentAnim = &hitRightAnim;
-		app->audio->PlayFx(slime);
+		this->currentAnimation = &hitRightAnim;
+		app->audio->PlayFx(this->fx);
 	}
-	else if (this->currentAnim == &animLeft)
+	else if (this->currentAnimation == &animLeft)
 	{
-		this->currentAnim = &hitLeftAnim;
-		app->audio->PlayFx(slime);
+		this->currentAnimation = &hitLeftAnim;
+		app->audio->PlayFx(this->fx);
 	}
 }
 
@@ -164,15 +135,15 @@ bool Slime::FindGoal(Player* player)
 {
 	app->pathfinding->path.Clear();
 
-	int x = player->position.x;
-	int y = player->position.y;
-	app->pathfinding->ResetPath(iPoint(this->pos.x / 16, this->pos.y / 16));
+	int x = player->GetPosition().x;
+	int y = player->GetPosition().y;
+	app->pathfinding->ResetPath(iPoint(this->position.x / 16, this->position.y / 16));
 	bool found = app->pathfinding->PropagateAStar(x, y);
 
 	if (found == true)
 	{
-		this->slimePath = *(app->pathfinding->ComputePath(x, y));
-		this->indexSlime = this->slimePath.Count() - 1;
+		this->path = *(app->pathfinding->ComputePath(x, y));
+		this->index = this->path.Count() - 1;
 		return true;
 	}
 
@@ -181,48 +152,48 @@ bool Slime::FindGoal(Player* player)
 
 bool Slime::Move(float dt)
 {
-	if (this->slimePath.Count() > 0 && this->indexSlime >= 0)
+	if (this->path.Count() > 0 && this->index >= 0)
 	{
-		if (this->slimePath[this->indexSlime].x == this->pos.x / 16 && this->slimePath[this->indexSlime].y == this->pos.y / 16)
+		if (this->path[this->index].x == this->position.x / 16 && this->path[this->index].y == this->position.y / 16)
 		{
-			this->indexSlime--;
+			this->index--;
 			return true;
 		}
 		else
 		{
-			if (this->slimePath[this->indexSlime].x > this->pos.x / 16)
+			if (this->path[this->index].x > this->position.x / 16)
 			{
 				if (Collision("right") == false)
 				{
-					this->pos.x += 125 * dt;
+					this->position.x += 125 * dt;
 				}
 				else
 					return false;
 				if (this->hitRightAnim.HasFinished())
 				{
-					this->currentAnim = &animRight;
+					this->currentAnimation = &animRight;
 					this->hitRightAnim.Reset();
 				}
-				else if (currentAnim == &animLeft)
-					this->currentAnim = &animRight;
+				else if (currentAnimation == &animLeft)
+					this->currentAnimation = &animRight;
 				return true;
 			}
 
-			if (this->slimePath[this->indexSlime].x < this->pos.x / 16)
+			if (this->path[this->index].x < this->position.x / 16)
 			{
 				if (Collision("left") == false)
 				{
-					this->pos.x -= 100 * dt;
+					this->position.x -= 100 * dt;
 				}
 				else
 					return false;
 				if (this->hitLeftAnim.HasFinished())
 				{
-					this->currentAnim = &animLeft;
+					this->currentAnimation = &animLeft;
 					this->hitLeftAnim.Reset();
 				}
-				else if (currentAnim == &animRight)
-					this->currentAnim = &animLeft;
+				else if (currentAnimation == &animRight)
+					this->currentAnimation = &animLeft;
 
 				return true;
 			}
@@ -245,29 +216,29 @@ bool Slime::Sleep(float dt)
 
 	if (moveRight == true)
 	{
-		this->currentAnim = &animRight;
-		this->pos.x += 100 * dt;
+		this->currentAnimation = &animRight;
+		this->position.x += 100 * dt;
 	}
 
 	else
 	{
-		this->currentAnim = &animLeft;
-		this->pos.x -= 75 * dt;
+		this->currentAnimation = &animLeft;
+		this->position.x -= 75 * dt;
 	}
 
 	int range;
 
-	range = sqrt(pow((double)app->player->GetPosition().x - this->pos.x, 2) + pow((double)app->player->GetPosition().y - this->pos.y, 2));
+	range = sqrt(pow((double)app->player->GetPosition().x - this->position.x, 2) + pow((double)app->player->GetPosition().y - this->position.y, 2));
 
 	bool up = false;
 	bool down = false;
-	if (this->pos.y - app->player->GetPosition().y < 70 &&
-		this->pos.y > app->player->GetPosition().y)
+	if (this->position.y - app->player->GetPosition().y < 70 &&
+		this->position.y > app->player->GetPosition().y)
 	{
 		up = true;
 	}
-	else if (app->player->GetPosition().y - this->pos.y < 10 &&
-		app->player->GetPosition().y > this->pos.y)
+	else if (app->player->GetPosition().y - this->position.y < 10 &&
+		app->player->GetPosition().y > this->position.y)
 	{
 		down = true;
 	}
@@ -286,7 +257,7 @@ void Slime::Gravity(float dt)
 	if (Collision("bottom") == false)
 	{
 		this->speedY -= 20.0f * dt;
-		this->pos.y -= this->speedY;
+		this->position.y -= this->speedY;
 		if (this->speedY < -5.0f)
 		{
 			this->speedY = -5.0f;
@@ -296,10 +267,17 @@ void Slime::Gravity(float dt)
 
 bool Slime::Load(pugi::xml_node& load)
 {
-	this->pos.x = load.child("position").attribute("x").as_int();
-	this->pos.y = load.child("position").attribute("y").as_int();
+	this->position.x = load.child("position").attribute("x").as_int();
+	this->position.y = load.child("position").attribute("y").as_int();
 	this->state = (EnemyState)load.child("state").attribute("value").as_int();
+	bool isAliveBefore = this->alive;
 	this->alive = load.child("alive").attribute("value").as_bool();
+	if (isAliveBefore == false && this->alive == true)
+	{
+		this->currentAnimation = &animRight;
+		this->collider = app->colliderManager->AddCollider({ this->position.x + 4, this->position.y + 3, 27, 17 }, Collider::Type::ENEMY);
+	}
+	this->lifes = load.child("lifes").attribute("value").as_int();
 
 	return true;
 }
@@ -308,14 +286,17 @@ bool Slime::Save(pugi::xml_node& save) const
 {
 	pugi::xml_node slime = save.append_child("position");
 
-	slime.append_attribute("x").set_value(this->pos.x);
-	slime.append_attribute("y").set_value(this->pos.y);
+	slime.append_attribute("x").set_value(this->position.x);
+	slime.append_attribute("y").set_value(this->position.y);
 
 	pugi::xml_node state = save.append_child("state");
 	state.append_attribute("value").set_value((int)this->state);
 
 	pugi::xml_node alive = save.append_child("alive");
 	alive.append_attribute("value").set_value(this->alive);
+
+	pugi::xml_node lifes = save.append_child("lifes");
+	lifes.append_attribute("value").set_value(this->lifes);
 
 	return true;
 }
@@ -324,74 +305,68 @@ bool Slime::Collision(const char* side)
 {
 	bool ret = false;
 
-	ListItem<MapLayer*>* lay = app->map->data.layers.start;
+	ListItem<MapLayer*>* lay = app->map->data.layers.start->next;
 
 	iPoint tilePos;
 
 	int idTile;
 
-
-	while (lay != NULL)
+	if (lay->data->properties.GetProperty("Collision") == 1)
 	{
-		if (lay->data->properties.GetProperty("Collision") == 1)
+		if (side == "bottom")
 		{
-			if (side == "bottom")
+			for (uint i = 0; i < 3; i++)
 			{
-				for (uint i = 0; i < 3; i++)
+				tilePos = app->map->WorldToMap(this->position.x + (2 + (10 * i)), this->position.y + 20);
+				idTile = lay->data->Get(tilePos.x, tilePos.y);
+				if (CheckCollisionType(idTile, "bottom"))
 				{
-					tilePos = app->map->WorldToMap(this->pos.x + (2 + (10 * i)), this->pos.y + 20);
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "bottom"))
-					{
-						return true;
-					}
-				}
-			}
-			else if (side == "top")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(this->pos.x + (2 + (10 * i)), this->pos.y + 1);
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "top"))
-					{
-						return true;
-					}
-				}
-			}
-			else if (side == "right")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(this->pos.x + 32, this->pos.y + (1 + (6 * i)));
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "right"))
-					{
-						return true;
-					}
-				}
-			}
-			else if (side == "left")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(this->pos.x + 2, this->pos.y + (1 + (6 * i)));
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "left"))
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 		}
-		lay = lay->next;
+		else if (side == "top")
+		{
+			for (uint i = 0; i < 3; i++)
+			{
+				tilePos = app->map->WorldToMap(this->position.x + (2 + (10 * i)), this->position.y + 1);
+				idTile = lay->data->Get(tilePos.x, tilePos.y);
+				if (CheckCollisionType(idTile, "top"))
+				{
+					return true;
+				}
+			}
+		}
+		else if (side == "right")
+		{
+			for (uint i = 0; i < 3; i++)
+			{
+				tilePos = app->map->WorldToMap(this->position.x + 32, this->position.y + (1 + (6 * i)));
+				idTile = lay->data->Get(tilePos.x, tilePos.y);
+				if (CheckCollisionType(idTile, "right"))
+				{
+					return true;
+				}
+			}
+		}
+		else if (side == "left")
+		{
+			for (uint i = 0; i < 3; i++)
+			{
+				tilePos = app->map->WorldToMap(this->position.x + 2, this->position.y + (1 + (6 * i)));
+				idTile = lay->data->Get(tilePos.x, tilePos.y);
+				if (CheckCollisionType(idTile, "left"))
+				{
+					return true;
+				}
+			}
+		}
 	}
-
 
 	return ret;
 }
 
-bool Slime::CheckCollisionType(int idTile, std::string direction)
+bool Slime::CheckCollisionType(int idTile, SString direction)
 {
 	switch (idTile)
 	{
@@ -401,7 +376,7 @@ bool Slime::CheckCollisionType(int idTile, std::string direction)
 
 
 	case 290:
-		app->enemyManager->RemoveEnemy(this);
+		this->lifes = 0;
 		return true;
 		break;
 

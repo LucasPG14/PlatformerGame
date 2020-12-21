@@ -20,7 +20,6 @@ Map::Map() : Module(), mapLoaded(false)
 // Destructor
 Map::~Map()
 {
-
 }
 
 int Properties::GetProperty(const char* value, int defaultValue) const
@@ -55,23 +54,24 @@ void Map::Draw()
 	if (mapLoaded == false) return;
 
 	ListItem<MapLayer*> *layer = data.layers.start;
+	TileSet* set;
+	iPoint ret;
 
 	while (layer != NULL)
 	{
-		for (int y = 0; y < data.height; ++y)
+		if (layer->data->properties.GetProperty("Drawable") == 1 || viewCollisions == true)
 		{
-			for (int x = 0; x < data.width; ++x)
+			for (int y = 0; y < data.height; ++y)
 			{
-				int tileId = layer->data->Get(x, y);
-				if (tileId > 0)
+				for (int x = 0; x < data.width; ++x)
 				{
-					iPoint ret = MapToWorld(x, y);
-					TileSet* set = GetTilesetFromTileId(tileId);
-					
-					if (ret.x > (app->render->offset.x - 16) && ret.x < app->render->offset.x + app->render->camera.w && 
-						ret.y > (app->render->offset.y - 16) && ret.y < app->render->offset.y + app->render->camera.h)
+					int tileId = layer->data->Get(x, y);
+					if (tileId > 0)
 					{
-						if (layer->data->properties.GetProperty("Drawable") == 1 || viewCollisions == true)
+						ret = MapToWorld(x, y);
+						set = GetTilesetFromTileId(tileId);
+						if (ret.x > (app->render->offset.x - 16) && ret.x < app->render->offset.x + app->render->camera.w &&
+							ret.y >(app->render->offset.y - 16) && ret.y < app->render->offset.y + app->render->camera.h)
 						{
 							app->render->DrawTexture(set->texture, ret.x, ret.y, &set->GetTileRect(tileId));
 						}
@@ -81,7 +81,6 @@ void Map::Draw()
 		}
 		layer = layer->next;
 	}
-
 }
 
 // L04: DONE 8: Create a method that translates x,y coordinates from map positions to world positions

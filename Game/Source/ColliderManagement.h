@@ -13,10 +13,8 @@ public:
 		NONE,
 		PLAYER,
 		SWORD,
-		ENEMY_WALK,
-		ENEMY_FLY,
-		LIFE,
-		STAR
+		ENEMY,
+		ITEM
 	};
 
 	Collider(SDL_Rect rectangle, Type type);

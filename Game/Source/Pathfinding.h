@@ -25,8 +25,12 @@ public:
 	// Destructor
 	virtual ~Pathfinding();
 
+	bool Start();
+
 	// Called each loop iteration
 	void Draw();
+
+	bool CleanUp();
 
 	// BFS Pathfinding methods
 	void ResetPath(iPoint start);
@@ -61,8 +65,7 @@ public:
 	uint costSoFar[COST_MAP_SIZE][COST_MAP_SIZE];
 	DynArray<iPoint> path;
 	uint newCost = 0;
-
-	bool checkPath = false;
+	SDL_Texture* cross;
 };
 
 #endif //__PATHFINDING_H__

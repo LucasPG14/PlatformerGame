@@ -9,8 +9,9 @@
 #include "FadeToBlack.h"
 #include "SceneManager.h"
 #include "ColliderManagement.h"
+#include "GuiManager.h"
 #include "Fonts.h"
-#include "EnemyManager.h"
+#include "EntityManager.h"
 #include "Pathfinding.h"
 #include "Defs.h"
 #include "Log.h"
@@ -30,13 +31,13 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new Textures();
 	audio = new Audio();
 	fade = new FadeToBlack();
+	entityManager = new EntityManager();
 	sceneManager = new SceneManager();
 	map = new Map();
 	player = new Player();
 	colliderManager = new ColliderManagement();
 	fonts = new Fonts();
 	pathfinding = new Pathfinding();
-	enemyManager = new EnemyManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -44,13 +45,13 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(input, true);
 	AddModule(tex, true);
 	AddModule(audio, true);
-	AddModule(enemyManager, true);
+	AddModule(entityManager, false);
 	AddModule(sceneManager, true);
 	AddModule(map, false);
 	AddModule(player, false);
-	AddModule(pathfinding, true);
+	AddModule(pathfinding, false);
 	AddModule(fade, true);
-	AddModule(fonts, true);
+	AddModule(fonts, false);
 
 	// Render last to swap buffer
 	AddModule(render, true);
@@ -151,6 +152,8 @@ bool App::Start()
 // Called each loop iteration
 bool App::Update()
 {
+	PERF_START(pTimer);
+
 	bool ret = true;
 	PrepareUpdate();
 
@@ -190,6 +193,13 @@ void App::PrepareUpdate()
 	frameCount++;
 	lastSecFrameCount++;
 
+	// Cap the game to 30 FPS
+	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	{
+		if (app->cappedMs == 1000 / 60)	app->cappedMs = 1000 / 30;
+		else app->cappedMs = 1000 / 60;
+	}
+
 	// Calculate the differential time since last frame
 	dt = frameTime.ReadSec();
 	frameTime.Start();
@@ -224,8 +234,12 @@ void App::FinishUpdate()
 
 	app->win->SetTitle(title);
 
-	PERF_START(pTimer);
-	SDL_Delay(cappedMs);
+	if ((cappedMs > 0) && (lastFrameMs < cappedMs))
+	{
+		PERF_START(pTimer);
+		SDL_Delay(cappedMs);
+	}
+	LOG("We waited for %i ms and got back in %f", cappedMs, pTimer.ReadMs());
 }
 
 // Call modules before each loop iteration

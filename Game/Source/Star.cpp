@@ -1,13 +1,11 @@
-#include "Star.h"
-#include "App.h"
-#include "ColliderManagement.h"
 #include "Textures.h"
-#include "Player.h"
-#include "EnemyManager.h"
-#include "Map.h"
 #include "Audio.h"
+#include "Star.h"
+#include "Player.h"
+#include "ColliderManagement.h"
+#include "EntityManager.h"
 
-Star::Star(iPoint position) : Enemy(position, EnemyType::STAR, 3)
+Star::Star(iPoint pos, EntityType entityType) : Item(pos, entityType)
 {
 	starAnim.PushBack({ 3,7,42,42 });
 	starAnim.PushBack({ 49,7,42,42 });
@@ -17,45 +15,28 @@ Star::Star(iPoint position) : Enemy(position, EnemyType::STAR, 3)
 	starAnim.PushBack({ 199,7,42,42 });
 
 	starAnim.loop = true;
+
+	this->collider = app->colliderManager->AddCollider({ this->position.x + 6, this->position.y + 6, 30, 30 }, Collider::Type::ITEM);
+
+	this->collider->active = true;
+
+	this->currentAnimation = &starAnim;
 }
 
 Star::~Star() {}
-
-bool Star::Start()
-{
-	this->starItem = app->colliderManager->AddCollider({ this->pos.x + 6, this->pos.y + 6, 30, 30 }, Collider::Type::STAR);
-	star = app->audio->LoadFx("Assets/Audio/Fx/star.wav");
-
-	this->starItem->active = true;
-
-	return false;
-}
 
 bool Star::Update(float dt)
 {
 	this->starAnim.speed = 2.0f * dt;
 
-	this->starAnim.Update();
+	this->currentAnimation->Update();
 
-	if (this->starItem->active == false)
+	if (this->collider->active == false)
 	{
-		app->audio->PlayFx(star);
-		app->enemyManager->RemoveEnemy(this);
+		app->player->SetStars(1);
+		app->audio->PlayFx(this->fx);
+		app->entityManager->RemoveEntity(this);
 	}
-	return false;
-}
 
-bool Star::CleanUp()
-{
-	if (this->collider != nullptr)
-	{
-		app->colliderManager->RemoveCollider(this->collider);
-	}
-	
-	return false;
-}
-
-void Star::Draw()
-{
-	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->starAnim.GetCurrentFrame());
+	return true;
 }

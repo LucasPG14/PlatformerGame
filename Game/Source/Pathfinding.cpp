@@ -6,7 +6,6 @@
 #include "Input.h"
 #include "Textures.h"
 #include "Enemy.h"
-#include "EnemyManager.h"
 
 Pathfinding::Pathfinding()
 {
@@ -14,6 +13,23 @@ Pathfinding::Pathfinding()
 
 Pathfinding::~Pathfinding()
 {
+}
+
+bool Pathfinding::Start()
+{
+	cross = app->tex->Load("Assets/Textures/cross.png");
+
+	return true;
+}
+
+bool Pathfinding::CleanUp()
+{
+	path.Clear();
+	frontier.Clear();
+	visited.Clear();
+	breadcrumbs.Clear();
+
+	return true;
 }
 
 void Pathfinding::ResetPath(iPoint start)
@@ -34,11 +50,8 @@ void Pathfinding::DrawPath(DynArray<iPoint>& path)
 	// Draw path
 	for (uint i = 0; i < path.Count(); ++i)
 	{
-		TileSet* tileset = app->map->GetTilesetFromTileId(291);
-
-		SDL_Rect rec = tileset->GetTileRect(291);
 		iPoint pos = app->map->MapToWorld(path[i].x, path[i].y);
-		app->render->DrawTexture(tileset->texture, pos.x, pos.y, &rec);
+		app->render->DrawTexture(cross, pos.x, pos.y);
 	}
 }
 
@@ -158,6 +171,8 @@ bool Pathfinding::PropagateAStar(int x, int y)
 			}
 		}
 	}
+
+	return false;
 }
 
 void Pathfinding::PropagateBFS(Player* player)

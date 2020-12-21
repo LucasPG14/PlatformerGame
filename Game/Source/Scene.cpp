@@ -8,13 +8,14 @@
 #include "Player.h"
 #include "FadeToBlack.h"
 #include "SceneManager.h"
+#include "EntityManager.h"
 #include "Pathfinding.h"
 #include "SceneDie.h"
 #include "Slime.h"
+#include "Fonts.h"
 #include "Bat.h"
 #include "SceneWin.h"
 #include "ColliderManagement.h"
-#include "EnemyManager.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -40,37 +41,43 @@ bool Scene::Awake(pugi::xml_node& config)
 }
 
 // Called before the first frame
-bool Scene::Start()
+bool Scene::Load()
 {
+	// Load map
+	app->map->Enable();
+	app->map->Load("level1.tmx");
+
 	//Load Player
 	PlayerPosition();
 	app->player->Enable();
+	app->entityManager->Enable();
+	app->pathfinding->Enable();
+	app->fonts->Enable();
+
 
 	//Load Enemies
-	slime2 = (Slime*)app->enemyManager->AddEnemy(iPoint(2275, 667), EnemyType::SLIME);
+	slime2 = (Slime*)app->entityManager->AddEntity(iPoint(2275, 667), EntityType::SLIME);
 
-	bat = (Bat*)app->enemyManager->AddEnemy(iPoint(1798, 1286), EnemyType::BAT);
+	bat = (Bat*)app->entityManager->AddEntity(iPoint(1798, 1286), EntityType::BAT);
 
-	app->enemyManager->AddEnemy(iPoint(1222, 1401), EnemyType::LIFE);
-	app->enemyManager->AddEnemy(iPoint(1572, 218), EnemyType::LIFE);
-	app->enemyManager->AddEnemy(iPoint(2080, 899), EnemyType::LIFE);
+	// Add lifes
+	app->entityManager->AddEntity(iPoint(1222, 1401), EntityType::LIFE);
+	app->entityManager->AddEntity(iPoint(1572, 218), EntityType::LIFE);
+	app->entityManager->AddEntity(iPoint(2080, 899), EntityType::LIFE);
 
-	app->enemyManager->AddEnemy(iPoint(1200, 300), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(1290, 955), EnemyType::STAR);
-	app->enemyManager->AddEnemy(iPoint(505, 1025), EnemyType::STAR);
+	// Add stars
+	app->entityManager->AddEntity(iPoint(1200, 300), EntityType::STAR);
+	app->entityManager->AddEntity(iPoint(1290, 955), EntityType::STAR);
+	app->entityManager->AddEntity(iPoint(505, 1025), EntityType::STAR);
 
 	// Load music
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_8-8bit_march_10_minutes.ogg");
 
+	// Loading textures
 	bg = app->tex->Load("Assets/Textures/Backgrounds/level1_dark_trees_background.png");
 	bg2 = app->tex->Load("Assets/Textures/Backgrounds/level1_trees_background.png");
 	bg3 = app->tex->Load("Assets/Textures/Backgrounds/level1_ground_background.png");
-	// Load map
-	app->map->active = true;
-	app->map->Load("level1.tmx");
 
-	app->enemyManager->active = true;
-	app->enemyManager->Start();
 
 	return true;
 }
@@ -99,10 +106,7 @@ bool Scene::Update(float dt)
 		app->LoadGameRequest();
 
 	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-	{
 		app->map->viewCollisions = !app->map->viewCollisions;
-		app->colliderManager->showColliders = !app->colliderManager->showColliders;
-	}
 
 	if (app->player->IsDead() == true && app->player->time == 60)
 	{
@@ -117,7 +121,7 @@ bool Scene::Update(float dt)
 }
 
 // Called each loop iteration
-bool Scene::PostUpdate()
+bool Scene::Draw()
 {
 	bool ret = true;
 
@@ -142,15 +146,16 @@ bool Scene::PostUpdate()
 
 	// Draw map
 	app->map->Draw();
-
-	app->enemyManager->Draw();
-	app->colliderManager->DrawColliders();
+	app->entityManager->Draw();
+	
+	// Draw collisions
+	if (app->map->viewCollisions) app->colliderManager->DrawColliders();
 
 	return ret;
 }
 
 // Called before quitting
-bool Scene::CleanUp()
+bool Scene::Unload()
 {
 	LOG("Freeing scene");
 
@@ -161,8 +166,8 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(bg2);
 	app->tex->UnLoad(bg3);
 	app->colliderManager->Disable();
-	app->enemyManager->Disable();
 	app->player->Disable();
+	app->entityManager->Disable();
 	app->map->Disable();
 	app->pathfinding->Disable();
 
@@ -171,6 +176,5 @@ bool Scene::CleanUp()
 
 void Scene::PlayerPosition()
 {
-	app->player->position.x = 10;
-	app->player->position.y = 600;
+	app->player->SetPosition(10, 600);
 }

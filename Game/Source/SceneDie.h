@@ -15,24 +15,23 @@ public:
 	~SceneDie();
 
 
-	bool Start();
+	bool Load();
 
 	bool Update(float dt);
 
-	bool PostUpdate();
+	bool Draw();
 
-	bool CleanUp();
+	bool Unload();
 
 public:
 	// The scene sprite sheet loaded into an SDL_Texture
 	SDL_Texture* bgTexture = nullptr;
+	SDL_Texture* starTex = nullptr;
 
 	Animation dieAnim;
 
 	int time = 0;
 	uint dieFx = -1;
 	int redFont = -1;
-	SDL_Texture* starTex = nullptr;
-
 };
 #endif

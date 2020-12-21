@@ -1,12 +1,11 @@
-#include "Life.h"
-#include "App.h"
-#include "ColliderManagement.h"
 #include "Textures.h"
-#include "EnemyManager.h"
-#include "Map.h"
+#include "Life.h"
+#include "Player.h"
+#include "ColliderManagement.h"
+#include "EntityManager.h"
 #include "Audio.h"
 
-Life::Life(iPoint position) : Enemy(position, EnemyType::LIFE, 3)
+Life::Life(iPoint pos, EntityType entityType) : Item(pos, entityType)
 {
 	lifeAnim.PushBack({ 11,9,43,40 });
 	lifeAnim.PushBack({ 60,9,43,40 });
@@ -15,19 +14,15 @@ Life::Life(iPoint position) : Enemy(position, EnemyType::LIFE, 3)
 	lifeAnim.PushBack({ 168,9,43,40 });
 
 	lifeAnim.loop = true;
+
+	this->currentAnimation = &lifeAnim;
+
+	this->collider = app->colliderManager->AddCollider({ this->position.x + 11, this->position.y, 20, 40 }, Collider::Type::ITEM);
+	this->collider->active = true;
 }
 
 Life::~Life() {
 
-}
-
-bool Life::Start()
-{
-	this->lifeItem = app->colliderManager->AddCollider({ this->pos.x + 11, this->pos.y, 20, 40 }, Collider::Type::LIFE);
-	this->lifeItem->active = true;
-	life = app->audio->LoadFx("Assets/Audio/Fx/life.wav");
-
-	return true;
 }
 
 bool Life::Update(float dt)
@@ -35,27 +30,14 @@ bool Life::Update(float dt)
 
 	lifeAnim.speed = 2.0f * dt;
 
-	lifeAnim.Update();
+	this->currentAnimation->Update();
 
-	if (this->lifeItem->active == false)
+	if (this->collider->active == false)
 	{
-		app->audio->PlayFx(life);
-		app->enemyManager->RemoveEnemy(this);
+		app->player->lifes++;
+		app->audio->PlayFx(this->fx);
+		app->entityManager->RemoveEntity(this);
 	}
 
 	return true;
-}
-
-bool Life::CleanUp()
-{
-	if (this->lifeItem)
-	{
-		app->colliderManager->RemoveCollider(this->lifeItem);
-	}
-	return true;
-}
-
-void Life::Draw()
-{
-	app->render->DrawTexture(this->texture, this->pos.x, this->pos.y, &this->lifeAnim.GetCurrentFrame());
 }
