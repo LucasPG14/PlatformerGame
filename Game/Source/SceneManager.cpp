@@ -58,9 +58,6 @@ bool SceneManager::Start()
 bool SceneManager::Update(float dt)
 {
 	bool ret = true;
-	
-	// Quit the game
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
 
 	// Move the camera up
 	if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
@@ -96,13 +93,16 @@ bool SceneManager::Update(float dt)
 	{
 		if (sceneItem->data->active == true)
 		{
-			sceneItem->data->Update(dt);
+			ret = sceneItem->data->Update(dt);
 			break;
 		}
 
 		sceneItem = sceneItem->next;
 	}
 
+	// Quit the game
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
+	
 	return ret;
 }
 
