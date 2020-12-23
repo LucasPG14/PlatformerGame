@@ -5,11 +5,7 @@
 #include "Input.h"
 #include "Audio.h"
 #include "Animation.h"
-#include "SceneManager.h"
-#include "Scenes.h"
-#include "Scene.h"
 
-#include "FadeToBlack.h"
 #include "SDL/include/SDL_scancode.h"
 
 
@@ -72,7 +68,6 @@ bool SceneIntro::Load()
 	bool ret = true;
 
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
-	logoTexture = app->tex->Load("Assets/Textures/Backgrounds/logo_real_ambient.png");
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_iron_is_laughter.ogg");
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
@@ -87,36 +82,24 @@ bool SceneIntro::Update(float dt)
 {
 	bool ret = true;
 
-	auxDt = dt;
-
-	if (time < 1000) time++;
-
-	if (time == 1) introAnim.speed = 0.05f * dt;
+	introAnim.speed = 5.0f * dt;
 
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
 	{
-		if (time < 120)
-		{
-			time = 121;
-		}
-		else if (time > 120) app->fade->Fade(this, app->sceneManager->level1, 1 / dt);
-		
+		TransitionToScene(SceneType::GAMEPLAY);
 	}
 
-	if (time > 120)
-	{
-		startBtn->state = GuiControlState::NORMAL;
-		settingsBtn->state = GuiControlState::NORMAL;
-		creditsBtn->state = GuiControlState::NORMAL;
-		exitBtn->state = GuiControlState::NORMAL;
-		startBtn->Update(app->input, dt);
-		continueBtn->Update(app->input, dt);
-		settingsBtn->Update(app->input, dt);
-		creditsBtn->Update(app->input, dt);
-		exitBtn->Update(app->input, dt);
+	introAnim.Update();
 
-		introAnim.Update();
-	}
+	startBtn->state = GuiControlState::NORMAL;
+	settingsBtn->state = GuiControlState::NORMAL;
+	creditsBtn->state = GuiControlState::NORMAL;
+	exitBtn->state = GuiControlState::NORMAL;
+	startBtn->Update(app->input, dt);
+	continueBtn->Update(app->input, dt);
+	settingsBtn->Update(app->input, dt);
+	creditsBtn->Update(app->input, dt);
+	exitBtn->Update(app->input, dt);
 
 	if (settingsEnabled)
 	{
@@ -130,10 +113,7 @@ bool SceneIntro::Update(float dt)
 		vsyncSting->Update(app->input, dt);
 	}
 
-	if (exitRequest == true)
-	{
-		ret = false;
-	}
+	if (exitRequest == true) ret = false;
 
 	return ret;
 }
@@ -142,27 +122,23 @@ bool SceneIntro::Update(float dt)
 bool SceneIntro::Draw()
 {
 	bool ret = true;
-	// Draw everything 
-	if (time > 120)
-	{
-		app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
-		startBtn->Draw(app->render);
-		continueBtn->Draw(app->render);
-		settingsBtn->Draw(app->render);
-		creditsBtn->Draw(app->render);
-		exitBtn->Draw(app->render);
 
-		if (settingsEnabled)
-		{
-			app->render->DrawRectangle({ 5, 13, 320, 694 }, 255, 255, 255, 160);
-			musicVolumeSting->Draw(app->render);
-			fxVolumeSting->Draw(app->render);
-			fullscreenSting->Draw(app->render);
-			vsyncSting->Draw(app->render);
-		}
+	// Draw everything 
+	app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
+	startBtn->Draw(app->render);
+	continueBtn->Draw(app->render);
+	settingsBtn->Draw(app->render);
+	creditsBtn->Draw(app->render);
+	exitBtn->Draw(app->render);
+
+	if (settingsEnabled)
+	{
+		app->render->DrawRectangle({ 5, 13, 320, 694 }, 255, 255, 255, 160);
+		musicVolumeSting->Draw(app->render);
+		fxVolumeSting->Draw(app->render);
+		fullscreenSting->Draw(app->render);
+		vsyncSting->Draw(app->render);
 	}
-	else 
-		app->render->DrawTexture(logoTexture, 250, 10, NULL);
 
 	return ret;
 }
@@ -174,9 +150,7 @@ bool SceneIntro::Unload()
 	app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
 
 	app->tex->UnLoad(bgTexture);
-	app->tex->UnLoad(logoTexture);
 	introAnim.Reset();
-	time = 301;
 
 	startBtn->state = GuiControlState::DISABLED;
 	continueBtn->state = GuiControlState::DISABLED;
@@ -197,7 +171,7 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 	{
 	case GuiControlType::BUTTON:
 	{
-		if (control->id == 1) app->fade->Fade(this, app->sceneManager->level1, 1 / auxDt);
+		if (control->id == 1) TransitionToScene(SceneType::GAMEPLAY);
 		else if (control->id == 2);
 		else if (control->id == 3) settingsEnabled = !settingsEnabled;
 		else if (control->id == 4);

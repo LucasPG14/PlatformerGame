@@ -10,6 +10,7 @@ class Collider;
 
 enum class EntityType
 {
+	PLAYER,
 	SLIME,
 	BAT,
 	STAR,
@@ -19,10 +20,9 @@ enum class EntityType
 class Entity
 {
 public:
-	Entity(iPoint pos, EntityType t)
+	Entity(iPoint pos)
 	{
 		position = pos;
-		type = t;
 	};
 
 	~Entity() {};

@@ -7,11 +7,20 @@
 
 class GuiControl;
 
+enum class SceneType
+{
+	LOGO,
+	TITLE,
+	GAMEPLAY,
+	WIN,
+	LOSE
+};
+
 class Scenes 
 {
 public:
 
-	Scenes() : active(false) {}
+	Scenes() : active(false), transitionRequired(false) {}
 
 	// Destructor
 	virtual ~Scenes() {};
@@ -28,7 +37,11 @@ public:
 	// Called before quitting
 	virtual bool Unload() { return true; }
 
-	virtual void PlayerPosition() {}
+	void TransitionToScene(SceneType scene)
+	{
+		transitionRequired = true;
+		nextScene = scene;
+	}
 
 	// Define multiple Gui Event methods
 	virtual bool OnGuiMouseClickEvent(GuiControl* control)
@@ -36,30 +49,12 @@ public:
 		return true;
 	}
 
-
-	void Enable()
-	{
-		if (!this->active)
-		{
-			this->active = true;
-			this->Load();
-		}
-	}
-
-	// Disable the module when the fade fucntion is called
-	void Disable()
-	{
-		if (this->active)
-		{
-			this->active = false;
-			this->Unload();
-		}
-	}
-
 public:
 
 	SString name;
 	bool active;
 
+	bool transitionRequired;
+	SceneType nextScene;
 };
 #endif // __SCENES_H__

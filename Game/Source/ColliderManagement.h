@@ -29,6 +29,8 @@ public:
 
 };
 
+class Player;
+
 class ColliderManagement : public Module
 {
 public:
@@ -36,7 +38,7 @@ public:
 	ColliderManagement();
 	~ColliderManagement();
 
-	bool Update(float dt);
+	bool Update(float dt, Player* player);
 
 	bool CleanUp();
 
@@ -46,9 +48,7 @@ public:
 
 	void DrawColliders();
 
-	void OnCollision(Collider* coll1, Collider* coll2);
-
-	bool showColliders;
+	void OnCollision(Collider* coll1, Collider* coll2, Player* player);
 
 private:
 

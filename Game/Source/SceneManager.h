@@ -3,14 +3,8 @@
 
 #include "Module.h"
 #include "Scenes.h"
-#include "List.h"
 
 #include "PugiXml\src\pugixml.hpp"
-
-class SceneIntro;
-class Scene;
-class SceneDie;
-class SceneWin;
 
 class SceneManager : public Module
 {
@@ -30,21 +24,20 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
-	// Called before all updates
-	bool PostUpdate();
-
 	// Called before quitting
 	bool CleanUp();
 
-	void AddScene(Scenes* scene, bool active);
-
 public:
 
-	List<Scenes*> scenes;
-	SceneIntro* intro;
-	Scene* level1;
-	SceneDie* dieScene;
-	SceneWin* winScene;
+	Scenes* current;
+	Scenes* next;
 
+	int score;
+	int finalScore;
+	int stars;
+
+	bool onTransition;
+	bool fadeOutCompleted;
+	float transitionAlpha;
 };
 #endif // __SCENEMANAGER_H__

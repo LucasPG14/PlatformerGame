@@ -24,9 +24,6 @@ public:
 	// Called before the first frame
 	bool Load();
 
-	// Called before all Updates
-	bool PreUpdate();
-
 	// Called each loop iteration
 	bool Update(float dt);
 
@@ -36,20 +33,21 @@ public:
 	// Called before quitting
 	bool Unload();
 
+	void LoadingEntities();
+
 	void PlayerPosition();
 
 private:
+
 	SDL_Texture* bg;
 	SDL_Texture* bg2;
 	SDL_Texture* bg3;
-	pugi::xml_node node;
+	SDL_Texture* lifesTex;
+	SDL_Texture* starTex;
 
-	Slime* slime;
-	Slime* slime2;
-	Slime* slime3;
-	Slime* slime4;
-	Bat* bat;
-	Bat* bat2;
+	// Font
+	int yellowFont = -1;
 
+	Player* player;
 };
 #endif // __SCENE_H__

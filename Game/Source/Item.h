@@ -9,13 +9,13 @@ class Item : public Entity
 {
 public:
 
-	Item(iPoint pos, EntityType t) : Entity(pos, t) {}
+	Item(iPoint pos) : Entity(pos) {}
 	~Item() {}
 
 	bool CleanUp() override
 	{
-		if (this->collider != nullptr)
-			app->colliderManager->RemoveCollider(this->collider);
+		if (this->collider != nullptr) app->colliderManager->RemoveCollider(this->collider);
+
 		return true;
 	}
 

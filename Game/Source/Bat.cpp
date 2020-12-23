@@ -10,7 +10,7 @@
 #include "Pathfinding.h"
 #include "Render.h"
 
-Bat::Bat(iPoint pos, EntityType entityType) : Enemy(pos, entityType)
+Bat::Bat(iPoint pos) : Enemy(pos)
 {
 	name.Create("bat");
 
@@ -82,9 +82,9 @@ bool Bat::Update(float dt)
 
 	else if (this->state == AWAKE && this->currentAnimation != &deathAnim)
 	{
-		if (FindGoal(app->player) == true)
-			this->state = ATTACK;
-		else this->state = SLEEP;
+		//if (FindGoal(app->player) == true)
+		//	this->state = ATTACK;
+		//else this->state = SLEEP;
 	}
 
 	else if (this->state == ATTACK && this->currentAnimation != &deathAnim)
@@ -247,27 +247,27 @@ bool Bat::Sleep(float dt)
 		this->position.x -= 100 * dt;
 	}
 
-	int range;
+	//int range;
 
-	range = sqrt(pow((double)app->player->GetPosition().x - this->position.x, 2) + pow((double)app->player->GetPosition().y - this->position.y, 2));
-	bool right = false;
-	bool left = false;
-	if (this->position.x - app->player->GetPosition().x < 100 &&
-		this->position.x > app->player->GetPosition().x)
-	{
-		right = true;
-	}
-	else if (app->player->GetPosition().x - this->position.x < 100 &&
-		app->player->GetPosition().x > this->position.x)
-	{
-		left = true;
-	}
+	//range = sqrt(pow((double)app->player->GetPosition().x - this->position.x, 2) + pow((double)app->player->GetPosition().y - this->position.y, 2));
+	//bool right = false;
+	//bool left = false;
+	//if (this->position.x - app->player->GetPosition().x < 100 &&
+	//	this->position.x > app->player->GetPosition().x)
+	//{
+	//	right = true;
+	//}
+	//else if (app->player->GetPosition().x - this->position.x < 100 &&
+	//	app->player->GetPosition().x > this->position.x)
+	//{
+	//	left = true;
+	//}
 
-	if (range < 300 && app->player->godMode == false &&
-		(right == true || left == true) && app->player->GetPosition().y + 81 > this->position.y)
-	{
-		return true;
-	}
+	//if (range < 300 && app->player->godMode == false &&
+	//	(right == true || left == true) && app->player->GetPosition().y + 81 > this->position.y)
+	//{
+	//	return true;
+	//}
 
 	return false;
 }
@@ -371,10 +371,18 @@ bool Bat::CheckCollisionType(int idTile, SString direction)
 
 bool Bat::Load(pugi::xml_node& load)
 {
-	this->position.x = load.child("position").attribute("x").as_int();
-	this->position.y = load.child("position").attribute("y").as_int();
-	this->state = (EnemyState)load.child("state").attribute("value").as_int();
 	this->alive = load.child("alive").attribute("value").as_bool();
+	if (this->alive == false)
+	{
+		app->entityManager->RemoveEntity(this);
+	}
+	else
+	{
+		this->position.x = load.child("position").attribute("x").as_int();
+		this->position.y = load.child("position").attribute("y").as_int();
+		this->state = (EnemyState)load.child("state").attribute("value").as_int();
+		this->lifes = load.child("lifes").attribute("value").as_int();
+	}
 
 	return true;
 }
@@ -391,6 +399,9 @@ bool Bat::Save(pugi::xml_node& save) const
 
 	pugi::xml_node alive = save.append_child("alive");
 	alive.append_attribute("value").set_value(this->alive);
+
+	pugi::xml_node lifes = save.append_child("lifes");
+	lifes.append_attribute("value").set_value(this->lifes);
 
 	return true;
 }

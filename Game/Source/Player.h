@@ -4,59 +4,40 @@
 #include "App.h"
 #include "Render.h"
 #include "Animation.h"
-#include "Module.h"
+#include "Entity.h"
 
 struct SDL_Rect;
 struct SDL_Texture;
 struct SDL_Renderer;
 class Collider;
 
-class Position {
-public:
-	float x;
-	float y;
-};
-
-class Player : public Module
+class Player : public Entity
 {
 public:
-	Player();
+	Player(iPoint pos);
 	
 	bool Awake(pugi::xml_node& config);
-	bool Start();
 	bool Update(float dt);
-	bool PostUpdate();
+	void Draw();
 	bool CleanUp();
 
 	// Load and Save
-	bool LoadState(pugi::xml_node& load);
-	bool SaveState(pugi::xml_node& save) const;
+	bool Load(pugi::xml_node& load);
+	bool Save(pugi::xml_node& save) const;
 
 	bool Collision(const char* side);
 
 	void Gravity(float dt);
-	void Jump(float dt);
 	bool CheckCollisionType(int idTile, SString direction);
 
 	void Dead();
 	void SwordAttack(float dt);
 	void SpeedAnimations(float dt);
+	void LoadAnimations();
 
 	inline bool LevelFinished() { return levelFinished; }
 	inline bool IsDead() { return deadPlayer; }
-	inline Position GetPosition() { return position; }
-	inline int GetScore() { return score; };
-	inline int GetStars() { return stars; };
-	inline int GetFinalScore() { return finalScore; };
-
-	inline void SetScore(int points) { score += points; }
-	inline void SetStars(int starAchieved) { stars += starAchieved; }
-
-	inline void SetPosition(int x, int y)
-	{ 
-		position.x = x;
-		position.y = y;
-	}
+	inline iPoint GetPosition() { return position; }
 
 	uint playerHurt;
 	bool godMode;
@@ -77,13 +58,6 @@ public:
 	bool deadPlayer;
 
 private:
-
-	// Player position
-	Position position;
-
-	// Player texture
-	SDL_Texture* player = nullptr;
-
 	// Player gravity
 	float gravity;
 
@@ -129,17 +103,8 @@ private:
 
 	uint swordFx;
 	uint stepFx;
-	int yellowFont = -1;
 
 	uint checkpointAudio = -1;
 	uint jumpAudio = -1;
-
-	//lifes
-	SDL_Texture* lifesTex = nullptr;
-	SDL_Texture* starTex = nullptr;
-
-	int stars;
-	int score;
-	int finalScore;
 };
 #endif

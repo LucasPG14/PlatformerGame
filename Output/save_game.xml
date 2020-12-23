@@ -4,25 +4,41 @@
   <input />
   <textures />
   <audio />
+  <map />
+  <:anonymous />
   <entities>
-    <position x="2264" y="732" />
-    <state value="0" />
-    <alive value="true" />
-    <lifes value="3" />
-    <position x="1242" y="1286" />
-    <state value="0" />
-    <alive value="true" />
+    <player>
+      <position x="1290" y="938" />
+    </player>
+    <slime>
+      <position x="2491" y="732" />
+      <state value="0" />
+      <alive value="true" />
+      <lifes value="3" />
+    </slime>
+    <bat>
+      <position x="2002" y="1286" />
+      <state value="0" />
+      <alive value="true" />
+      <lifes value="2" />
+    </bat>
+    <life>
+      <alive value="true" />
+    </life>
+    <life>
+      <alive value="true" />
+    </life>
+    <life>
+      <alive value="true" />
+    </life>
+    <star>
+      <alive value="true" />
+    </star>
   </entities>
   <scenes />
-  <map />
-  <player>
-    <position x="2584" y="666.278137" />
-  </player>
-  <:anonymous />
-  <fade />
   <fonts />
   <renderer>
-    <camera x="-1965" y="-306" />
-    <offset x="1966" y="306.278137" />
+    <camera x="-667" y="-578" />
+    <offset x="668" y="578" />
   </renderer>
 </save_status>

@@ -8,10 +8,14 @@ class Life : public Item
 {
 public:
 
-	Life(iPoint position, EntityType entityType);
+	Life(iPoint position);
 	~Life();
 
 	bool Update(float dt) override;
+
+	bool Load(pugi::xml_node& load);
+
+	bool Save(pugi::xml_node& save) const;
 
 private:
 

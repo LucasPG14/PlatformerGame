@@ -1,16 +1,12 @@
 #include "SceneDie.h"
+#include "SceneManager.h"
 #include "Textures.h"
 #include "Player.h"
 #include "Render.h"
-#include "SceneIntro.h"
-#include "SceneManager.h"
-#include "Fonts.h"
 #include "Fonts.h"
 
 #include "Input.h"
 #include "Audio.h"
-
-#include "FadeToBlack.h"
 
 #include "SDL/include/SDL_scancode.h"
 
@@ -47,21 +43,24 @@ bool SceneDie::Load()
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
 
+	app->render->offset.x = 0;
+	app->render->offset.y = 0;
+
+	if (app->sceneManager->stars > 0) app->sceneManager->finalScore = app->sceneManager->score * app->sceneManager->stars;
+	else app->sceneManager->finalScore = app->sceneManager->score;
+
 	return ret;
 }
 
 bool SceneDie::Update(float dt)
 {
-	time++;
+	time += dt;
 
-	if (time == 1)
-	{
-		app->audio->PlayFx(dieFx);
-		dieAnim.speed = 0.05f * dt;
-	}
+	if (time == dt) app->audio->PlayFx(dieFx);
+		
+	dieAnim.speed = 5.0f * dt;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, (Scenes*)app->sceneManager->intro, 1/dt);
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) TransitionToScene(SceneType::TITLE);
 
 	dieAnim.Update();
 
@@ -76,12 +75,12 @@ bool SceneDie::Draw()
 	app->render->DrawTexture(bgTexture, 0, 0, &rect);
 
 	app->fonts->BlitText(300,100,redFont, "SCORE:");
-	app->fonts->BlitText(550, 100, redFont, std::to_string(app->player->GetScore()).c_str());
+	app->fonts->BlitText(550, 100, redFont, std::to_string(app->sceneManager->score).c_str());
 	app->fonts->BlitText(700, 100, redFont, "x");
-	app->fonts->BlitText(750, 100, redFont, std::to_string(app->player->GetStars()).c_str());
+	app->fonts->BlitText(750, 100, redFont, std::to_string(app->sceneManager->stars).c_str());
 	app->fonts->BlitText(870, 100, redFont, "=");
 
-	app->fonts->BlitText(925, 100, redFont, std::to_string(app->player->GetFinalScore()).c_str());
+	app->fonts->BlitText(925, 100, redFont, std::to_string(app->sceneManager->finalScore).c_str());
 	
 	app->render->DrawTexture(starTex, 810,95, NULL);
 

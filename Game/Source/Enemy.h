@@ -20,7 +20,7 @@ class Player;
 class Enemy : public Entity
 {
 public:
-	Enemy(iPoint pos, EntityType t) : Entity(pos, type) {};
+	Enemy(iPoint pos) : Entity(pos) {};
 	virtual ~Enemy() {};
 
 	virtual void Hit() { return; }

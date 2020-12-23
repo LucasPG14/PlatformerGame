@@ -5,14 +5,12 @@
 #include "Textures.h"
 #include "Audio.h"
 #include "Map.h"
-#include "Player.h"
-#include "FadeToBlack.h"
+#include "Pathfinding.h"
+#include "EntityManager.h"
 #include "SceneManager.h"
 #include "ColliderManagement.h"
 #include "GuiManager.h"
 #include "Fonts.h"
-#include "EntityManager.h"
-#include "Pathfinding.h"
 #include "Defs.h"
 #include "Log.h"
 
@@ -30,11 +28,9 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	render = new Render();
 	tex = new Textures();
 	audio = new Audio();
-	fade = new FadeToBlack();
 	entityManager = new EntityManager();
 	sceneManager = new SceneManager();
 	map = new Map();
-	player = new Player();
 	colliderManager = new ColliderManagement();
 	fonts = new Fonts();
 	pathfinding = new Pathfinding();
@@ -45,13 +41,11 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(input, true);
 	AddModule(tex, true);
 	AddModule(audio, true);
-	AddModule(entityManager, false);
+	AddModule(map, true);
+	AddModule(pathfinding, true);
+	AddModule(entityManager, true);
 	AddModule(sceneManager, true);
-	AddModule(map, false);
-	AddModule(player, false);
-	AddModule(pathfinding, false);
-	AddModule(fade, true);
-	AddModule(fonts, false);
+	AddModule(fonts, true);
 
 	// Render last to swap buffer
 	AddModule(render, true);
@@ -152,8 +146,6 @@ bool App::Start()
 // Called each loop iteration
 bool App::Update()
 {
-	PERF_START(pTimer);
-
 	bool ret = true;
 	PrepareUpdate();
 
@@ -196,8 +188,8 @@ void App::PrepareUpdate()
 	// Cap the game to 30 FPS
 	if (app->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
 	{
-		if (app->cappedMs == 1000 / 60)	app->cappedMs = 1000 / 30;
-		else app->cappedMs = 1000 / 60;
+		if (cappedMs == 1000 / 60)	cappedMs = 1000 / 30;
+		else cappedMs = 1000 / 60;
 	}
 
 	// Calculate the differential time since last frame
@@ -236,10 +228,10 @@ void App::FinishUpdate()
 
 	if ((cappedMs > 0) && (lastFrameMs < cappedMs))
 	{
-		PERF_START(pTimer);
-		SDL_Delay(cappedMs);
+		PerfTimer pt;
+		SDL_Delay(cappedMs - lastFrameMs);
+		LOG("We waited for %i ms and got back in %f", cappedMs - lastFrameMs, pt.ReadMs());
 	}
-	LOG("We waited for %i ms and got back in %f", cappedMs, pTimer.ReadMs());
 }
 
 // Call modules before each loop iteration

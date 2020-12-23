@@ -7,7 +7,7 @@ class Bat : public Enemy
 {
 public:
 
-	Bat(iPoint position, EntityType entityType);
+	Bat(iPoint position);
 	~Bat();
 
 	bool Update(float dt) override;

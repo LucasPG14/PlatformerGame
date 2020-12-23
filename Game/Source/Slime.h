@@ -7,7 +7,7 @@ class Slime : public Enemy
 {
 public:
 
-	Slime(iPoint position, EntityType entityType);
+	Slime(iPoint position);
 	~Slime();
 
 	bool Update(float dt) override;

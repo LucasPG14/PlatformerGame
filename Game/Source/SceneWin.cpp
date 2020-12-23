@@ -1,14 +1,11 @@
 #include "SceneWin.h"
-#include "Textures.h"
-#include "SceneIntro.h"
 #include "SceneManager.h"
+#include "Textures.h"
 #include "Fonts.h"
 #include "Player.h"
 
 #include "Input.h"
 #include "Audio.h"
-
-#include "FadeToBlack.h"
 
 
 SceneWin::SceneWin() : Scenes()
@@ -38,6 +35,11 @@ bool SceneWin::Load()
 	time = 0;
 	app->render->camera.x = 0;
 	app->render->camera.y = 0;
+	app->render->offset.x = 0;
+	app->render->offset.y = 0;
+
+	if (app->sceneManager->stars > 0) app->sceneManager->finalScore = app->sceneManager->score * app->sceneManager->stars;
+	else app->sceneManager->finalScore = app->sceneManager->score;
 
 	return ret;
 }
@@ -46,14 +48,11 @@ bool SceneWin::Update(float dt)
 {
 	time++;
 
-	if (time == 1)
-	{
-		app->audio->PlayFx(winFx);
-		winAnim.speed = 0.05f * dt;
-	}
+	if (time == 1) app->audio->PlayFx(winFx);
+		
+	winAnim.speed = 5.0f * dt;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) 
-		app->fade->Fade(this, app->sceneManager->intro, 1/dt);
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) TransitionToScene(SceneType::TITLE);
 
 	winAnim.Update();
 
@@ -67,17 +66,12 @@ bool SceneWin::Draw()
 	app->render->DrawTexture(bgTexture, 0, 0, &winAnim.GetCurrentFrame());
 
 	app->fonts->BlitText(300, 100, yellowFont, "SCORE:");
-	app->fonts->BlitText(550, 100, yellowFont, std::to_string(app->player->GetScore()).c_str());
+	app->fonts->BlitText(550, 100, yellowFont, std::to_string(app->sceneManager->score).c_str());
 	app->fonts->BlitText(700, 100, yellowFont, "x");
-	app->fonts->BlitText(750, 100, yellowFont, std::to_string(app->player->GetStars()).c_str());
+	app->fonts->BlitText(750, 100, yellowFont, std::to_string(app->sceneManager->stars).c_str());
 	app->fonts->BlitText(870, 100, yellowFont, "=");
 
-	if ((app->player->GetStars()) == 0) {
-		app->fonts->BlitText(925, 100, yellowFont, std::to_string(app->player->GetScore()).c_str());
-	}
-	else {
-		app->fonts->BlitText(925, 100, yellowFont, std::to_string(app->player->GetFinalScore()).c_str());
-	}
+	app->fonts->BlitText(925, 100, yellowFont, std::to_string(app->sceneManager->finalScore).c_str());
 
 	app->render->DrawTexture(starTex, 810, 95, NULL);
 
@@ -92,7 +86,6 @@ bool SceneWin::Unload()
 	app->fonts->UnLoad(yellowFont);
 	app->tex->UnLoad(starTex);
 	winAnim.Reset();
-	this->active = false;
 
 	return true;
 }

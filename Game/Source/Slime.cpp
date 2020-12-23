@@ -1,12 +1,13 @@
+#include "Slime.h"
 #include "App.h"
 #include "Textures.h"
-#include "Slime.h"
 #include "Map.h"
 #include "Pathfinding.h"
+#include "EntityManager.h"
 #include "Player.h"
 #include "Audio.h"
 
-Slime::Slime(iPoint pos, EntityType entityType) : Enemy(pos, entityType)
+Slime::Slime(iPoint pos) : Enemy(pos)
 {
 	name.Create("slime");
 
@@ -79,9 +80,9 @@ bool Slime::Update(float dt)
 
 		else if (this->state == AWAKE && this->currentAnimation != &deathAnim)
 		{
-			if (FindGoal(app->player) == true)
-				this->state = ATTACK;
-			else this->state = SLEEP;
+			//if (FindGoal(app->player) == true)
+			//	this->state = ATTACK;
+			//else this->state = SLEEP;
 		}
 
 		else if (this->state == ATTACK && this->currentAnimation != &deathAnim)
@@ -226,28 +227,28 @@ bool Slime::Sleep(float dt)
 		this->position.x -= 75 * dt;
 	}
 
-	int range;
+	//int range;
 
-	range = sqrt(pow((double)app->player->GetPosition().x - this->position.x, 2) + pow((double)app->player->GetPosition().y - this->position.y, 2));
+	//range = sqrt(pow((double)app->player->GetPosition().x - this->position.x, 2) + pow((double)app->player->GetPosition().y - this->position.y, 2));
 
-	bool up = false;
-	bool down = false;
-	if (this->position.y - app->player->GetPosition().y < 70 &&
-		this->position.y > app->player->GetPosition().y)
-	{
-		up = true;
-	}
-	else if (app->player->GetPosition().y - this->position.y < 10 &&
-		app->player->GetPosition().y > this->position.y)
-	{
-		down = true;
-	}
+	//bool up = false;
+	//bool down = false;
+	//if (this->position.y - app->player->GetPosition().y < 70 &&
+	//	this->position.y > app->player->GetPosition().y)
+	//{
+	//	up = true;
+	//}
+	//else if (app->player->GetPosition().y - this->position.y < 10 &&
+	//	app->player->GetPosition().y > this->position.y)
+	//{
+	//	down = true;
+	//}
 
-	if (range < 300 && app->player->godMode == false &&
-		(up == true || down == true))
-	{
-		return true;
-	}
+	//if (range < 300 && app->player->godMode == false &&
+	//	(up == true || down == true))
+	//{
+	//	return true;
+	//}
 
 	return false;
 }
@@ -267,27 +268,28 @@ void Slime::Gravity(float dt)
 
 bool Slime::Load(pugi::xml_node& load)
 {
-	this->position.x = load.child("position").attribute("x").as_int();
-	this->position.y = load.child("position").attribute("y").as_int();
-	this->state = (EnemyState)load.child("state").attribute("value").as_int();
-	bool isAliveBefore = this->alive;
 	this->alive = load.child("alive").attribute("value").as_bool();
-	if (isAliveBefore == false && this->alive == true)
+	if (this->alive == false)
 	{
-		this->currentAnimation = &animRight;
-		this->collider = app->colliderManager->AddCollider({ this->position.x + 4, this->position.y + 3, 27, 17 }, Collider::Type::ENEMY);
+		app->entityManager->RemoveEntity(this);
 	}
-	this->lifes = load.child("lifes").attribute("value").as_int();
+	else
+	{
+		this->position.x = load.child("position").attribute("x").as_int();
+		this->position.y = load.child("position").attribute("y").as_int();
+		this->state = (EnemyState)load.child("state").attribute("value").as_int();
+		this->lifes = load.child("lifes").attribute("value").as_int();
+	}
 
 	return true;
 }
 
 bool Slime::Save(pugi::xml_node& save) const
 {
-	pugi::xml_node slime = save.append_child("position");
+	pugi::xml_node pos = save.append_child("position");
 
-	slime.append_attribute("x").set_value(this->position.x);
-	slime.append_attribute("y").set_value(this->position.y);
+	pos.append_attribute("x").set_value(this->position.x);
+	pos.append_attribute("y").set_value(this->position.y);
 
 	pugi::xml_node state = save.append_child("state");
 	state.append_attribute("value").set_value((int)this->state);

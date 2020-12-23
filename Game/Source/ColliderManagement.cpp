@@ -1,42 +1,36 @@
 #include "ColliderManagement.h"
 #include "Render.h"
 #include "EntityManager.h"
+#include "SceneManager.h"
 #include "Player.h"
 #include "Audio.h"
-#include "App.h"
 
-ColliderManagement::ColliderManagement()
+ColliderManagement::ColliderManagement() {}
+
+ColliderManagement::~ColliderManagement() {}
+
+bool ColliderManagement::Update(float dt, Player* player)
 {
-	showColliders = false;
-}
+	ListItem<Collider*>* coll1 = collidersList.start;
+	ListItem<Collider*>* coll2;
 
-ColliderManagement::~ColliderManagement(){}
-
-bool ColliderManagement::Update(float dt)
-{
-	if (app->player->godMode == false)
+	while (coll1 != nullptr)
 	{
-		ListItem<Collider*>* coll1 = collidersList.start;
-		ListItem<Collider*>* coll2;
+		coll2 = coll1->next;
 
-		while (coll1 != nullptr)
+		while (coll2 != nullptr)
 		{
-			coll2 = coll1->next;
-
-			while (coll2 != nullptr)
+			if (coll1->data->Intersects(&coll2->data->rect))
 			{
-				if (coll1->data->Intersects(&coll2->data->rect))
-				{
-					OnCollision(coll1->data, coll2->data);
-				}
-				else if (coll2->data->Intersects(&coll1->data->rect))
-				{
-					OnCollision(coll2->data, coll1->data);
-				}
-				coll2 = coll2->next;
+				OnCollision(coll1->data, coll2->data, player);
 			}
-			coll1 = coll1->next;
+			else if (coll2->data->Intersects(&coll1->data->rect))
+			{
+				OnCollision(coll2->data, coll1->data, player);
+			}
+			coll2 = coll2->next;
 		}
+		coll1 = coll1->next;
 	}
 
 	return true;
@@ -103,52 +97,53 @@ void ColliderManagement::RemoveCollider(Collider* collider)
 	}
 }
 
-void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2)
+void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2, Player* player)
 {
 	if (coll1->type == Collider::Type::PLAYER && coll2->type == Collider::Type::ENEMY)
 	{
-		app->player->lifes--;
-		app->audio->PlayFx(app->player->playerHurt);
-		if (app->player->lifes > 0) 
+		player->lifes--;
+		app->audio->PlayFx(player->playerHurt);
+		if (player->lifes > 0) 
 		{
-			app->player->playerChangePos = true;
+			player->playerChangePos = true;
 			app->render->ResetCam();
 		}
-		if (app->player->lifes == 0)
+		if (player->lifes == 0)
 		{
 			RemoveCollider(coll1);
-			app->player->Dead();
+			player->Dead();
 		}
 	}
 	else if (coll2->type == Collider::Type::PLAYER && coll1->type == Collider::Type::ENEMY)
 	{
-		app->player->lifes--;
-		app->audio->PlayFx(app->player->playerHurt);
-		if (app->player->lifes > 0) 
+		player->lifes--;
+		app->audio->PlayFx(player->playerHurt);
+		if (player->lifes > 0) 
 		{
-			app->player->playerChangePos = true;
+			player->playerChangePos = true;
 			app->render->ResetCam();
 		}
-		if (app->player->lifes == 0)
+		if (player->lifes == 0)
 		{
 			RemoveCollider(coll2);
-			app->player->Dead();
+			player->Dead();
 		}
 	}
 	else if (coll1->type == Collider::Type::SWORD && coll2->type == Collider::Type::ENEMY)
 	{
 		app->entityManager->EnemyLifes(coll2);
 		RemoveCollider(coll1);
-		app->player->SetScore(100);
+		app->sceneManager->score += 100;
 	}
 	else if (coll2->type == Collider::Type::SWORD && coll1->type == Collider::Type::ENEMY)
 	{
 		app->entityManager->EnemyLifes(coll1);
 		RemoveCollider(coll2);
-		app->player->SetScore(100);
+		app->sceneManager->score += 100;
 	}
 	else if (coll1->type == Collider::Type::PLAYER && coll2->type == Collider::Type::ITEM)
 	{
+		app->entityManager->ItemPowerUp(coll2);
 		coll2->active = false;
 		RemoveCollider(coll2);
 	}

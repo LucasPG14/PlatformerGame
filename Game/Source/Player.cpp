@@ -4,21 +4,508 @@
 #include "Textures.h"
 #include "Window.h"
 #include "SceneManager.h"
-#include "Module.h"
+#include "Entity.h"
 #include "Input.h"
 #include "Scene.h"
 #include "Animation.h"
 #include "Audio.h"
 #include "Map.h"
-#include "FadeToBlack.h"
 #include "Log.h"
 #include "Fonts.h"
 
 
-Player::Player() : Module()
+Player::Player(iPoint pos) : Entity(pos)
 {
 	name.Create("player");
 
+	LoadAnimations();
+
+	godMode = false;
+	gravity = 1500.0f;
+	jump = false;
+	speedX = 200.0f;
+	speedY = 0.0f;
+	time = 0;
+	deadPlayer = false;
+	levelFinished = false;
+	attackCooldown = 0;
+
+	lifes = 3;
+
+	texture = app->tex->Load("Assets/Textures/dark_knight_spritesheet.png");
+	currentAnimation = &rightIdleAnim;
+	cooldownTex = app->tex->Load("Assets/Hud/cooldown_attack.png");
+	checkpointTex = app->tex->Load("Assets/Textures/checkpoint.png");
+
+	jumping = false;
+	levelFinished = false;
+	checkpoint = false;
+	whatCheckpoint = 0;
+	deadPlayer = false;
+	playerChangePos = false;
+	playerCollider = app->colliderManager->AddCollider({ (int)position.x + 12, (int)position.y + 30, 25, 51 }, Collider::PLAYER);
+	checkpointAudio = app->audio->LoadFx("Assets/Audio/Fx/checkpoint.wav");
+	jumpAudio = app->audio->LoadFx("Assets/Audio/Fx/jump.wav");
+	swordFx = app->audio->LoadFx("Assets/Audio/Fx/sword_swing_soundbible.com_639083727.wav");
+	playerHurt = app->audio->LoadFx("Assets/Audio/Fx/impactplate_heavy_004.wav");
+
+	app->render->ResetCam();
+}
+
+bool Player::Awake(pugi::xml_node& config)
+{
+	LOG("Loading Player");
+	bool ret = true;
+
+	folder.Create(config.child("folder").child_value());
+
+	playerString.Create(config.child("image").attribute("source").as_string(""));
+
+	godMode = config.child("godmode").attribute("value").as_bool();
+	jump = config.child("jump").attribute("value").as_bool();
+	speedX = config.child("speed").attribute("x").as_int();
+	speedY = config.child("speed").attribute("y").as_float();
+	levelFinished = config.child("level_finished").attribute("value").as_bool();
+	attackCooldown = config.child("attack_cooldown").attribute("value").as_int();
+
+	return true;
+}
+
+bool Player::Update(float dt)
+{
+	if (deadPlayer == false)
+	{
+		if (lastAnimation == &rightDeadAnim) currentAnimation = &rightIdleAnim;
+
+		// God mode
+		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
+		{
+			godMode = !godMode;
+			if (godMode) speedX *= 3;
+			else speedX /= 3;
+		}
+
+		SpeedAnimations(dt);
+
+		if (attackCooldown != 0) attackCooldown--;
+
+		// Input to move the player
+		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
+		{
+			if (currentAnimation != &rightAttackAnim || rightAttackAnim.HasFinished())
+			{
+				if (currentAnimation == &leftJumpAnim)
+				{
+					rightJumpAnim.Reset();
+					lastAnimation = currentAnimation;
+					currentAnimation = &rightJumpAnim;
+				}
+
+				if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
+					position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
+
+
+				if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
+				{
+					rightRunAnim.Reset();
+					lastAnimation = currentAnimation;
+ 					currentAnimation = &rightRunAnim;
+				}
+			}
+			if (Collision("right") == false)
+			{
+				position.x += floor(speedX * dt);
+				if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16 && 
+					app->render->offset.x < (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w)
+				{
+						app->render->offset.x += floor(speedX * dt);
+						app->render->camera.x -= floor(speedX * dt);
+				}
+			}
+		}
+
+		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
+		{
+			if (currentAnimation != &leftAttackAnim || leftAttackAnim.HasFinished())
+			{
+				if (currentAnimation == &rightJumpAnim)
+				{
+					leftJumpAnim.Reset();
+					lastAnimation = currentAnimation;
+					currentAnimation = &leftJumpAnim;
+				}
+
+				if (position.x <= 0) position.x = 0;
+
+				else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
+				{
+					leftRunAnim.Reset();
+					lastAnimation = currentAnimation;
+					currentAnimation = &leftRunAnim;
+				}
+			}
+
+			if (Collision("left") == false)
+			{
+				position.x -= floor(speedX * dt);
+				if (position.x < app->render->offset.x + 640 && app->render->offset.x > 0)
+				{
+					app->render->offset.x -= floor(speedX * dt);
+					app->render->camera.x += floor(speedX * dt);
+				}
+			}
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
+			position.y -= floor(speedX * dt);
+
+
+		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
+			position.y += floor(speedX * dt);
+
+		if (currentAnimation != &leftAttackAnim || currentAnimation != &rightAttackAnim)
+		{
+			if (swordCollider != nullptr)
+			{
+				app->colliderManager->RemoveCollider(swordCollider);
+			}
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
+		{
+			app->audio->PlayFx(jumpAudio);
+
+			if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
+			{
+				if (currentAnimation != &rightJumpAnim)
+				{
+					rightJumpAnim.Reset();
+					currentAnimation = &rightJumpAnim;
+					lastAnimation = currentAnimation;
+				}
+			}
+			if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
+			{
+				if (currentAnimation != &leftJumpAnim)
+				{
+					leftJumpAnim.Reset();
+					currentAnimation = &leftJumpAnim;
+					lastAnimation = currentAnimation;
+				}
+			}
+			if (currentAnimation == &rightIdleAnim)
+			{
+				rightJumpAnim.Reset();
+				currentAnimation = &rightJumpAnim;
+				lastAnimation = currentAnimation;
+			}
+			if (currentAnimation == &leftIdleAnim)
+			{
+				leftJumpAnim.Reset();
+				currentAnimation = &leftJumpAnim;
+				lastAnimation = currentAnimation;
+			}
+
+			checkpoint = false;
+			jumping = true;
+			jump = true;
+			speedY = 650.0f;
+			position.y -= speedY * dt;
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
+			app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
+			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE &&
+			app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_IDLE)
+		{
+			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim ||
+				(currentAnimation == &rightAttackAnim && rightAttackAnim.HasFinished() == true))
+			{
+				rightIdleAnim.Reset();
+				currentAnimation = &rightIdleAnim;
+				lastAnimation = currentAnimation;
+			}
+			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim ||
+				(currentAnimation == &leftAttackAnim && leftAttackAnim.HasFinished() == true))
+			{
+				leftIdleAnim.Reset();
+				currentAnimation = &leftIdleAnim;
+				lastAnimation = currentAnimation;
+			}
+		}
+
+		if ((app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_DOWN || app->input->GetMouseButtonDown(1) == KEY_DOWN) && attackCooldown == 0)
+		{
+			SwordAttack(dt);
+			cooldownAtk.Reset();
+			app->audio->PlayFx(swordFx);
+		}
+
+		Gravity(dt);
+
+		if (Collision("top") == true && speedY > 0) speedY = -speedY + 100;
+
+		if (speedY <= 0.0f) jumping = false;
+
+		if (position.y >= app->render->offset.y + 360 && !(app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight)))
+		{
+			app->render->offset.y = position.y - 360;
+			app->render->camera.y = -(position.y - 360);
+		}
+
+		if (position.y < app->render->offset.y + 360 && !(app->render->offset.y <= 0))
+		{
+			app->render->offset.y = position.y - 360;
+			app->render->camera.y = -(position.y - 360);
+		}
+
+		playerCollider->SetPos(position.x + 12, position.y + 35, &playerCollider->rect);
+
+		if (checkpoint == true) checkpointAnim.Update();
+	}
+	else
+	{
+		time++;
+	}
+
+	currentAnimation->Update();
+
+	switch (attackCooldown)
+	{
+	case 135:
+		cooldownAtk.Update();
+		break;
+	case 90:
+		cooldownAtk.Update();
+		break;
+	case 45:
+		cooldownAtk.Update();
+		break;
+	case 0:
+		cooldownAtk.Update();
+		break;
+	}
+
+	return true;
+}
+
+void Player::Draw() {
+
+	SDL_Rect rect = currentAnimation->GetCurrentFrame();
+	if (rect.x == 525)
+		app->render->DrawTexture(texture, position.x - 51, position.y, &rect);
+	else if (rect.x == 333)
+		app->render->DrawTexture(texture, position.x - 48, position.y, &rect);
+	else if (rect.x == 156)
+		app->render->DrawTexture(texture, position.x - 36, position.y, &rect);
+	else
+		app->render->DrawTexture(texture, position.x, position.y, &rect);
+
+	// Cooldown Attack HUD
+	app->render->DrawTexture(cooldownTex, app->render->offset.x + 1180, app->render->offset.y + 620, &cooldownAtk.GetCurrentFrame());
+}
+
+bool Player::CleanUp() {
+
+	// Unload textures
+	app->tex->UnLoad(texture);
+	app->tex->UnLoad(checkpointTex);
+	app->tex->UnLoad(cooldownTex);
+	
+	// Reset dead animations
+	leftDeadAnim.Reset();
+	rightDeadAnim.Reset();
+	
+	// Removing collider
+	if (playerCollider != nullptr) app->colliderManager->RemoveCollider(playerCollider);
+
+	return true;
+}
+
+bool Player::Collision(const char* side)
+{
+	bool ret = false;
+
+	if (godMode == false)
+	{
+		ListItem<MapLayer*>* lay = app->map->data.layers.start->next;
+
+		iPoint tilePos;
+
+		int idTile;
+
+		if (lay->data->properties.GetProperty("Collision") == 1)
+		{
+			if (side == "bottom")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 88);
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "bottom"))
+					{
+						return true;
+					}
+				}
+			}
+			else if (side == "top")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 38);
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "top"))
+					{
+						return true;
+					}
+				}
+			}
+			else if (side == "right")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + 40, position.y + (42 + (14 * i)));
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "right"))
+					{
+						return true;
+					}
+				}
+			}
+			else if (side == "left")
+			{
+				for (uint i = 0; i < 3; i++)
+				{
+					tilePos = app->map->WorldToMap(position.x + 6, position.y + (42 + (14 * i)));
+					idTile = lay->data->Get(tilePos.x, tilePos.y);
+					if (CheckCollisionType(idTile, "left"))
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return ret;
+}
+
+void Player::Gravity(float dt)
+{
+	if (Collision("bottom") == false && godMode == false)
+	{
+		speedY -= gravity * dt;
+		position.y -= speedY * dt;
+		if (speedY < -300.0f)
+		{
+			speedY = -300.0f;
+		}
+	}
+}
+
+bool Player::Load(pugi::xml_node& load)
+{
+	bool ret = true;
+
+	position.x = load.child("position").attribute("x").as_float();
+	position.y = load.child("position").attribute("y").as_float();
+
+	return ret;
+}
+
+bool Player::Save(pugi::xml_node& save) const
+{
+	bool ret = true;
+
+	pugi::xml_node pos = save.append_child("position");
+
+	pos.append_attribute("x") = position.x;
+	pos.append_attribute("y") = position.y;
+
+	return ret;
+}
+
+void Player::Dead()
+{
+	currentAnimation = &rightDeadAnim;
+	lastAnimation = currentAnimation;
+	deadPlayer = true;
+}
+
+bool Player::CheckCollisionType(int idTile, SString direction)
+{
+	switch (idTile)
+	{
+	case 289:
+		return true;
+		break;
+	case 290:
+		lifes--;
+		app->audio->PlayFx(playerHurt);
+		if (lifes > 0) {
+			deadPlayer = false;
+			playerChangePos = true;
+			app->render->ResetCam();
+		}
+		if (lifes == 0)
+		{
+			Dead();
+		}
+		return true;
+		break;
+	case 291:
+		if (direction == "bottom" && jumping == true)
+		{
+			return false;
+		}
+		else if (direction == "bottom" && jumping == false)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+
+	case 292:
+		levelFinished = true;
+		break;
+	case 293:
+		if (position.y < 400) whatCheckpoint = 1;
+		else if (position.y < 1400) whatCheckpoint = 2;
+		else whatCheckpoint = 3;
+		if (checkpoint == false)
+		{
+			checkpointAnim.Reset();
+			app->SaveGameRequest();
+			app->audio->PlayFx(checkpointAudio);
+
+			checkpoint = true;
+			break;
+		}
+	}
+
+	return false;
+}
+
+void Player::SpeedAnimations(float dt)
+{
+	rightIdleAnim.speed = 10.0f * dt;
+	leftIdleAnim.speed = 10.0f * dt;
+	rightRunAnim.speed = 10.0f * dt;
+	leftRunAnim.speed = 10.0f * dt;
+	rightJumpAnim.speed = 10.0f * dt;
+	leftJumpAnim.speed = 10.0f * dt;
+	rightDeadAnim.speed = 10.0f * dt;
+	leftDeadAnim.speed = 10.0f * dt;
+	rightAttackAnim.speed = 10.0f * dt;
+	leftAttackAnim.speed = 10.0f * dt;
+	checkpointAnim.speed = 5.0f * dt;
+}
+
+void Player::LoadAnimations()
+{
 	// Animation when player is static
 	rightIdleAnim.PushBack({ 0, 0, 51, 87 });
 	rightIdleAnim.PushBack({ 192, 0, 51, 87 });
@@ -128,558 +615,6 @@ Player::Player() : Module()
 	checkpointAnim.PushBack({ 312, 0, 78, 54 });
 
 	checkpointAnim.loop = false;
-}
-bool Player::Awake(pugi::xml_node& config)
-{
-	LOG("Loading Player");
-	bool ret = true;
-
-	folder.Create(config.child("folder").child_value());
-
-	playerString.Create(config.child("image").attribute("source").as_string(""));
-
-	godMode = config.child("godmode").attribute("value").as_bool();
-	gravity = config.child("gravity").attribute("value").as_float();
-	jump = config.child("jump").attribute("value").as_bool();
-	speedX = config.child("speed").attribute("x").as_int();
-	speedY = config.child("speed").attribute("y").as_float();
-	time = 0;
-	deadPlayer = false;
-	levelFinished = config.child("level_finished").attribute("value").as_bool();
-	attackCooldown = config.child("attack_cooldown").attribute("value").as_int();
-
-	return true;
-}
-
-bool Player::Start()
-{
-	if (this->active == true)
-	{
-		lifes = 3;
-		stars = 0;
-		score = 0;
-		finalScore = 0;
-
-		SString tmp("%s%s", folder.GetString(), playerString.GetString());
-		player = app->tex->Load(tmp.GetString());
-		currentAnimation = &rightIdleAnim;
-		lifesTex = app->tex->Load("Assets/Hud/lifes.png");
-		starTex = app->tex->Load("Assets/Hud/star_tex.png");
-		cooldownTex = app->tex->Load("Assets/Hud/cooldown_attack.png");
-		checkpointTex = app->tex->Load("Assets/Textures/checkpoint.png");
-
-		jumping = false;
-		levelFinished = false;
-		checkpoint = false;
-		whatCheckpoint = 0;
-		deadPlayer = false;
-		playerChangePos = false;
-		playerCollider = app->colliderManager->AddCollider({ (int)position.x + 12, (int)position.y + 30, 25, 51 }, Collider::PLAYER);
-		checkpointAudio = app->audio->LoadFx("Assets/Audio/Fx/checkpoint.wav");
-		jumpAudio = app->audio->LoadFx("Assets/Audio/Fx/jump.wav");
-		swordFx = app->audio->LoadFx("Assets/Audio/Fx/sword_swing_soundbible.com_639083727.wav");
-		playerHurt = app->audio->LoadFx("Assets/Audio/Fx/impactplate_heavy_004.wav");
-
-		app->render->ResetCam();
-
-		char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz  0123456789.,ªº?!*$%&()+-/:;<=>@·    " };
-		yellowFont = app->fonts->Load("Assets/Hud/yellow_font.png", lookupTable, 5);
-	}
-
-	return true;
-}
-
-bool Player::Update(float dt)
-{
-	if (deadPlayer == false)
-	{
-		if (lastAnimation == &rightDeadAnim) currentAnimation = &rightIdleAnim;
-
-		SpeedAnimations(dt);
-
-		if (attackCooldown != 0) attackCooldown--;
-
-		// Input to move the player
-		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
-		{
-			if (currentAnimation != &rightAttackAnim || rightAttackAnim.HasFinished())
-			{
-				if (currentAnimation == &leftJumpAnim)
-				{
-					rightJumpAnim.Reset();
-					lastAnimation = currentAnimation;
-					currentAnimation = &rightJumpAnim;
-				}
-
-				if (position.x >= (app->map->data.width * app->map->data.tileWidth) - 90)
-					position.x = (app->map->data.width * app->map->data.tileWidth) - 90;
-
-
-				if (currentAnimation != &rightRunAnim && (lastAnimation != &rightJumpAnim || Collision("bottom") == true))
-				{
-					rightRunAnim.Reset();
-					lastAnimation = currentAnimation;
- 					currentAnimation = &rightRunAnim;
-				}
-			}
-			if (Collision("right") == false)
-			{
- 				if (godMode == true)
-				{
-					position.x += floor((speedX * 3) * dt);
-					if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
-					else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
-					{
-						app->render->offset.x += floor((speedX * 3) * dt);
-						app->render->camera.x -= floor((speedX * 3) * dt);
-					}
-				}
-				else
-				{
-					position.x += floor(speedX * dt);
-					if (app->render->offset.x >= (app->map->data.width * app->map->data.tileWidth) - app->render->camera.w);
-					else if (position.x >= app->render->offset.x + app->render->camera.w / 2 - 16)
-					{
-						app->render->offset.x += floor(speedX * dt);
-						app->render->camera.x -= floor(speedX * dt);
-					}
-				}
-			}
-		}
-
-		else if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
-		{
-			if (currentAnimation != &leftAttackAnim || leftAttackAnim.HasFinished())
-			{
-				if (currentAnimation == &rightJumpAnim)
-				{
-					leftJumpAnim.Reset();
-					lastAnimation = currentAnimation;
-					currentAnimation = &leftJumpAnim;
-				}
-
-				if (position.x <= 0) position.x = 0;
-
-				else if (currentAnimation != &leftRunAnim && (lastAnimation != &leftJumpAnim || Collision("bottom") == true))
-				{
-					leftRunAnim.Reset();
-					lastAnimation = currentAnimation;
-					currentAnimation = &leftRunAnim;
-				}
-			}
-
-			if (Collision("left") == false)
-			{
-				if (godMode == true)
-				{
-					position.x -= floor((speedX * 3) * dt);
-					if (app->render->offset.x <= 0);
-					else if (position.x < app->render->offset.x + 640)
-					{
-						app->render->offset.x -= floor((speedX * 3) * dt);
-						app->render->camera.x += floor((speedX * 3) * dt);
-					}
-				}
-				else
-				{
-					position.x -= floor(speedX * dt);
-					if (app->render->offset.x <= 0);
-					else if (position.x < app->render->offset.x + 640)
-					{
-						app->render->offset.x -= floor(speedX * dt);
-						app->render->camera.x += floor(speedX * dt);
-					}
-				}
-			}
-		}
-
-		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
-			position.y -= floor((speedX * 3) * dt);
-
-
-		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
-			position.y += floor((speedX * 3) * dt);
-
-		if (currentAnimation != &leftAttackAnim || currentAnimation != &rightAttackAnim)
-		{
-			if (swordCollider != nullptr)
-			{
-				app->colliderManager->RemoveCollider(swordCollider);
-			}
-		}
-
-		if (app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_DOWN && Collision("bottom") == true)
-		{
-			app->audio->PlayFx(jumpAudio);
-
-			if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_REPEAT)
-			{
-				if (currentAnimation != &rightJumpAnim)
-				{
-					rightJumpAnim.Reset();
-					currentAnimation = &rightJumpAnim;
-					lastAnimation = currentAnimation;
-				}
-			}
-			if (app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_REPEAT)
-			{
-				if (currentAnimation != &leftJumpAnim)
-				{
-					leftJumpAnim.Reset();
-					currentAnimation = &leftJumpAnim;
-					lastAnimation = currentAnimation;
-				}
-			}
-			if (currentAnimation == &rightIdleAnim)
-			{
-				rightJumpAnim.Reset();
-				currentAnimation = &rightJumpAnim;
-				lastAnimation = currentAnimation;
-			}
-			if (currentAnimation == &leftIdleAnim)
-			{
-				leftJumpAnim.Reset();
-				currentAnimation = &leftJumpAnim;
-				lastAnimation = currentAnimation;
-			}
-
-			checkpoint = false;
-			jumping = true;
-			jump = true;
-			speedY = 650.0f;
-		}
-
-		if (app->input->GetKey(SDL_SCANCODE_D) == KeyState::KEY_IDLE &&
-			app->input->GetKey(SDL_SCANCODE_A) == KeyState::KEY_IDLE &&
-			app->input->GetKey(SDL_SCANCODE_SPACE) == KeyState::KEY_IDLE &&
-			app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_IDLE)
-		{
-			if (currentAnimation == &rightJumpAnim || currentAnimation == &rightRunAnim ||
-				(currentAnimation == &rightAttackAnim && rightAttackAnim.HasFinished() == true))
-			{
-				rightIdleAnim.Reset();
-				currentAnimation = &rightIdleAnim;
-				lastAnimation = currentAnimation;
-			}
-			if (currentAnimation == &leftJumpAnim || currentAnimation == &leftRunAnim ||
-				(currentAnimation == &leftAttackAnim && leftAttackAnim.HasFinished() == true))
-			{
-				leftIdleAnim.Reset();
-				currentAnimation = &leftIdleAnim;
-				lastAnimation = currentAnimation;
-			}
-		}
-
-		if ((app->input->GetKey(SDL_SCANCODE_M) == KeyState::KEY_DOWN || app->input->GetMouseButtonDown(1) == KEY_DOWN) && attackCooldown == 0)
-		{
-			SwordAttack(dt);
-			cooldownAtk.Reset();
-			app->audio->PlayFx(swordFx);
-		}
-
-		// God mode
-		if (app->input->GetKey(SDL_SCANCODE_F10) == KeyState::KEY_DOWN)
-			godMode = !godMode;
-
-		if (jump == true) Jump(dt);
-
-		Gravity(dt);
-
-		if (Collision("top") == true && speedY > 0) speedY = -speedY + 100;
-
-		if (speedY <= 0.0f) jumping = false;
-
-		if (position.y >= app->render->offset.y + 360 && !(app->render->offset.y + app->render->camera.h >= (app->map->data.height * app->map->data.tileHeight)))
-		{
-			app->render->offset.y = position.y - 360;
-			app->render->camera.y = -(position.y - 360);
-		}
-
-		if (position.y < app->render->offset.y + 360 && !(app->render->offset.y <= 0))
-		{
-			app->render->offset.y = position.y - 360;
-			app->render->camera.y = -(position.y - 360);
-		}
-
-		playerCollider->SetPos(position.x + 12, position.y + 35, &playerCollider->rect);
-
-		if (checkpoint == true) checkpointAnim.Update();
-	}
-	else
-	{
-		time++;
-	}
-
-	currentAnimation->Update();
-
-	switch (attackCooldown)
-	{
-	case 135:
-		cooldownAtk.Update();
-		break;
-	case 90:
-		cooldownAtk.Update();
-		break;
-	case 45:
-		cooldownAtk.Update();
-		break;
-	case 0:
-		cooldownAtk.Update();
-		break;
-	}
-
-	return true;
-}
-
-bool Player::PostUpdate() {
-
-	SDL_Rect rect = currentAnimation->GetCurrentFrame();
-	if (rect.x == 525)
-		app->render->DrawTexture(player, position.x - 51, position.y, &rect);
-	else if (rect.x == 333)
-		app->render->DrawTexture(player, position.x - 48, position.y, &rect);
-	else if (rect.x == 156)
-		app->render->DrawTexture(player, position.x - 36, position.y, &rect);
-	else
-		app->render->DrawTexture(player, position.x, position.y, &rect);
-
-	for (int i = 0; i < lifes; i++)
-	{
-		app->render->DrawTexture(lifesTex, app->render->camera.x * -1 + (36 * i + 10), (app->render->camera.y * -1) + 10 );
-	}
-
-	//Stars in HUD
-	app->fonts->BlitText(1130, 10, yellowFont, "x");
-	app->fonts->BlitText(1170, 10, yellowFont, std::to_string(stars).c_str());
-	rect = { 0,0,1280,50 };
-	app->render->DrawTexture(starTex, ((app->render->camera.x * -1) + app->render->camera.w - 69), (app->render->camera.y * -1) + 5);
-
-	// Score in HUD
-	app->fonts->BlitText(650, 10, yellowFont, std::to_string(score).c_str());
-
-	// Cooldown Attack HUD
-	app->render->DrawTexture(cooldownTex, app->render->offset.x + 1180, app->render->offset.y + 620, &cooldownAtk.GetCurrentFrame());
-
-	return true;
-}
-
-bool Player::CleanUp() {
-
-	// Unload textures
-	app->tex->UnLoad(player);
-	app->tex->UnLoad(lifesTex);
-	app->tex->UnLoad(starTex);
-	app->tex->UnLoad(checkpointTex);
-	app->tex->UnLoad(cooldownTex);
-	// Unload fonts
-	app->fonts->UnLoad(yellowFont);
-	// Reset dead animations
-	leftDeadAnim.Reset();
-	rightDeadAnim.Reset();
-	
-	// Removing collider
-	if (playerCollider != nullptr)
-		app->colliderManager->RemoveCollider(playerCollider);
-
-	return true;
-}
-
-bool Player::Collision(const char* side)
-{
-	bool ret = false;
-
-	if (godMode == false)
-	{
-		ListItem<MapLayer*>* lay = app->map->data.layers.start->next;
-
-		iPoint tilePos;
-
-		int idTile;
-
-		if (lay->data->properties.GetProperty("Collision") == 1)
-		{
-			if (side == "bottom")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 88);
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "bottom"))
-					{
-						return true;
-					}
-				}
-			}
-			else if (side == "top")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(position.x + (10 + (10 * i)), position.y + 38);
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "top"))
-					{
-						return true;
-					}
-				}
-			}
-			else if (side == "right")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(position.x + 40, position.y + (42 + (14 * i)));
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "right"))
-					{
-						return true;
-					}
-				}
-			}
-			else if (side == "left")
-			{
-				for (uint i = 0; i < 3; i++)
-				{
-					tilePos = app->map->WorldToMap(position.x + 6, position.y + (42 + (14 * i)));
-					idTile = lay->data->Get(tilePos.x, tilePos.y);
-					if (CheckCollisionType(idTile, "left"))
-					{
-						return true;
-					}
-				}
-			}
-		}
-	}
-
-	return ret;
-}
-
-void Player::Gravity(float dt)
-{
-	if (Collision("bottom") == false && godMode == false)
-	{
-		speedY -= gravity * dt;
-		position.y -= speedY * dt;
-		if (speedY < -300.0f)
-		{
-			speedY = -300.0f;
-		}
-	}
-}
-
-void Player::Jump(float dt)
-{
-	speedY -= gravity * dt;
-	position.y -= speedY * dt;
-	jump = false;
-}
-
-bool Player::LoadState(pugi::xml_node& load)
-{
-	bool ret = true;
-
-	position.x = load.child("position").attribute("x").as_float();
-	position.y = load.child("position").attribute("y").as_float();
-
-	return ret;
-}
-
-bool Player::SaveState(pugi::xml_node& save) const
-{
-	bool ret = true;
-
-	pugi::xml_node pos = save.append_child("position");
-
-	pos.append_attribute("x") = position.x;
-	pos.append_attribute("y") = position.y;
-
-	return ret;
-}
-
-void Player::Dead()
-{
-	if (stars > 0) finalScore = score * stars;
-	else finalScore = score;
-	
-	currentAnimation = &rightDeadAnim;
-	lastAnimation = currentAnimation;
-	deadPlayer = true;
-}
-
-bool Player::CheckCollisionType(int idTile, SString direction)
-{
-	switch (idTile)
-	{
-	case 289:
-		return true;
-		break;
-	case 290:
-		lifes--;
-		app->audio->PlayFx(playerHurt);
-		if (lifes > 0) {
-			deadPlayer = false;
-			if (whatCheckpoint != 0)
-				app->LoadGameRequest();
-			else
-			{
-				playerChangePos = true;
-				app->render->ResetCam();
-			}
-
-		}
-		if (lifes == 0)
-		{
-			Dead();
-		}
-		return true;
-		break;
-	case 291:
-		if (direction == "bottom" && jumping == true)
-		{
-			return false;
-		}
-		else if (direction == "bottom" && jumping == false)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-		break;
-
-	case 292:
-		levelFinished = true;
-		break;
-	case 293:
-		if (position.y < 400) whatCheckpoint = 1;
-		else if (position.y < 1400) whatCheckpoint = 2;
-		else whatCheckpoint = 3;
-		if (checkpoint == false)
-		{
-			checkpointAnim.Reset();
-			app->SaveGameRequest();
-			app->audio->PlayFx(checkpointAudio);
-
-			checkpoint = true;
-			break;
-		}
-	}
-
-	return false;
-}
-
-void Player::SpeedAnimations(float dt)
-{
-	rightIdleAnim.speed = 10.0f * dt;
-	leftIdleAnim.speed = 10.0f * dt;
-	rightRunAnim.speed = 10.0f * dt;
-	leftRunAnim.speed = 10.0f * dt;
-	rightJumpAnim.speed = 10.0f * dt;
-	leftJumpAnim.speed = 10.0f * dt;
-	rightDeadAnim.speed = 10.0f * dt;
-	leftDeadAnim.speed = 10.0f * dt;
-	rightAttackAnim.speed = 10.0f * dt;
-	leftAttackAnim.speed = 10.0f * dt;
-	checkpointAnim.speed = 5.0f * dt;
 }
 
 void Player::SwordAttack(float dt)

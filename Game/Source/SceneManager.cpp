@@ -2,26 +2,24 @@
 #include "SceneManager.h"
 #include "App.h"
 #include "Scene.h"
-#include "FadeToBlack.h"
 #include "Render.h"
-#include "Scenes.h"
+#include "SceneLogo.h"
 #include "SceneIntro.h"
 #include "SceneDie.h"
 #include "SceneWin.h"
+
+#include "Log.h"
+
+#define FADEOUT_TRANSITION_SPEED	2.0f
+#define FADEIN_TRANSITION_SPEED		2.0f
 
 SceneManager::SceneManager() : Module()
 {
 	name.Create("scenes");
 
-	intro = new SceneIntro();
-	level1 = new Scene();
-	dieScene = new SceneDie();
-	winScene = new SceneWin();
-
-	AddScene(intro, true);
-	AddScene(level1, false);
-	AddScene(dieScene, false);
-	AddScene(winScene, false);
+	onTransition = false;
+	fadeOutCompleted = false;
+	transitionAlpha = 0.0f;
 }
 
 SceneManager::~SceneManager()
@@ -39,18 +37,10 @@ bool SceneManager::Start()
 {
 	bool ret = true;
 
-	ListItem<Scenes*>* sceneItem = scenes.start;
+	current = new SceneLogo();
+	current->Load();
 
-	while (sceneItem != nullptr)
-	{
-		if (sceneItem->data->active == true)
-		{
-			sceneItem->data->Load();
-			break;
-		}
-
-		sceneItem = sceneItem->next;
-	}
+	next = nullptr;
 
 	return ret;
 }
@@ -87,17 +77,72 @@ bool SceneManager::Update(float dt)
 		app->render->offset.x += floor(200.0f * dt);
 	}
 
-	ListItem<Scenes*>* sceneItem = scenes.start;
-
-	while (sceneItem != nullptr)
+	if (!onTransition)
 	{
-		if (sceneItem->data->active == true)
+		ret = current->Update(dt);
+	}
+	else
+	{
+		if (!fadeOutCompleted)
 		{
-			ret = sceneItem->data->Update(dt);
-			break;
+			transitionAlpha += (FADEOUT_TRANSITION_SPEED * dt);
+
+			// NOTE: Due to float internal representation, condition jumps on 1.0f instead of 1.05f
+			// For that reason we compare against 1.01f, to avoid last frame loading stop
+			if (transitionAlpha > 1.01f)
+			{
+				transitionAlpha = 1.0f;
+
+				current->Unload();	// Unload current screen
+				next->Load();	// Load next screen
+
+				RELEASE(current);	// Free current pointer
+				current = next;		// Assign next pointer
+				next = nullptr;
+
+				// Activate fade out effect to next loaded screen
+				fadeOutCompleted = true;
+			}
+		}
+		else  // Transition fade out logic
+		{
+			transitionAlpha -= (FADEIN_TRANSITION_SPEED * dt);
+
+			if (transitionAlpha < -0.01f)
+			{
+				transitionAlpha = 0.0f;
+				fadeOutCompleted = false;
+				onTransition = false;
+			}
+		}
+	}
+
+	// Draw current scene
+	current->Draw();
+
+	// Draw full screen rectangle in front of everything
+	if (onTransition)
+	{
+		app->render->DrawRectangle({ (int)app->render->offset.x, (int)app->render->offset.y, 1280, 720 }, 0, 0, 0, (unsigned char)(255.0f * transitionAlpha));
+	}
+
+	if (current->transitionRequired)
+	{
+		onTransition = true;
+		fadeOutCompleted = false;
+		transitionAlpha = 0.0f;
+
+		switch (current->nextScene)
+		{
+		case SceneType::LOGO: next = new SceneLogo(); break;
+		case SceneType::TITLE: next = new SceneIntro(); break;
+		case SceneType::GAMEPLAY: next = new Scene(); break;
+		case SceneType::WIN: next = new SceneWin(); break;
+		case SceneType::LOSE: next = new SceneDie(); break;
+		default: break;
 		}
 
-		sceneItem = sceneItem->next;
+		current->transitionRequired = false;
 	}
 
 	// Quit the game
@@ -106,46 +151,12 @@ bool SceneManager::Update(float dt)
 	return ret;
 }
 
-bool SceneManager::PostUpdate()
-{
-	bool ret = true;
-
-	ListItem<Scenes*>* sceneItem = scenes.start;
-
-	while (sceneItem != nullptr)
-	{
-		if (sceneItem->data->active == true)
-		{
-			sceneItem->data->Draw();
-			break;
-		}
-
-		sceneItem = sceneItem->next;
-	}
-
-	return ret;
-}
-
 bool SceneManager::CleanUp()
 {
 	bool ret = true;
 
-	ListItem<Scenes*>* sceneItem = scenes.start;
-
-	while (sceneItem != nullptr)
-	{
-		ret = sceneItem->data->Unload();
-		RELEASE(sceneItem->data);
-		sceneItem = sceneItem->next;
-	}
-
-	scenes.Clear();
+	LOG("Unloading scene");
+	if (current != nullptr) current->Unload();
 
 	return ret;
-}
-
-void SceneManager::AddScene(Scenes* scene, bool active)
-{
-	scene->active = active;
-	scenes.Add(scene);
 }

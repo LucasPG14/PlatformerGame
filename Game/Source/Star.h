@@ -8,10 +8,14 @@ class Star : public Item
 {
 public:
 
-	Star(iPoint pos, EntityType entityType);
+	Star(iPoint pos);
 	~Star();
 
 	bool Update(float dt) override;
+
+	bool Load(pugi::xml_node& load);
+
+	bool Save(pugi::xml_node& save) const;
 
 private:
 

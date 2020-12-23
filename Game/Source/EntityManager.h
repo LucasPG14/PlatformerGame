@@ -25,6 +25,8 @@ public:
 
 	bool EnemyLifes(Collider* coll);
 
+	bool ItemPowerUp(Collider* coll);
+
 	Entity* AddEntity(iPoint point, EntityType entityType);
 
 	void RemoveEntity(Entity* entity);
@@ -33,8 +35,11 @@ public:
 	bool LoadState(pugi::xml_node&);
 	bool SaveState(pugi::xml_node&) const;
 
-private:
+public:
+
 	List<Entity*> entities;
+
+private:
 
 	SDL_Texture* enemy;
 	SDL_Texture* life;

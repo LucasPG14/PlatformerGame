@@ -18,7 +18,6 @@ class Input;
 class Render;
 class Textures;
 class Audio;
-class Player;
 class FadeToBlack;
 class Map;
 class SceneManager;
@@ -95,7 +94,6 @@ public:
 	Render* render;
 	Textures* tex;
 	Audio* audio;
-	Player* player;
 	FadeToBlack* fade;
 	Map* map;
 	SceneManager* sceneManager;
