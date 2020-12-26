@@ -36,9 +36,9 @@ public:
 
 	bool Save(pugi::xml_node& save);
 
-	void MoreVolume();
+	void SetMusicVolume(int index);
 
-	void LessVolume();
+	void SetFxVolume(int index);
 
 private:
 
@@ -46,5 +46,6 @@ private:
 	List<Mix_Chunk *>	fx;
 
 	uint volumeMusic = 0;
+	uint volumeFx = 0;
 };
 #endif // __AUDIO_H__

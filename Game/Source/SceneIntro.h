@@ -43,8 +43,8 @@ private:
 	GuiButton* settingsBtn;
 	GuiButton* creditsBtn;
 	GuiButton* exitBtn;
-	GuiSlider* musicVolumeSting;
-	GuiSlider* fxVolumeSting;
+	GuiSlider* musicVolumeSlider;
+	GuiSlider* fxVolumeSlider;
 	GuiCheckBox* fullscreenSting;
 	GuiCheckBox* vsyncSting;
 };

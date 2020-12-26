@@ -10,11 +10,15 @@ class GuiSlider : public GuiControl
 {
 public:
 
-    GuiSlider(uint32 id, SDL_Rect bounds, const char *text);
+    GuiSlider(uint32 id, SDL_Rect bounds, const char *text, int min, int max);
     virtual ~GuiSlider();
 
     bool Update(Input* input, float dt);
     bool Draw(Render* render);
+
+    void Value();
+
+    int GetValue();
 
 private:
 

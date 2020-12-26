@@ -5,9 +5,9 @@
 #include "ColliderManagement.h"
 #include "PugiXml\src\pugixml.hpp"
 
+#include "GuiButton.h"
+
 struct SDL_Texture;
-class Bat;
-class Slime;
 
 class Scene : public Scenes
 {
@@ -37,6 +37,9 @@ public:
 
 	void PlayerPosition();
 
+	// Declare on mouse click event
+	bool OnGuiMouseClickEvent(GuiControl* control);
+
 private:
 
 	SDL_Texture* bg;
@@ -45,8 +48,15 @@ private:
 	SDL_Texture* lifesTex;
 	SDL_Texture* starTex;
 
+	GuiButton* resumeBtn;
+	GuiButton* backToTitleBtn;
+	GuiButton* settingsBtn;
+	GuiButton* exitBtn;
+
 	// Font
 	int yellowFont = -1;
+
+	bool exit;
 
 	Player* player;
 };

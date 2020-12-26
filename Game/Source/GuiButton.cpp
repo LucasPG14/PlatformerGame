@@ -37,7 +37,7 @@ bool GuiButton::Update(Input* input, float dt)
         else state = GuiControlState::NORMAL;
     }
 
-    return false;
+    return true;
 }
 
 bool GuiButton::Draw(Render* render)
@@ -47,17 +47,21 @@ bool GuiButton::Draw(Render* render)
     {
     case GuiControlState::DISABLED: render->DrawRectangle(bounds, 100, 100, 100, 255 );
         break;
-    case GuiControlState::NORMAL: render->DrawRectangle(bounds, 0, 255, 0, 255 );
+    case GuiControlState::NORMAL: 
+        render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 255, 0, 255 );
         break;
-    case GuiControlState::FOCUSED: render->DrawRectangle(bounds, 255, 255, 0, 255 );
+    case GuiControlState::FOCUSED: 
+        render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 0, 255 );
         break;
-    case GuiControlState::PRESSED: render->DrawRectangle(bounds, 0, 255, 255, 255 );
+    case GuiControlState::PRESSED: 
+        render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 255, 255, 255 );
         break;
-    case GuiControlState::SELECTED: render->DrawRectangle(bounds, 0, 255, 0, 255 );
+    case GuiControlState::SELECTED: 
+        render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 255, 0, 255 );
         break;
     default:
         break;
     }
 
-    return false;
+    return true;
 }

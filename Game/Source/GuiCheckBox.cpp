@@ -23,9 +23,10 @@ bool GuiCheckBox::Update(Input* input, float dt)
         {
             state = GuiControlState::FOCUSED;
 
-            if (input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KeyState::KEY_REPEAT)
+            if (input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KeyState::KEY_DOWN)
             {
-                state = GuiControlState::PRESSED;
+                if (!checked) state = GuiControlState::PRESSED;
+                else state = GuiControlState::FOCUSED;
             }
 
             // If mouse button pressed -> Generate event!
@@ -35,7 +36,7 @@ bool GuiCheckBox::Update(Input* input, float dt)
                 NotifyObserver();
             }
         }
-        else state = GuiControlState::NORMAL;
+        else if (!checked) state = GuiControlState::NORMAL;
     }
 
     return false;
@@ -58,7 +59,7 @@ bool GuiCheckBox::Draw(Render* render)
     } break;
     case GuiControlState::FOCUSED: render->DrawRectangle(bounds, 255, 255, 0, 255 );
         break;
-    case GuiControlState::PRESSED: render->DrawRectangle(bounds, 0, 255, 255, 255 );
+    case GuiControlState::PRESSED: render->DrawRectangle(bounds, 0, 255, 0, 0 );
         break;
     case GuiControlState::SELECTED: render->DrawRectangle(bounds, 0, 255, 0, 255 );
         break;

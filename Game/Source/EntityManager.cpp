@@ -44,7 +44,7 @@ bool EntityManager::Update(float dt)
 
 	ListItem<Entity*>* entity = entities.start;
 
-	while (entity != nullptr)
+	while (entity != nullptr && !app->sceneManager->pause)
 	{
 		ret = entity->data->Update(dt);
 		entity = entity->next;

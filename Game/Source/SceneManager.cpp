@@ -20,6 +20,8 @@ SceneManager::SceneManager() : Module()
 	onTransition = false;
 	fadeOutCompleted = false;
 	transitionAlpha = 0.0f;
+
+	pause = false;
 }
 
 SceneManager::~SceneManager()
@@ -123,7 +125,7 @@ bool SceneManager::Update(float dt)
 	// Draw full screen rectangle in front of everything
 	if (onTransition)
 	{
-		app->render->DrawRectangle({ (int)app->render->offset.x, (int)app->render->offset.y, 1280, 720 }, 0, 0, 0, (unsigned char)(255.0f * transitionAlpha));
+		app->render->DrawRectangle({ -app->render->camera.x, -app->render->camera.y, 1280, 720 }, 0, 0, 0, (unsigned char)(255.0f * transitionAlpha));
 	}
 
 	if (current->transitionRequired)
@@ -146,7 +148,7 @@ bool SceneManager::Update(float dt)
 	}
 
 	// Quit the game
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN && current->name != "scene1") ret = false;
 	
 	return ret;
 }

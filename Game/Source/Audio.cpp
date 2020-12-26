@@ -174,6 +174,7 @@ bool Audio::PlayFx(unsigned int id, int repeat)
 
 	if(id > 0 && id <= fx.Count())
 	{
+		Mix_VolumeChunk(fx[id - 1], volumeFx);
 		Mix_PlayChannel(-1, fx[id - 1], repeat);
 	}
 
@@ -200,28 +201,13 @@ bool Audio::Save(pugi::xml_node& save)
 	return ret;
 }
 
-void Audio::MoreVolume()
+void Audio::SetMusicVolume(int index)
 {
-	if (volumeMusic > 123)
-	{
-		volumeMusic = 128;
-	}
-	else
-	{
-		volumeMusic += 5;
-	}
+	volumeMusic = index;
 	Mix_VolumeMusic(volumeMusic);
 }
 
-void Audio::LessVolume()
+void Audio::SetFxVolume(int index)
 {
-	if (volumeMusic < 5)
-	{
-		volumeMusic = 0;
-	}
-	else
-	{
-		volumeMusic -= 5;
-	}
-	Mix_VolumeMusic(volumeMusic);
+	volumeFx = index;
 }

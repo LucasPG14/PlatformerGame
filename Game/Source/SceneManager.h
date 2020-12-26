@@ -39,5 +39,6 @@ public:
 	bool onTransition;
 	bool fadeOutCompleted;
 	float transitionAlpha;
+	bool pause;
 };
 #endif // __SCENEMANAGER_H__

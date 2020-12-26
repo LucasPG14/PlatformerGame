@@ -18,12 +18,27 @@
 Scene::Scene() : Scenes()
 {
 	name.Create("scene1");
+
+	resumeBtn = new GuiButton(1, { 540, 305, 200, 20 }, "RESUME");
+	resumeBtn->SetObserver(this);
+	resumeBtn->state = GuiControlState::NORMAL;
+
+	settingsBtn = new GuiButton(2, { 540, 335, 200, 20 }, "SETTINGS");
+	settingsBtn->SetObserver(this);
+	settingsBtn->state = GuiControlState::NORMAL;
+
+	backToTitleBtn = new GuiButton(3, { 540, 365, 200, 20 }, "BACKTOTITLE");
+	backToTitleBtn->SetObserver(this);
+	backToTitleBtn->state = GuiControlState::NORMAL;
+
+	exitBtn = new GuiButton(4, { 540, 395, 200, 20 }, "EXIT");
+	exitBtn->SetObserver(this);
+	exitBtn->state = GuiControlState::NORMAL;
 }
 
 // Destructor
 Scene::~Scene()
 {
-
 }
 
 // Called before render is available
@@ -48,6 +63,7 @@ bool Scene::Load()
 
 	app->pathfinding->Enable();
 
+	app->sceneManager->pause = false;
 
 	// Loading entities
 	LoadingEntities();
@@ -71,39 +87,54 @@ bool Scene::Load()
 bool Scene::Update(float dt)
 {
 	bool ret = true;
-
-	if (player->godMode == false) app->colliderManager->Update(dt, player);
-
-	if (player->playerChangePos == true)
+	
+	if (!app->sceneManager->pause)
 	{
-		player->playerChangePos = false;
-		PlayerPosition();
-		if (player->whatCheckpoint != 0) app->LoadGameRequest();
+		if (player->godMode == false) app->colliderManager->Update(dt, player);
+
+		if (player->playerChangePos == true)
+		{
+			player->playerChangePos = false;
+			PlayerPosition();
+			if (player->whatCheckpoint != 0) app->LoadGameRequest();
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN ||
+			app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+			TransitionToScene(SceneType::GAMEPLAY);
+
+		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+			app->SaveGameRequest();
+
+		if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+		{
+			LoadingEntities();
+			app->LoadGameRequest();
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN) app->map->viewCollisions = !app->map->viewCollisions;
+
+		if (player->IsDead() == true && player->time >= 1.0f)
+		{
+			TransitionToScene(SceneType::LOSE);
+			player->time = 0;
+		}
+
+
+		if (player->LevelFinished() == true) TransitionToScene(SceneType::WIN);
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN ||
-		app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-		TransitionToScene(SceneType::GAMEPLAY);
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) app->sceneManager->pause = !app->sceneManager->pause;
 
-	if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-		app->SaveGameRequest();
-
-	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	if (app->sceneManager->pause)
 	{
-		LoadingEntities();
-		app->LoadGameRequest();
+		resumeBtn->Update(app->input, dt);
+		settingsBtn->Update(app->input, dt);
+		backToTitleBtn->Update(app->input, dt);
+		exitBtn->Update(app->input, dt);
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-		app->map->viewCollisions = !app->map->viewCollisions;
-
-	if (player->IsDead() == true && player->time >= 1.0f)
-	{
-		TransitionToScene(SceneType::LOSE);
-		player->time = 0;
-	}
-
-	if (player->LevelFinished() == true) TransitionToScene(SceneType::WIN);
+	if (exit) ret = false;
 
 	return ret;
 }
@@ -117,6 +148,9 @@ bool Scene::Draw()
 	app->render->DrawTexture(bg2, 0, 0, NULL, 0.75f);
 	app->render->DrawTexture(bg3, 0, 0, NULL, 1.0f);
 	
+	// Draw map
+	app->map->Draw();
+
 	switch (player->whatCheckpoint)
 	{
 	case 0:
@@ -132,8 +166,6 @@ bool Scene::Draw()
 		break;
 	}
 
-	// Draw map
-	app->map->Draw();
 	app->entityManager->Draw();
 	
 	// Draw collisions
@@ -151,6 +183,14 @@ bool Scene::Draw()
 	for (int i = 0; i < player->lifes; i++)
 	{
 		app->render->DrawTexture(lifesTex, app->render->camera.x * -1 + (36 * i + 10), (app->render->camera.y * -1) + 10);
+	}
+
+	if (app->sceneManager->pause)
+	{
+		resumeBtn->Draw(app->render);
+		settingsBtn->Draw(app->render);
+		backToTitleBtn->Draw(app->render);
+		exitBtn->Draw(app->render);
 	}
 
 	return ret;
@@ -207,4 +247,21 @@ void Scene::PlayerPosition()
 {
 	player->position.x = 10;
 	player->position.y = 600;
+}
+
+bool Scene::OnGuiMouseClickEvent(GuiControl* control)
+{
+	switch (control->type)
+	{
+	case GuiControlType::BUTTON:
+	{
+		if (control->id == 1) app->sceneManager->pause = !app->sceneManager->pause;
+		else if (control->id == 2);
+		else if (control->id == 3) TransitionToScene(SceneType::TITLE);
+		else if (control->id == 4) exit = true;
+	}
+	default: break;
+	}
+
+	return true;
 }

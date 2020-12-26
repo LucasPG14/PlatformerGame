@@ -1,4 +1,5 @@
 #include "SceneIntro.h"
+#include "Window.h"
 #include "Textures.h"
 #include "Player.h"
 #include "Render.h"
@@ -21,39 +22,39 @@ SceneIntro::SceneIntro() : Scenes()
 	introAnim.loop = false;
 
 	startBtn = new GuiButton(1, {440, 386, 400, 50}, "START");
-	startBtn->SetObserver((Scene*)this);
+	startBtn->SetObserver(this);
 	startBtn->state = GuiControlState::DISABLED;
 
 	continueBtn = new GuiButton(2, { 440, 457, 400, 50 }, "CONTINUE");
-	continueBtn->SetObserver((Scene*)this);
+	continueBtn->SetObserver(this);
 	continueBtn->state = GuiControlState::DISABLED;
 
 	settingsBtn = new GuiButton(3, { 375, 533, 250, 50 }, "SETTINGS");
-	settingsBtn->SetObserver((Scene*)this);
+	settingsBtn->SetObserver(this);
 	settingsBtn->state = GuiControlState::DISABLED;
 
 	creditsBtn = new GuiButton(4, { 655, 533, 250, 50 }, "CREDITS");
-	creditsBtn->SetObserver((Scene*)this);
+	creditsBtn->SetObserver(this);
 	creditsBtn->state = GuiControlState::DISABLED;
 
 	exitBtn = new GuiButton(5, { 515, 601, 250, 50 }, "EXIT");
-	exitBtn->SetObserver((Scene*)this);
+	exitBtn->SetObserver(this);
 	exitBtn->state = GuiControlState::DISABLED;
 	
-	musicVolumeSting = new GuiSlider(6, { 40, 141, 250, 25 }, "MUSIC VOLUME");
-	musicVolumeSting->SetObserver((Scene*)this);
-	musicVolumeSting->state = GuiControlState::DISABLED;
+	musicVolumeSlider = new GuiSlider(6, { 40, 141, 250, 25 }, "MUSIC VOLUME", 0, 128);
+	musicVolumeSlider->SetObserver(this);
+	musicVolumeSlider->state = GuiControlState::DISABLED;
 
-	fxVolumeSting = new GuiSlider(6, { 40, 224, 250, 25 }, "FX VOLUME");
-	fxVolumeSting->SetObserver((Scene*)this);
-	fxVolumeSting->state = GuiControlState::DISABLED;
+	fxVolumeSlider = new GuiSlider(6, { 40, 224, 250, 25 }, "FX VOLUME", 0, 128);
+	fxVolumeSlider->SetObserver(this);
+	fxVolumeSlider->state = GuiControlState::DISABLED;
 
-	fullscreenSting = new GuiCheckBox(7, { 40,313,25,25 }, "FULLSCREEN");
-	fullscreenSting->SetObserver((Scene*)this);
+	fullscreenSting = new GuiCheckBox(1, { 40,313,25,25 }, "FULLSCREEN");
+	fullscreenSting->SetObserver(this);
 	fullscreenSting->state = GuiControlState::DISABLED;
 
-	vsyncSting = new GuiCheckBox(8, { 40,399,25,25 }, "VSYNC");
-	vsyncSting->SetObserver((Scene*)this);
+	vsyncSting = new GuiCheckBox(2, { 40,399,25,25 }, "VSYNC");
+	vsyncSting->SetObserver(this);
 	vsyncSting->state = GuiControlState::DISABLED;
 }
 
@@ -75,6 +76,15 @@ bool SceneIntro::Load()
 	exitRequest = false;
 	settingsEnabled = false;
 
+	startBtn->state = GuiControlState::NORMAL;
+	settingsBtn->state = GuiControlState::NORMAL;
+	creditsBtn->state = GuiControlState::NORMAL;
+	exitBtn->state = GuiControlState::NORMAL;
+	musicVolumeSlider->state = GuiControlState::NORMAL;
+	fxVolumeSlider->state = GuiControlState::NORMAL;
+	fullscreenSting->state = GuiControlState::NORMAL;
+	vsyncSting->state = GuiControlState::NORMAL;
+
 	return ret;
 }
 
@@ -84,17 +94,8 @@ bool SceneIntro::Update(float dt)
 
 	introAnim.speed = 5.0f * dt;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN)
-	{
-		TransitionToScene(SceneType::GAMEPLAY);
-	}
-
 	introAnim.Update();
 
-	startBtn->state = GuiControlState::NORMAL;
-	settingsBtn->state = GuiControlState::NORMAL;
-	creditsBtn->state = GuiControlState::NORMAL;
-	exitBtn->state = GuiControlState::NORMAL;
 	startBtn->Update(app->input, dt);
 	continueBtn->Update(app->input, dt);
 	settingsBtn->Update(app->input, dt);
@@ -103,14 +104,13 @@ bool SceneIntro::Update(float dt)
 
 	if (settingsEnabled)
 	{
-		musicVolumeSting->state = GuiControlState::NORMAL;
-		fxVolumeSting->state = GuiControlState::NORMAL;
-		fullscreenSting->state = GuiControlState::NORMAL;
-		vsyncSting->state = GuiControlState::NORMAL;
-		musicVolumeSting->Update(app->input, dt);
-		fxVolumeSting->Update(app->input, dt);
+		musicVolumeSlider->Update(app->input, dt);
+		fxVolumeSlider->Update(app->input, dt);
 		fullscreenSting->Update(app->input, dt);
 		vsyncSting->Update(app->input, dt);
+
+		app->audio->SetMusicVolume(musicVolumeSlider->GetValue());
+		app->audio->SetFxVolume(fxVolumeSlider->GetValue());
 	}
 
 	if (exitRequest == true) ret = false;
@@ -134,8 +134,8 @@ bool SceneIntro::Draw()
 	if (settingsEnabled)
 	{
 		app->render->DrawRectangle({ 5, 13, 320, 694 }, 255, 255, 255, 160);
-		musicVolumeSting->Draw(app->render);
-		fxVolumeSting->Draw(app->render);
+		musicVolumeSlider->Draw(app->render);
+		fxVolumeSlider->Draw(app->render);
 		fullscreenSting->Draw(app->render);
 		vsyncSting->Draw(app->render);
 	}
@@ -152,13 +152,13 @@ bool SceneIntro::Unload()
 	app->tex->UnLoad(bgTexture);
 	introAnim.Reset();
 
-	startBtn->state = GuiControlState::DISABLED;
-	continueBtn->state = GuiControlState::DISABLED;
-	settingsBtn->state = GuiControlState::DISABLED;
-	creditsBtn->state = GuiControlState::DISABLED;
-	exitBtn->state = GuiControlState::DISABLED;
-	musicVolumeSting->state = GuiControlState::DISABLED;
-	fxVolumeSting->state = GuiControlState::DISABLED;
+	delete startBtn;
+	delete continueBtn;
+	delete settingsBtn;
+	delete creditsBtn;
+	delete exitBtn;
+	delete musicVolumeSlider;
+	delete fxVolumeSlider;
 	
 	settingsEnabled = false;
 
@@ -175,15 +175,15 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 		else if (control->id == 2);
 		else if (control->id == 3) settingsEnabled = !settingsEnabled;
 		else if (control->id == 4);
-		else if (control->id == 5)
-		{
-			exitRequest = true;
-			return false;
-		}
+		else if (control->id == 5) exitRequest = true;
+	}
+	case GuiControlType::CHECKBOX:
+	{
+		if (control->id == 1) app->win->fullscreen = !app->win->fullscreen;
+		else if (control->id == 2);
 	}
 	default: break;
 	}
 
-	exitRequest = false;
 	return true;
 }
