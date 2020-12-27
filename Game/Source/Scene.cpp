@@ -34,6 +34,8 @@ Scene::Scene() : Scenes()
 	exitBtn = new GuiButton(4, { 540, 395, 200, 20 }, "EXIT");
 	exitBtn->SetObserver(this);
 	exitBtn->state = GuiControlState::NORMAL;
+
+	timer = 0;
 }
 
 // Destructor
@@ -90,6 +92,13 @@ bool Scene::Update(float dt)
 	
 	if (!app->sceneManager->pause)
 	{
+		time -= dt;
+		if (time >= 1.0f)
+		{
+			time = 0;
+			timer++;
+		}
+
 		if (player->godMode == false) app->colliderManager->Update(dt, player);
 
 		if (player->playerChangePos == true)
@@ -123,15 +132,18 @@ bool Scene::Update(float dt)
 
 		if (player->LevelFinished() == true) TransitionToScene(SceneType::WIN);
 	}
-
-	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) app->sceneManager->pause = !app->sceneManager->pause;
-
-	if (app->sceneManager->pause)
+	else
 	{
 		resumeBtn->Update(app->input, dt);
 		settingsBtn->Update(app->input, dt);
 		backToTitleBtn->Update(app->input, dt);
 		exitBtn->Update(app->input, dt);
+	}
+
+	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
+		app->sceneManager->pause = !app->sceneManager->pause;
+		app->audio->MusicPause();
 	}
 
 	if (exit) ret = false;
@@ -174,6 +186,7 @@ bool Scene::Draw()
 	//Stars in HUD
 	app->fonts->BlitText(1130, 10, yellowFont, "x");
 	app->fonts->BlitText(1170, 10, yellowFont, std::to_string(app->sceneManager->stars).c_str());
+	app->fonts->BlitText(570, 10, yellowFont, std::to_string(timer).c_str());
 	SDL_Rect rect = { 0,0,1280,50 };
 	app->render->DrawTexture(starTex, ((app->render->camera.x * -1) + app->render->camera.w - 69), (app->render->camera.y * -1) + 5);
 
@@ -201,7 +214,7 @@ bool Scene::Unload()
 {
 	LOG("Freeing scene");
 
-	app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
+	//app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
 
 	//Unload the background
 	app->tex->UnLoad(bg);

@@ -1,5 +1,6 @@
 #include "App.h"
 #include "Audio.h"
+#include "SceneManager.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -210,4 +211,10 @@ void Audio::SetMusicVolume(int index)
 void Audio::SetFxVolume(int index)
 {
 	volumeFx = index;
+}
+
+void Audio::MusicPause()
+{
+	if (app->sceneManager->pause) Mix_PauseMusic();
+	else Mix_ResumeMusic();
 }

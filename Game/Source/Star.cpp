@@ -1,9 +1,10 @@
+#include "Star.h"
 #include "Textures.h"
 #include "Audio.h"
-#include "Star.h"
 #include "Player.h"
 #include "ColliderManagement.h"
 #include "EntityManager.h"
+#include "SceneManager.h"
 
 Star::Star(iPoint pos) : Item(pos)
 {
@@ -37,7 +38,7 @@ bool Star::Update(float dt)
 
 	if (this->collider->active == false)
 	{
-		//app->player->SetStars(1);
+		app->sceneManager->stars++;
 		app->audio->PlayFx(this->fx);
 		app->entityManager->RemoveEntity(this);
 	}

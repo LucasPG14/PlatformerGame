@@ -25,7 +25,7 @@ public:
 
 	bool EnemyLifes(Collider* coll);
 
-	bool ItemPowerUp(Collider* coll);
+	bool PlayerLifes();
 
 	Entity* AddEntity(iPoint point, EntityType entityType);
 

@@ -45,15 +45,15 @@ SceneIntro::SceneIntro() : Scenes()
 	musicVolumeSlider->SetObserver(this);
 	musicVolumeSlider->state = GuiControlState::DISABLED;
 
-	fxVolumeSlider = new GuiSlider(6, { 40, 224, 250, 25 }, "FX VOLUME", 0, 128);
+	fxVolumeSlider = new GuiSlider(7, { 40, 224, 250, 25 }, "FX VOLUME", 0, 128);
 	fxVolumeSlider->SetObserver(this);
 	fxVolumeSlider->state = GuiControlState::DISABLED;
 
-	fullscreenSting = new GuiCheckBox(1, { 40,313,25,25 }, "FULLSCREEN");
+	fullscreenSting = new GuiCheckBox(8, { 40,313,25,25 }, "FULLSCREEN");
 	fullscreenSting->SetObserver(this);
 	fullscreenSting->state = GuiControlState::DISABLED;
 
-	vsyncSting = new GuiCheckBox(2, { 40,399,25,25 }, "VSYNC");
+	vsyncSting = new GuiCheckBox(9, { 40,399,25,25 }, "VSYNC");
 	vsyncSting->SetObserver(this);
 	vsyncSting->state = GuiControlState::DISABLED;
 }
@@ -108,9 +108,6 @@ bool SceneIntro::Update(float dt)
 		fxVolumeSlider->Update(app->input, dt);
 		fullscreenSting->Update(app->input, dt);
 		vsyncSting->Update(app->input, dt);
-
-		app->audio->SetMusicVolume(musicVolumeSlider->GetValue());
-		app->audio->SetFxVolume(fxVolumeSlider->GetValue());
 	}
 
 	if (exitRequest == true) ret = false;
@@ -133,6 +130,7 @@ bool SceneIntro::Draw()
 
 	if (settingsEnabled)
 	{
+		app->render->DrawRectangle({ -app->render->camera.x, -app->render->camera.y, 1280, 720 }, 0, 0, 0, 100.0f);
 		app->render->DrawRectangle({ 5, 13, 320, 694 }, 255, 255, 255, 160);
 		musicVolumeSlider->Draw(app->render);
 		fxVolumeSlider->Draw(app->render);
@@ -177,10 +175,15 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 		else if (control->id == 4);
 		else if (control->id == 5) exitRequest = true;
 	}
+	case GuiControlType::SLIDER:
+	{
+		if (control->id == 6) app->audio->SetMusicVolume(musicVolumeSlider->GetValue());
+		else if (control->id == 7) app->audio->SetFxVolume(fxVolumeSlider->GetValue());
+	}
 	case GuiControlType::CHECKBOX:
 	{
-		if (control->id == 1) app->win->fullscreen = !app->win->fullscreen;
-		else if (control->id == 2);
+		if (control->id == 8) app->win->fullscreen = !app->win->fullscreen;
+		else if (control->id == 9);
 	}
 	default: break;
 	}

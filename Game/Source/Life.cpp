@@ -36,7 +36,7 @@ bool Life::Update(float dt)
 
 	if (this->collider->active == false)
 	{
-		//app->player->lifes++;
+		app->entityManager->PlayerLifes();
 		app->audio->PlayFx(this->fx);
 		app->entityManager->RemoveEntity(this);
 	}

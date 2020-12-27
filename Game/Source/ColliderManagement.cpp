@@ -143,9 +143,11 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2, Player* p
 	}
 	else if (coll1->type == Collider::Type::PLAYER && coll2->type == Collider::Type::ITEM)
 	{
-		app->entityManager->ItemPowerUp(coll2);
 		coll2->active = false;
-		RemoveCollider(coll2);
+	}
+	else if (coll2->type == Collider::Type::PLAYER && coll1->type == Collider::Type::ITEM)
+	{
+		coll1->active = false;
 	}
 }
 

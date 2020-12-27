@@ -40,6 +40,8 @@ public:
 
 	void SetFxVolume(int index);
 
+	void MusicPause();
+
 private:
 
 	_Mix_Music* music;

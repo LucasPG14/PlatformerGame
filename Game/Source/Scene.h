@@ -58,6 +58,9 @@ private:
 
 	bool exit;
 
+	float time;
+	int timer;
+
 	Player* player;
 };
 #endif // __SCENE_H__

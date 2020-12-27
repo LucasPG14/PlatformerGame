@@ -101,25 +101,17 @@ bool EntityManager::EnemyLifes(Collider* coll)
 	return true;
 }
 
-bool EntityManager::ItemPowerUp(Collider* coll)
+bool EntityManager::PlayerLifes()
 {
 	ListItem<Entity*>* entity = entities.start;
 
 	while (entity != nullptr)
 	{
-		if (entity->data->collider == coll)
+		if (entity->data->name == "player")
 		{
-			if (entity->data->name == "star")
-			{
-				app->sceneManager->stars += 1;
-				break;
-			}
-			if (entity->data->name == "life")
-			{
-				Player* player = (Player*)entities.start->data;
-				player->lifes++;
-				break;
-			}
+			Player* player = (Player*)entity->data;
+			player->lifes++;
+			break;
 		}
 		entity = entity->next;
 	}

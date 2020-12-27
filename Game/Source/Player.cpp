@@ -272,13 +272,13 @@ bool Player::Update(float dt)
 
 	switch (attackCooldown)
 	{
-	case 135:
+	case 3:
 		cooldownAtk.Update();
 		break;
-	case 90:
+	case 2:
 		cooldownAtk.Update();
 		break;
-	case 45:
+	case 1:
 		cooldownAtk.Update();
 		break;
 	case 0:
