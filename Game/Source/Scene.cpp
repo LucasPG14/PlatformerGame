@@ -214,7 +214,8 @@ bool Scene::Unload()
 {
 	LOG("Freeing scene");
 
-	//app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
+	app->sceneManager->pause = false;
+	app->audio->MusicPause();
 
 	//Unload the background
 	app->tex->UnLoad(bg);

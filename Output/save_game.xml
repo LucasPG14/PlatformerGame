@@ -7,17 +7,14 @@
   <map />
   <:anonymous />
   <entities>
-    <player>
-      <position x="1290" y="938" />
-    </player>
     <slime>
-      <position x="2491" y="732" />
+      <position x="2957" y="764" />
       <state value="0" />
       <alive value="true" />
       <lifes value="3" />
     </slime>
     <bat>
-      <position x="2002" y="1286" />
+      <position x="2653" y="1286" />
       <state value="0" />
       <alive value="true" />
       <lifes value="2" />
@@ -28,17 +25,20 @@
     <life>
       <alive value="true" />
     </life>
-    <life>
-      <alive value="true" />
-    </life>
     <star>
       <alive value="true" />
     </star>
+    <star>
+      <alive value="true" />
+    </star>
+    <player>
+      <position x="2836" y="1330" />
+    </player>
   </entities>
   <scenes />
   <fonts />
   <renderer>
-    <camera x="-667" y="-578" />
-    <offset x="668" y="578" />
+    <camera x="-2213" y="-880" />
+    <offset x="2214" y="880" />
   </renderer>
 </save_status>

@@ -68,6 +68,7 @@ bool SceneIntro::Load()
 {
 	bool ret = true;
 
+	app->audio->PlayMusic("Assets/Audio/Music/silence.ogg");
 	bgTexture = app->tex->Load("Assets/Textures/Backgrounds/background_intro.png");
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_iron_is_laughter.ogg");
 	app->render->camera.x = 0;
