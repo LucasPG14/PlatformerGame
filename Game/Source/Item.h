@@ -16,12 +16,14 @@ public:
 	{
 		if (this->collider != nullptr) app->colliderManager->RemoveCollider(this->collider);
 
+		this->alive = false;
+
 		return true;
 	}
 
 	void Draw() override
 	{
-		app->render->DrawTexture(this->texture, this->position.x, this->position.y, &this->currentAnimation->GetCurrentFrame());
+		if (this->alive) app->render->DrawTexture(this->texture, this->position.x, this->position.y, &this->currentAnimation->GetCurrentFrame());
 	}
 };
 

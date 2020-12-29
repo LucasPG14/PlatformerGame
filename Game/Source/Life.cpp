@@ -30,15 +30,18 @@ Life::~Life() {
 
 bool Life::Update(float dt)
 {
-	lifeAnim.speed = 2.0f * dt;
-
-	this->currentAnimation->Update();
-
-	if (this->collider->active == false)
+	if (this->alive)
 	{
-		app->entityManager->PlayerLifes();
-		app->audio->PlayFx(this->fx);
-		app->entityManager->RemoveEntity(this);
+		lifeAnim.speed = 2.0f * dt;
+
+		this->currentAnimation->Update();
+
+		if (this->collider->active == false)
+		{
+			app->entityManager->PlayerLifes();
+			app->audio->PlayFx(this->fx);
+			this->CleanUp();
+		}
 	}
 
 	return true;

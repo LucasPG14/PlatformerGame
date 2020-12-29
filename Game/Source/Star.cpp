@@ -32,15 +32,18 @@ Star::~Star() {}
 
 bool Star::Update(float dt)
 {
-	this->starAnim.speed = 2.0f * dt;
-
-	this->currentAnimation->Update();
-
-	if (this->collider->active == false)
+	if (this->alive)
 	{
-		app->sceneManager->stars++;
-		app->audio->PlayFx(this->fx);
-		app->entityManager->RemoveEntity(this);
+		this->starAnim.speed = 2.0f * dt;
+
+		this->currentAnimation->Update();
+
+		if (this->collider->active == false)
+		{
+			app->sceneManager->stars++;
+			app->audio->PlayFx(this->fx);
+			this->CleanUp();
+		}
 	}
 
 	return true;

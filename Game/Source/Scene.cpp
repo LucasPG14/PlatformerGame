@@ -70,9 +70,6 @@ bool Scene::Load()
 	// Loading entities
 	LoadingEntities();
 
-	// Loading Player
-	player = (Player*)app->entityManager->AddEntity(iPoint(10, 600), EntityType::PLAYER);
-
 	// Load music
 	app->audio->PlayMusic("Assets/Audio/Music/twin_musicom_8-8bit_march_10_minutes.ogg");
 
@@ -92,7 +89,7 @@ bool Scene::Update(float dt)
 	
 	if (!app->sceneManager->pause)
 	{
-		time -= dt;
+		time += dt;
 		if (time >= 1.0f)
 		{
 			time = 0;
@@ -112,8 +109,7 @@ bool Scene::Update(float dt)
 			app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 			TransitionToScene(SceneType::GAMEPLAY);
 
-		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-			app->SaveGameRequest();
+		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) app->SaveGameRequest();
 
 		if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		{
@@ -240,6 +236,9 @@ bool Scene::Unload()
 void Scene::LoadingEntities()
 {
 	app->entityManager->CleanUp();
+
+	// Loading Player
+	player = (Player*)app->entityManager->AddEntity(iPoint(10, 600), EntityType::PLAYER);
 
 	//Load Enemies
 	app->entityManager->AddEntity(iPoint(2275, 667), EntityType::SLIME);
