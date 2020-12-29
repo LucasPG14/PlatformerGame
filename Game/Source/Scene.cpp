@@ -19,21 +19,21 @@ Scene::Scene() : Scenes()
 {
 	name.Create("scene1");
 
-	resumeBtn = new GuiButton(1, { 540, 305, 200, 20 }, "RESUME");
+	resumeBtn = new GuiButton(1, { 515, 220, 250, 50 }, "RESUME");
 	resumeBtn->SetObserver(this);
-	resumeBtn->state = GuiControlState::NORMAL;
+	resumeBtn->state = GuiControlState::DISABLED;
 
-	settingsBtn = new GuiButton(2, { 540, 335, 200, 20 }, "SETTINGS");
+	settingsBtn = new GuiButton(2, { 515, 296, 250, 50 }, "SETTINGS");
 	settingsBtn->SetObserver(this);
-	settingsBtn->state = GuiControlState::NORMAL;
+	settingsBtn->state = GuiControlState::DISABLED;
 
-	backToTitleBtn = new GuiButton(3, { 540, 365, 200, 20 }, "BACKTOTITLE");
+	backToTitleBtn = new GuiButton(3, { 515, 371, 250, 50 }, "BACKTOTITLE");
 	backToTitleBtn->SetObserver(this);
-	backToTitleBtn->state = GuiControlState::NORMAL;
+	backToTitleBtn->state = GuiControlState::DISABLED;
 
-	exitBtn = new GuiButton(4, { 540, 395, 200, 20 }, "EXIT");
+	exitBtn = new GuiButton(4, { 515, 450, 250, 50 }, "EXIT");
 	exitBtn->SetObserver(this);
-	exitBtn->state = GuiControlState::NORMAL;
+	exitBtn->state = GuiControlState::DISABLED;
 
 	timer = 0;
 }
@@ -140,6 +140,10 @@ bool Scene::Update(float dt)
 	{
 		app->sceneManager->pause = !app->sceneManager->pause;
 		app->audio->MusicPause();
+		resumeBtn->state = GuiControlState::NORMAL;
+		settingsBtn->state = GuiControlState::NORMAL;
+		backToTitleBtn->state = GuiControlState::NORMAL;
+		exitBtn->state = GuiControlState::NORMAL;
 	}
 
 	if (exit) ret = false;
@@ -196,6 +200,7 @@ bool Scene::Draw()
 
 	if (app->sceneManager->pause)
 	{
+		app->render->DrawRectangle({ (int)(app->render->offset.x + 414),(int)(app->render->offset.y + 106),452,454 }, 0, 255, 0, 255);
 		resumeBtn->Draw(app->render);
 		settingsBtn->Draw(app->render);
 		backToTitleBtn->Draw(app->render);
@@ -229,6 +234,11 @@ bool Scene::Unload()
 	app->entityManager->CleanUp();
 	app->map->CleanUp();
 	app->pathfinding->CleanUp();
+
+	delete resumeBtn;
+	delete settingsBtn;
+	delete backToTitleBtn;
+	delete exitBtn;
 
 	return true;
 }

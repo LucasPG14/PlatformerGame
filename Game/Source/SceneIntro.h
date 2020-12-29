@@ -37,7 +37,8 @@ private:
 
 	bool exitRequest;
 	bool settingsEnabled;
-
+	
+	SDL_Texture* guiTexture = nullptr;
 	GuiButton* startBtn;
 	GuiButton* continueBtn;
 	GuiButton* settingsBtn;

@@ -45,7 +45,7 @@ public:
 private:
 
 	_Mix_Music* music;
-	List<Mix_Chunk *>	fx;
+	List<Mix_Chunk*> fx;
 
 	uint volumeMusic = 0;
 	uint volumeFx = 0;

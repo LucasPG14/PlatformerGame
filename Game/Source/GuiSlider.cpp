@@ -1,4 +1,6 @@
 #include "GuiSlider.h"
+#include "Render.h"
+#include "App.h"
 
 GuiSlider::GuiSlider(uint32 id, SDL_Rect bounds, const char* text, int min, int max) : GuiControl(GuiControlType::SLIDER, id)
 {
@@ -6,7 +8,7 @@ GuiSlider::GuiSlider(uint32 id, SDL_Rect bounds, const char* text, int min, int 
     this->text = text;
     this->minValue = min;
     this->maxValue = max;
-    this->slider = { bounds.x, bounds.y, 10, bounds.h };
+    this->slider = { bounds.x, bounds.y, 20, bounds.h - 10 };
 }
 
 GuiSlider::~GuiSlider()
@@ -20,31 +22,23 @@ bool GuiSlider::Update(Input* input, float dt)
         int mouseX, mouseY;
         input->GetMousePosition(mouseX, mouseY);
 
-        if (mouseX > slider.x && mouseX < (slider.x + slider.w) &&
-            (mouseY > slider.y) && (mouseY < (slider.y + slider.h)))
-        {
-            state = GuiControlState::FOCUSED;
-        }
-
         if ((mouseX > bounds.x) && (mouseX < (bounds.x + bounds.w)) &&
             (mouseY > bounds.y) && (mouseY < (bounds.y + bounds.h)))
         {
+			state = GuiControlState::FOCUSED;
+
             if (input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KeyState::KEY_REPEAT)
             {
                 state = GuiControlState::PRESSED;
                 slider.x = mouseX;
-                if (slider.x < bounds.x) slider.x = bounds.x;
+				if (slider.x < bounds.x) slider.x = bounds.x;
                 if (slider.x + slider.w > bounds.x + bounds.w) slider.x = (bounds.x + bounds.w) - slider.w;
-                Value();
-            }
-
-            // If mouse button pressed -> Generate event!
-            if (input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KeyState::KEY_UP)
-            {
-                NotifyObserver();
+				NotifyObserver();
             }
         }
         else state = GuiControlState::NORMAL;
+
+		Value();
     }
 
     return true;
@@ -55,23 +49,31 @@ bool GuiSlider::Draw(Render* render)
     // Draw the right button depending on state
     switch (state)
     {
-    case GuiControlState::DISABLED: render->DrawRectangle(bounds, 100, 100, 100, 255 );
+    case GuiControlState::DISABLED:
+		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 150, 150, 150, 255);
+		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
+		render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 41, 19, 8, 255);
+		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 150, 150, 150, 150);
         break;
-    case GuiControlState::NORMAL: 
-        render->DrawRectangle(bounds, 0, 255, 0, 255 );
-        render->DrawRectangle(slider, 0, 0, 0, 255 );
+    case GuiControlState::NORMAL:
+		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 25, 25, 25, 255);
+		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
+        render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 41, 19, 8, 255);
         break;
     case GuiControlState::FOCUSED:
-        render->DrawRectangle(bounds, 0, 255, 0, 255);
-        render->DrawRectangle(slider, 255, 255, 0, 255 );
+		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 255, 255);
+		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
+        render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 41, 19, 8, 255);
         break;
-    case GuiControlState::PRESSED:
-        render->DrawRectangle(bounds, 0, 255, 0, 255);
-        render->DrawRectangle(slider, 0, 255, 255, 255 );
+	case GuiControlState::PRESSED:
+		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 0, 255);
+		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
+		render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 203, 155, 27, 255);
         break;
-    case GuiControlState::SELECTED: 
-        render->DrawRectangle(bounds, 0, 255, 0, 255);
-        render->DrawRectangle(slider, 0, 255, 0, 255 );
+    case GuiControlState::SELECTED:
+		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 255, 255);
+		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
+		render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 41, 19, 8, 255);
         break;
     default:
         break;
@@ -82,12 +84,9 @@ bool GuiSlider::Draw(Render* render)
 
 void GuiSlider::Value()
 {
-    int value = bounds.w - bounds.x;
+    this->value = ((slider.x + app->render->offset.x) - bounds.x)/2;
 
-    this->value = slider.x * maxValue / value;
-
-    if (this->value > maxValue) this->value = maxValue;
-    else if (this->value < minValue) this->value = minValue;
+	if (this->value < 4) this->value = minValue;
 }
 
 int GuiSlider::GetValue()
