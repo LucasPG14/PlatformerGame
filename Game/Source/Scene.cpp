@@ -22,18 +22,22 @@ Scene::Scene() : Scenes()
 	resumeBtn = new GuiButton(1, { 515, 220, 250, 50 }, "RESUME");
 	resumeBtn->SetObserver(this);
 	resumeBtn->state = GuiControlState::DISABLED;
+	resumeBtn->section = { 0,0,240,40 };
 
 	settingsBtn = new GuiButton(2, { 515, 296, 250, 50 }, "SETTINGS");
 	settingsBtn->SetObserver(this);
 	settingsBtn->state = GuiControlState::DISABLED;
+	settingsBtn->section = { 0,61,240,40 };
 
 	backToTitleBtn = new GuiButton(3, { 515, 371, 250, 50 }, "BACKTOTITLE");
 	backToTitleBtn->SetObserver(this);
 	backToTitleBtn->state = GuiControlState::DISABLED;
+	backToTitleBtn->section = { 0,121,240,40 };
 
 	exitBtn = new GuiButton(4, { 515, 450, 250, 50 }, "EXIT");
 	exitBtn->SetObserver(this);
 	exitBtn->state = GuiControlState::DISABLED;
+	exitBtn->section = { 0,181,240,40 };
 
 	timer = 0;
 }
@@ -78,6 +82,13 @@ bool Scene::Load()
 
 	lifesTex = app->tex->Load("Assets/Hud/lifes.png");
 	starTex = app->tex->Load("Assets/Hud/star_tex.png");
+
+	guiTexture = app->tex->Load("Assets/Hud/gui_ingame.png");
+
+	resumeBtn->texture = guiTexture;
+	settingsBtn->texture = guiTexture;
+	backToTitleBtn->texture = guiTexture;
+	exitBtn->texture = guiTexture;
 
 	return true;
 }
@@ -140,10 +151,20 @@ bool Scene::Update(float dt)
 	{
 		app->sceneManager->pause = !app->sceneManager->pause;
 		app->audio->MusicPause();
-		resumeBtn->state = GuiControlState::NORMAL;
-		settingsBtn->state = GuiControlState::NORMAL;
-		backToTitleBtn->state = GuiControlState::NORMAL;
-		exitBtn->state = GuiControlState::NORMAL;
+		if (app->sceneManager->pause == true)
+		{
+			resumeBtn->state = GuiControlState::NORMAL;
+			settingsBtn->state = GuiControlState::NORMAL;
+			backToTitleBtn->state = GuiControlState::NORMAL;
+			exitBtn->state = GuiControlState::NORMAL;
+		}
+		else
+		{
+			resumeBtn->state = GuiControlState::DISABLED;
+			settingsBtn->state = GuiControlState::DISABLED;
+			backToTitleBtn->state = GuiControlState::DISABLED;
+			exitBtn->state = GuiControlState::DISABLED;
+		}
 	}
 
 	if (exit) ret = false;
@@ -200,7 +221,8 @@ bool Scene::Draw()
 
 	if (app->sceneManager->pause)
 	{
-		app->render->DrawRectangle({ (int)(app->render->offset.x + 414),(int)(app->render->offset.y + 106),452,454 }, 0, 255, 0, 255);
+		SDL_Rect rect = { 0, 246, 452,454 };
+		app->render->DrawTexture(guiTexture, (int)(app->render->offset.x + 414), (int)(app->render->offset.y + 106), &rect);
 		resumeBtn->Draw(app->render);
 		settingsBtn->Draw(app->render);
 		backToTitleBtn->Draw(app->render);

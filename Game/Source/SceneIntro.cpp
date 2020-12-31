@@ -85,7 +85,7 @@ bool SceneIntro::Load()
 	app->render->offset.x = 0;
 	app->render->offset.y = 0;
 
-	guiTexture = app->tex->Load("Assets/Hud/gui.png");
+	guiTexture = app->tex->Load("Assets/Hud/gui_title.png");
 
 	exitRequest = false;
 	settingsEnabled = false;
@@ -180,6 +180,7 @@ bool SceneIntro::Unload()
 	delete exitBtn;
 	delete musicVolumeSlider;
 	delete fxVolumeSlider;
+	app->tex->UnLoad(guiTexture);
 
 	settingsEnabled = false;
 

@@ -53,6 +53,8 @@ private:
 	GuiButton* settingsBtn;
 	GuiButton* exitBtn;
 
+	SDL_Texture* guiTexture;
+
 	// Font
 	int yellowFont = -1;
 
