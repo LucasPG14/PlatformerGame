@@ -39,6 +39,26 @@ Scene::Scene() : Scenes()
 	exitBtn->state = GuiControlState::DISABLED;
 	exitBtn->section = { 0,181,240,40 };
 
+	musicVolumeSlider = new GuiSlider(5, { 40, 141, 250, 25 }, "MUSIC VOLUME", 0, 128);
+	musicVolumeSlider->SetObserver(this);
+	musicVolumeSlider->state = GuiControlState::DISABLED;
+	musicVolumeSlider->section = { 0,226,240,15 };
+
+	fxVolumeSlider = new GuiSlider(6, { 40, 224, 250, 25 }, "FX VOLUME", 0, 128);
+	fxVolumeSlider->SetObserver(this);
+	fxVolumeSlider->state = GuiControlState::DISABLED;
+	fxVolumeSlider->section = { 0,226,240,15 };
+
+	fullscreenSting = new GuiCheckBox(7, { 40,313,25,25 }, "FULLSCREEN");
+	fullscreenSting->SetObserver(this);
+	fullscreenSting->state = GuiControlState::DISABLED;
+	fullscreenSting->section = { 253,141,17,17 };
+
+	vsyncSting = new GuiCheckBox(8, { 40,399,25,25 }, "VSYNC");
+	vsyncSting->SetObserver(this);
+	vsyncSting->state = GuiControlState::DISABLED;
+	vsyncSting->section = { 253,141,17,17 };
+
 	timer = 0;
 }
 
@@ -85,10 +105,16 @@ bool Scene::Load()
 
 	guiTexture = app->tex->Load("Assets/Hud/gui_ingame.png");
 
+	settingsEnabled = false;
+
 	resumeBtn->texture = guiTexture;
 	settingsBtn->texture = guiTexture;
 	backToTitleBtn->texture = guiTexture;
 	exitBtn->texture = guiTexture;
+	musicVolumeSlider->texture = guiTexture;
+	fxVolumeSlider->texture = guiTexture;
+	fullscreenSting->texture = guiTexture;
+	vsyncSting->texture = guiTexture;
 
 	return true;
 }
@@ -145,6 +171,25 @@ bool Scene::Update(float dt)
 		settingsBtn->Update(app->input, dt);
 		backToTitleBtn->Update(app->input, dt);
 		exitBtn->Update(app->input, dt);
+
+		if (settingsEnabled)
+		{
+			musicVolumeSlider->state = GuiControlState::NORMAL;
+			fxVolumeSlider->state = GuiControlState::NORMAL;
+			fullscreenSting->state = GuiControlState::NORMAL;
+			vsyncSting->state = GuiControlState::NORMAL;
+			musicVolumeSlider->Update(app->input, dt);
+			fxVolumeSlider->Update(app->input, dt);
+			fullscreenSting->Update(app->input, dt);
+			vsyncSting->Update(app->input, dt);
+		}
+		else
+		{
+			musicVolumeSlider->state = GuiControlState::DISABLED;
+			fxVolumeSlider->state = GuiControlState::DISABLED;
+			fullscreenSting->state = GuiControlState::DISABLED;
+			vsyncSting->state = GuiControlState::DISABLED;
+		}
 	}
 
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
@@ -227,6 +272,16 @@ bool Scene::Draw()
 		settingsBtn->Draw(app->render);
 		backToTitleBtn->Draw(app->render);
 		exitBtn->Draw(app->render);
+
+		if (settingsEnabled)
+		{
+			SDL_Rect rect = { 471, 0, 320,694 };
+			app->render->DrawTexture(guiTexture, (int)(app->render->offset.x + 5), (int)(app->render->offset.y + 13), &rect);
+			musicVolumeSlider->Draw(app->render);
+			fxVolumeSlider->Draw(app->render);
+			fullscreenSting->Draw(app->render);
+			vsyncSting->Draw(app->render);
+		}
 	}
 
 	return ret;
@@ -261,6 +316,11 @@ bool Scene::Unload()
 	delete settingsBtn;
 	delete backToTitleBtn;
 	delete exitBtn;
+	delete musicVolumeSlider;
+	delete fxVolumeSlider;
+	delete fullscreenSting;
+	delete vsyncSting;
+	app->tex->UnLoad(guiTexture);
 
 	return true;
 }
@@ -301,11 +361,21 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 	case GuiControlType::BUTTON:
 	{
 		if (control->id == 1) app->sceneManager->pause = !app->sceneManager->pause;
-		else if (control->id == 2);
+		else if (control->id == 2) settingsEnabled = !settingsEnabled;
 		else if (control->id == 3) TransitionToScene(SceneType::TITLE);
 		else if (control->id == 4) exit = true;
+	case GuiControlType::SLIDER:
+	{
+		if (control->id == 5) app->audio->SetMusicVolume(musicVolumeSlider->GetValue());
+		else if (control->id == 6) app->audio->SetFxVolume(fxVolumeSlider->GetValue());
+	}
+	case GuiControlType::CHECKBOX:
+	{
+		if (control->id == 7) app->win->fullscreen = !app->win->fullscreen;
+		else if (control->id == 8);
 	}
 	default: break;
+	}
 	}
 
 	return true;

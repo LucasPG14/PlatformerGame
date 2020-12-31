@@ -6,6 +6,8 @@
 #include "PugiXml\src\pugixml.hpp"
 
 #include "GuiButton.h"
+#include "GuiCheckBox.h"
+#include "GuiSlider.h"
 
 struct SDL_Texture;
 
@@ -52,8 +54,14 @@ private:
 	GuiButton* backToTitleBtn;
 	GuiButton* settingsBtn;
 	GuiButton* exitBtn;
+	GuiSlider* musicVolumeSlider;
+	GuiSlider* fxVolumeSlider;
+	GuiCheckBox* fullscreenSting;
+	GuiCheckBox* vsyncSting;
 
 	SDL_Texture* guiTexture;
+
+	bool settingsEnabled;
 
 	// Font
 	int yellowFont = -1;

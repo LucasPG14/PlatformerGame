@@ -100,13 +100,9 @@ bool SceneIntro::Load()
 	exitBtn->texture = guiTexture;
 	exitBtn->state = GuiControlState::NORMAL;
 	musicVolumeSlider->texture = guiTexture;
-	musicVolumeSlider->state = GuiControlState::NORMAL;
 	fxVolumeSlider->texture = guiTexture;
-	fxVolumeSlider->state = GuiControlState::NORMAL;
 	fullscreenSting->texture = guiTexture;
-	fullscreenSting->state = GuiControlState::NORMAL;
 	vsyncSting->texture = guiTexture;
-	vsyncSting->state = GuiControlState::NORMAL;
 
 	return ret;
 }
@@ -127,10 +123,21 @@ bool SceneIntro::Update(float dt)
 
 	if (settingsEnabled)
 	{
+		musicVolumeSlider->state = GuiControlState::NORMAL;
+		fxVolumeSlider->state = GuiControlState::NORMAL;
+		fullscreenSting->state = GuiControlState::NORMAL;
+		vsyncSting->state = GuiControlState::NORMAL;
 		musicVolumeSlider->Update(app->input, dt);
 		fxVolumeSlider->Update(app->input, dt);
 		fullscreenSting->Update(app->input, dt);
 		vsyncSting->Update(app->input, dt);
+	}
+	else
+	{
+		musicVolumeSlider->state = GuiControlState::DISABLED;
+		fxVolumeSlider->state = GuiControlState::DISABLED;
+		fullscreenSting->state = GuiControlState::DISABLED;
+		vsyncSting->state = GuiControlState::DISABLED;
 	}
 
 	if (exitRequest == true) ret = false;
@@ -180,6 +187,8 @@ bool SceneIntro::Unload()
 	delete exitBtn;
 	delete musicVolumeSlider;
 	delete fxVolumeSlider;
+	delete fullscreenSting;
+	delete vsyncSting;
 	app->tex->UnLoad(guiTexture);
 
 	settingsEnabled = false;
