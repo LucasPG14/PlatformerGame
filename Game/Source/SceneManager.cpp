@@ -151,6 +151,10 @@ bool SceneManager::Update(float dt)
 	// Quit the game
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN && current->name != "scene1") ret = false;
 	
+	//High Score Mechanism
+	lastScore = finalScore;
+	highScore = highScore < lastScore ? lastScore : highScore;
+
 	return ret;
 }
 

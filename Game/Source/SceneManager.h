@@ -38,6 +38,8 @@ public:
 
 	int score;
 	int finalScore;
+	int lastScore;
+	int highScore;
 	int stars;
 
 	bool onTransition;

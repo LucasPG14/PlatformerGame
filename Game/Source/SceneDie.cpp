@@ -74,15 +74,19 @@ bool SceneDie::Draw()
 	SDL_Rect rect = dieAnim.GetCurrentFrame();
 	app->render->DrawTexture(bgTexture, 0, 0, &rect);
 
-	app->fonts->BlitText(300,100,redFont, "SCORE:");
-	app->fonts->BlitText(550, 100, redFont, std::to_string(app->sceneManager->score).c_str());
-	app->fonts->BlitText(700, 100, redFont, "x");
-	app->fonts->BlitText(750, 100, redFont, std::to_string(app->sceneManager->stars).c_str());
-	app->fonts->BlitText(870, 100, redFont, "=");
+	app->fonts->BlitText(300,75,redFont, "SCORE:");
+	app->fonts->BlitText(550, 75, redFont, std::to_string(app->sceneManager->score).c_str());
+	app->fonts->BlitText(700, 75, redFont, "x");
+	app->fonts->BlitText(750, 75, redFont, std::to_string(app->sceneManager->stars).c_str());
+	app->fonts->BlitText(870, 75, redFont, "=");
 
-	app->fonts->BlitText(925, 100, redFont, std::to_string(app->sceneManager->finalScore).c_str());
+	app->fonts->BlitText(925, 75, redFont, std::to_string(app->sceneManager->finalScore).c_str());
 	
-	app->render->DrawTexture(starTex, 810,95, NULL);
+	app->render->DrawTexture(starTex, 810,70, NULL);
+
+	app->fonts->BlitText(300, 145, redFont, "HIGH SCORE:");
+	app->fonts->BlitText(680, 145, redFont, std::to_string(app->sceneManager->highScore).c_str());
+
 
 	return true;
 }
