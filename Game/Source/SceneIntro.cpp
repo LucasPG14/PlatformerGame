@@ -67,6 +67,7 @@ SceneIntro::SceneIntro() : Scenes()
 	vsyncSting->SetObserver(this);
 	vsyncSting->state = GuiControlState::DISABLED;
 	vsyncSting->section = { 253,141,17,17 };
+
 }
 
 SceneIntro::~SceneIntro()
@@ -90,8 +91,9 @@ bool SceneIntro::Load()
 	guiTexture = app->tex->Load("Assets/Hud/gui_title.png");
 
 	exitRequest = false;
-	settingsEnabled = false;
-
+	settingsEnabled = false;	
+	creditsEnabled = false;
+	
 	startBtn->texture = guiTexture;
 	startBtn->state = GuiControlState::NORMAL;
 	continueBtn->texture = guiTexture;
@@ -145,6 +147,8 @@ bool SceneIntro::Update(float dt)
 		vsyncSting->state = GuiControlState::DISABLED;
 	}
 
+
+
 	if (exitRequest == true) ret = false;
 
 	return ret;
@@ -173,6 +177,14 @@ bool SceneIntro::Draw()
 		vsyncSting->Draw(app->render);
 	}
 
+	if (creditsEnabled)
+	{
+		SDL_Rect rect = { 749, 0, 320,694 };
+		app->render->DrawTexture(guiTexture, (int)(app->render->offset.x + 953), (int)(app->render->offset.y + 13), &rect);
+		
+
+	}
+
 	return ret;
 }
 
@@ -196,7 +208,8 @@ bool SceneIntro::Unload()
 	delete vsyncSting;
 	app->tex->UnLoad(guiTexture);
 
-	settingsEnabled = false;
+	settingsEnabled = false;	
+	creditsEnabled = false;
 
 	return true;
 }
@@ -214,8 +227,9 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 			app->sceneManager->continueClicked = true;
 		}
 		else if (control->id == 3) settingsEnabled = !settingsEnabled;
-		else if (control->id == 4);
+		else if (control->id == 4) creditsEnabled = !creditsEnabled;
 		else if (control->id == 5) exitRequest = true;
+
 	}
 	case GuiControlType::SLIDER:
 	{
