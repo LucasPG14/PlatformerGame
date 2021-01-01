@@ -116,6 +116,12 @@ bool Scene::Load()
 	fullscreenSting->texture = guiTexture;
 	vsyncSting->texture = guiTexture;
 
+	app->sceneManager->score = 0;
+	app->sceneManager->stars = 0;
+
+	if (app->sceneManager->saved && app->sceneManager->continueClicked) app->LoadGameRequest();
+	app->sceneManager->continueClicked = false;
+
 	return true;
 }
 
@@ -146,7 +152,11 @@ bool Scene::Update(float dt)
 			app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 			TransitionToScene(SceneType::GAMEPLAY);
 
-		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) app->SaveGameRequest();
+		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		{
+			app->sceneManager->saved = true;
+			app->SaveGameRequest();
+		}
 
 		if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		{

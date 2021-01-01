@@ -22,6 +22,7 @@ SceneManager::SceneManager() : Module()
 	transitionAlpha = 0.0f;
 
 	pause = false;
+	continueClicked = false;
 }
 
 SceneManager::~SceneManager()
@@ -161,4 +162,27 @@ bool SceneManager::CleanUp()
 	if (current != nullptr) current->Unload();
 
 	return ret;
+}
+
+bool SceneManager::LoadState(pugi::xml_node& load)
+{
+	saved = load.child("save").attribute("value").as_bool();
+
+	if (saved)
+	{
+		score = load.child("score").attribute("value").as_int();
+		stars = load.child("stars").attribute("value").as_int();
+	}
+
+	return true;
+}
+
+bool SceneManager::SaveState(pugi::xml_node& save) const
+{
+	save.append_child("save").append_attribute("value").set_value(saved);
+
+	save.append_child("score").append_attribute("value").set_value(score);
+	save.append_child("stars").append_attribute("value").set_value(stars);
+
+	return true;
 }

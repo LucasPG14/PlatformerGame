@@ -5,19 +5,19 @@
   <textures />
   <audio />
   <map />
-  <:anonymous />
+  <pathfinding />
   <entities>
     <player>
-      <position x="2211" y="664" />
+      <position x="1288" y="937" />
     </player>
     <slime>
-      <position x="1997" y="732" />
+      <position x="2488" y="732" />
       <state value="0" />
       <alive value="true" />
       <lifes value="3" />
     </slime>
     <bat>
-      <position x="1620" y="1286" />
+      <position x="1601" y="1286" />
       <state value="0" />
       <alive value="true" />
       <lifes value="2" />
@@ -32,19 +32,23 @@
       <alive value="true" />
     </life>
     <star>
-      <alive value="true" />
+      <alive value="false" />
     </star>
     <star>
-      <alive value="true" />
+      <alive value="false" />
     </star>
     <star>
       <alive value="true" />
     </star>
   </entities>
-  <scenes />
+  <scenes>
+    <save value="true" />
+    <score value="0" />
+    <stars value="2" />
+  </scenes>
   <fonts />
   <renderer>
-    <camera x="-1594" y="-304" />
-    <offset x="1595" y="304" />
+    <camera x="-666" y="-577" />
+    <offset x="667" y="577" />
   </renderer>
 </save_status>

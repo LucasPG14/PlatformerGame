@@ -1,10 +1,12 @@
 #include "SceneIntro.h"
+
 #include "Window.h"
-#include "Textures.h"
-#include "Player.h"
-#include "Render.h"
 #include "Input.h"
+#include "Textures.h"
 #include "Audio.h"
+#include "Player.h"
+#include "SceneManager.h"
+#include "Render.h"
 #include "Animation.h"
 
 #include "SDL/include/SDL_scancode.h"
@@ -104,6 +106,8 @@ bool SceneIntro::Load()
 	fullscreenSting->texture = guiTexture;
 	vsyncSting->texture = guiTexture;
 
+	app->LoadGameRequest();
+
 	return ret;
 }
 
@@ -116,6 +120,7 @@ bool SceneIntro::Update(float dt)
 	introAnim.Update();
 
 	startBtn->Update(app->input, dt);
+	if (app->sceneManager->saved) continueBtn->state = GuiControlState::NORMAL;
 	continueBtn->Update(app->input, dt);
 	settingsBtn->Update(app->input, dt);
 	creditsBtn->Update(app->input, dt);
@@ -151,7 +156,7 @@ bool SceneIntro::Draw()
 	bool ret = true;
 
 	// Draw everything 
-	app->render->DrawTexture(bgTexture, 0, 0, &introAnim.GetCurrentFrame());
+	app->render->DrawTexture(bgTexture, -app->render->camera.x, -app->render->camera.y, &introAnim.GetCurrentFrame());
 	startBtn->Draw(app->render);
 	continueBtn->Draw(app->render);
 	settingsBtn->Draw(app->render);
@@ -203,7 +208,11 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 	case GuiControlType::BUTTON:
 	{
 		if (control->id == 1) TransitionToScene(SceneType::GAMEPLAY);
-		else if (control->id == 2);
+		else if (control->id == 2)
+		{
+			TransitionToScene(SceneType::GAMEPLAY);
+			app->sceneManager->continueClicked = true;
+		}
 		else if (control->id == 3) settingsEnabled = !settingsEnabled;
 		else if (control->id == 4);
 		else if (control->id == 5) exitRequest = true;

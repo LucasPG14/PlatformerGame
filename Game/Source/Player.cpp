@@ -478,6 +478,7 @@ bool Player::CheckCollisionType(int idTile, SString direction)
 		if (checkpoint == false)
 		{
 			checkpointAnim.Reset();
+			app->sceneManager->saved = true;
 			app->SaveGameRequest();
 			app->audio->PlayFx(checkpointAudio);
 

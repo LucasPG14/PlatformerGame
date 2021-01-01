@@ -9,6 +9,7 @@
 
 Pathfinding::Pathfinding()
 {
+	name.Create("pathfinding");
 }
 
 Pathfinding::~Pathfinding()

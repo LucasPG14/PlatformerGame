@@ -27,6 +27,10 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	bool LoadState(pugi::xml_node& load);
+
+	bool SaveState(pugi::xml_node& save) const;
+
 public:
 
 	Scenes* current;
@@ -40,5 +44,7 @@ public:
 	bool fadeOutCompleted;
 	float transitionAlpha;
 	bool pause;
+	bool saved;
+	bool continueClicked;
 };
 #endif // __SCENEMANAGER_H__
