@@ -294,6 +294,42 @@ bool Scene::Draw()
 		}
 	}
 
+	switch (app->sceneManager->guiStyle)
+	{
+	case 1:
+		resumeBtn->style = 1;
+		settingsBtn->style = 1;
+		backToTitleBtn->style = 1;
+		exitBtn->style = 1;
+		musicVolumeSlider->style = 1;
+		fxVolumeSlider->style = 1;
+		fullscreenSting->style = 1;
+		vsyncSting->style = 1;
+		break;
+	case 2:
+		resumeBtn->style = 2;
+		settingsBtn->style = 2;
+		backToTitleBtn->style = 2;
+		exitBtn->style = 2;
+		musicVolumeSlider->style = 2;
+		fxVolumeSlider->style = 2;
+		fullscreenSting->style = 2;
+		vsyncSting->style = 2;
+		break;
+	case 3:
+		resumeBtn->style = 3;
+		settingsBtn->style = 3;
+		backToTitleBtn->style = 3;
+		exitBtn->style = 3;
+		musicVolumeSlider->style = 3;
+		fxVolumeSlider->style = 3;
+		fullscreenSting->style = 3;
+		vsyncSting->style = 3;
+		break;
+	default:
+		break;
+	}
+
 	return ret;
 }
 
@@ -370,7 +406,12 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 	{
 	case GuiControlType::BUTTON:
 	{
-		if (control->id == 1) app->sceneManager->pause = !app->sceneManager->pause;
+		if (control->id == 1)
+		{
+			app->sceneManager->pause = !app->sceneManager->pause;
+			app->audio->MusicPause();
+			settingsEnabled = !settingsEnabled;
+		}
 		else if (control->id == 2) settingsEnabled = !settingsEnabled;
 		else if (control->id == 3) TransitionToScene(SceneType::TITLE);
 		else if (control->id == 4) exit = true;

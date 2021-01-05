@@ -48,5 +48,7 @@ public:
 	bool pause;
 	bool saved;
 	bool continueClicked;
+
+	int guiStyle;
 };
 #endif // __SCENEMANAGER_H__

@@ -42,6 +42,7 @@ bool SceneManager::Start()
 
 	current = new SceneLogo();
 	current->Load();
+	guiStyle = 1;
 
 	next = nullptr;
 
@@ -150,6 +151,12 @@ bool SceneManager::Update(float dt)
 
 	// Quit the game
 	if (app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN && current->name != "scene1") ret = false;
+
+	if (app->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+	{
+		guiStyle++;
+		if (guiStyle >= 4) guiStyle = 1;
+	}
 	
 	//High Score Mechanism
 	lastScore = finalScore;
