@@ -185,44 +185,31 @@ bool SceneIntro::Draw()
 
 	}
 
-	switch (app->sceneManager->guiStyle)
+	if (app->sceneManager->guiDebug == true)
 	{
-	case 1:
-		startBtn->style = 1;
-		continueBtn->style = 1;
-		settingsBtn->style = 1;	
-		creditsBtn->style = 1;
-		exitBtn->style = 1;
-		musicVolumeSlider->style = 1;
-		fxVolumeSlider->style = 1;
-		fullscreenSting->style = 1;
-		vsyncSting->style = 1;
-		break;
-	case 2:
-		startBtn->style = 2;
-		continueBtn->style = 2;
-		settingsBtn->style = 2;
-		creditsBtn->style = 2;
-		exitBtn->style = 2;
-		musicVolumeSlider->style = 2;
-		fxVolumeSlider->style = 2;
-		fullscreenSting->style = 2;
-		vsyncSting->style = 2;
-		break;
-	case 3:
-		startBtn->style = 3;
-		continueBtn->style = 3;
-		settingsBtn->style = 3;
-		creditsBtn->style = 3;
-		exitBtn->style = 3;
-		musicVolumeSlider->style = 3;
-		fxVolumeSlider->style = 3;
-		fullscreenSting->style = 3;
-		vsyncSting->style = 3;
-		break;
-	default:
-		break;
+		startBtn->guiDebug = true;
+		continueBtn->guiDebug = true;
+		settingsBtn->guiDebug = true;
+		creditsBtn->guiDebug = true;
+		exitBtn->guiDebug = true;
+		musicVolumeSlider->guiDebug = true;
+		fxVolumeSlider->guiDebug = true;
+		fullscreenSting->guiDebug = true;
+		vsyncSting->guiDebug = true;
 	}
+	else
+	{
+		startBtn->guiDebug = false;
+		continueBtn->guiDebug = false;
+		settingsBtn->guiDebug = false;
+		creditsBtn->guiDebug = false;
+		exitBtn->guiDebug = false;
+		musicVolumeSlider->guiDebug = false;
+		fxVolumeSlider->guiDebug = false;
+		fullscreenSting->guiDebug = false;
+		vsyncSting->guiDebug = false;
+	}
+
 
 	return ret;
 }

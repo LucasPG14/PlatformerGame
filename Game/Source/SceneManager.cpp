@@ -42,7 +42,7 @@ bool SceneManager::Start()
 
 	current = new SceneLogo();
 	current->Load();
-	guiStyle = 1;
+	guiDebug = false;
 
 	next = nullptr;
 
@@ -154,8 +154,7 @@ bool SceneManager::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 	{
-		guiStyle++;
-		if (guiStyle >= 4) guiStyle = 1;
+		guiDebug = !guiDebug;
 	}
 	
 	//High Score Mechanism

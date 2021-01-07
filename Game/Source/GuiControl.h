@@ -47,7 +47,6 @@ public:
     {
         color.r = 255; color.g = 255; color.b = 255;
         texture = NULL;
-		style = 1;
     }
 
     virtual bool Update(Input* input, float dt)
@@ -93,7 +92,7 @@ public:
 
     Scenes* observer;        // Observer module (it should probably be an array/list)
 
-	int style;
+    bool guiDebug;
 };
 
 #endif // __GUICONTROL_H__

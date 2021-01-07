@@ -49,6 +49,6 @@ public:
 	bool saved;
 	bool continueClicked;
 
-	int guiStyle;
+	bool guiDebug;
 };
 #endif // __SCENEMANAGER_H__
