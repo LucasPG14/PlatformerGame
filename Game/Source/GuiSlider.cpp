@@ -1,6 +1,7 @@
 #include "GuiSlider.h"
 #include "Render.h"
 #include "App.h"
+#include "Audio.h"
 
 GuiSlider::GuiSlider(uint32 id, SDL_Rect bounds, const char* text, int min, int max) : GuiControl(GuiControlType::SLIDER, id)
 {
@@ -9,6 +10,10 @@ GuiSlider::GuiSlider(uint32 id, SDL_Rect bounds, const char* text, int min, int 
     this->minValue = min;
     this->maxValue = max;
     this->slider = { bounds.x, bounds.y, 20, bounds.h - 10 };
+    audioFx = false;
+    clickFx = false;
+    clickFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_click.wav");
+    hoverFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_hover.wav");
 }
 
 GuiSlider::~GuiSlider()
@@ -64,6 +69,8 @@ bool GuiSlider::Draw(Render* render)
         render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 41, 19, 8, 255);
 
         if (this->guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 255, 0, 150);
+        audioFx = false;
+        clicked = false;
         break;
     case GuiControlState::FOCUSED:
         render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 255, 255);
@@ -71,6 +78,12 @@ bool GuiSlider::Draw(Render* render)
         render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 41, 19, 8, 255);
 
         if (this->guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 0, 255, 150);
+       
+        if (audioFx == false)
+        {
+            audioFx = true;
+            app->audio->PlayFx(hoverFx);
+        }
         break;
     case GuiControlState::PRESSED:
 
@@ -79,6 +92,12 @@ bool GuiSlider::Draw(Render* render)
         render->DrawRectangle({ (int)(slider.x + (-render->camera.x)), (int)(slider.y + (-render->camera.y)) + 5, slider.w, slider.h }, 203, 155, 27, 255);
 
         if (this->guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 0, 150);
+        
+        if (clicked == false)
+        {
+            clicked = true;
+            app->audio->PlayFx(clickFx);
+        }
         break;
     case GuiControlState::SELECTED:
 

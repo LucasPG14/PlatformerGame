@@ -1,10 +1,16 @@
 #include "GuiCheckBox.h"
+#include "App.h"
+#include "Audio.h"
 
 GuiCheckBox::GuiCheckBox(uint32 id, SDL_Rect bounds, const char* text) : GuiControl(GuiControlType::CHECKBOX, id)
 {
     this->bounds = bounds;
     this->text = text;
 	this->checked = false;
+    audioFx = false;
+    clickFx = false;
+    clickFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_click.wav");
+    hoverFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_hover.wav");
 }
 
 GuiCheckBox::~GuiCheckBox()
@@ -59,6 +65,10 @@ bool GuiCheckBox::Draw(Render* render)
 
         if (checked) render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 4, (int)(bounds.y + (-render->camera.y)) + 4, &section);
         if (this->guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 255, 0, 150);
+
+        audioFx = false;
+        clicked = false;
+
         break;
     case GuiControlState::FOCUSED:
         render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 255, 255);
@@ -66,6 +76,12 @@ bool GuiCheckBox::Draw(Render* render)
 
         if (checked) render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 4, (int)(bounds.y + (-render->camera.y)) + 4, &section);
         if (this->guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 0, 255, 150);
+        
+        if (audioFx == false)
+        {
+            audioFx = true;
+            app->audio->PlayFx(hoverFx);
+        }
         break;
     case GuiControlState::PRESSED:
 
@@ -74,6 +90,12 @@ bool GuiCheckBox::Draw(Render* render)
 
         if (checked) render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 4, (int)(bounds.y + (-render->camera.y)) + 4, &section);
         if (this->guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 0, 150);
+       
+        if (clicked == false)
+        {
+            clicked = true;
+            app->audio->PlayFx(clickFx);
+        }
         break;
     case GuiControlState::SELECTED:
 
