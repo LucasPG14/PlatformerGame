@@ -1,9 +1,16 @@
 #include "GuiButton.h"
+#include "App.h"
+#include "Audio.h"
+#include "SceneIntro.h"
 
 GuiButton::GuiButton(uint32 id, SDL_Rect bounds, const char* text) : GuiControl(GuiControlType::BUTTON, id)
 {
-    this->bounds = bounds;
-    this->text = text;
+	this->bounds = bounds;
+	this->text = text;
+	audioFx = false;
+	clickFx = false;
+	clickFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_click.wav");
+	hoverFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_hover.wav");
 }
 
 GuiButton::~GuiButton()
@@ -58,13 +65,20 @@ bool GuiButton::Draw(Render* render)
 		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
 
 		if (guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 255, 0, 150);
+		audioFx = false;
+		clicked = false;
 		break;
 	case GuiControlState::FOCUSED:
 
 		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 255, 255);
 		render->DrawTexture(texture, (int)(bounds.x + (-render->camera.x)) + 5, (int)(bounds.y + (-render->camera.y)) + 5, &section);
-
 		if (guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 0, 0, 255, 150);
+		
+		if (audioFx == false)
+		{
+			audioFx = true;
+			app->audio->PlayFx(hoverFx);
+		}
 		break;
 	case GuiControlState::PRESSED:
 
@@ -73,6 +87,13 @@ bool GuiButton::Draw(Render* render)
 		render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 0, 100);
 
 		if (guiDebug == true) render->DrawRectangle({ (int)(bounds.x + (-render->camera.x)), (int)(bounds.y + (-render->camera.y)), bounds.w, bounds.h }, 255, 255, 0, 150);
+		
+		if (clicked == false)
+		{
+			clicked = true;
+			app->audio->PlayFx(clickFx);
+		}
+
 		break;
 	case GuiControlState::SELECTED:
 

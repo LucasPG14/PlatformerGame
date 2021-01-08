@@ -92,6 +92,11 @@ public:
 
     Scenes* observer;        // Observer module (it should probably be an array/list)
 
+    uint hoverFx;
+    uint clickFx;
+    bool audioFx;
+    bool clicked;
+
     bool guiDebug;
 };
 

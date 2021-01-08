@@ -43,3 +43,11 @@ Artist: https://freesound.org/people/ProjectsU012/
 - "life.wav" original name: "Spell 3"
 Page: https://opengameart.org/content/spell-3
 Artist: https://opengameart.org/users/bart
+
+- "mouse_hover"
+Page: https://freesound.org/people/notyermom/sounds/434833/
+Artist: https://freesound.org/people/notyermom/
+
+- "mouse_click"
+Page: https://freesound.org/people/Breviceps/sounds/448080/
+Artist: https://freesound.org/people/Breviceps/
