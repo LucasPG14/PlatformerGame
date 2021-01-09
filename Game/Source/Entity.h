@@ -47,6 +47,7 @@ public:
 	iPoint position;
 	bool alive;
 	bool isOnCamera;
+	int time;
 };
 
 #endif

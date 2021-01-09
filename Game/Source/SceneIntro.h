@@ -40,6 +40,8 @@ private:
 	bool creditsEnabled;
 
 	SDL_Texture* guiTexture = nullptr;
+	SDL_Texture* creditsTexture = nullptr;
+
 	GuiButton* startBtn;
 	GuiButton* continueBtn;
 	GuiButton* settingsBtn;
@@ -49,5 +51,7 @@ private:
 	GuiSlider* fxVolumeSlider;
 	GuiCheckBox* fullscreenSting;
 	GuiCheckBox* vsyncSting;
+	GuiButton* backBtn;
+	GuiButton* backCreditsBtn;
 };
 #endif

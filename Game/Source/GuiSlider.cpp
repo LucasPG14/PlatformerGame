@@ -9,7 +9,7 @@ GuiSlider::GuiSlider(uint32 id, SDL_Rect bounds, const char* text, int min, int 
     this->text = text;
     this->minValue = min;
     this->maxValue = max;
-    this->slider = { bounds.x, bounds.y, 20, bounds.h - 10 };
+    this->slider = { bounds.x + 5, bounds.y, 20, bounds.h - 10 };
     audioFx = false;
     clickFx = false;
     clickFx = app->audio->LoadFx("Assets/Audio/Fx/mouse_click.wav");
@@ -36,8 +36,8 @@ bool GuiSlider::Update(Input* input, float dt)
             {
                 state = GuiControlState::PRESSED;
                 slider.x = mouseX;
-				if (slider.x < bounds.x) slider.x = bounds.x;
-                if (slider.x + slider.w > bounds.x + bounds.w) slider.x = (bounds.x + bounds.w) - slider.w;
+				if (slider.x < bounds.x + 5) slider.x = bounds.x + 5;
+                if (slider.x + slider.w > bounds.x + bounds.w - 5) slider.x = (bounds.x + bounds.w) - slider.w - 5;
 				NotifyObserver();
             }
         }
@@ -118,7 +118,7 @@ void GuiSlider::Value()
 {
     this->value = ((slider.x + app->render->offset.x) - bounds.x)/2;
 
-	if (this->value < 4) this->value = minValue;
+	if (this->bounds.x + 5 == this->slider.x) this->value = 0;
 }
 
 int GuiSlider::GetValue()

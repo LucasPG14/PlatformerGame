@@ -57,6 +57,7 @@ bool Audio::Awake(pugi::xml_node& config)
 	}
 
 	volumeMusic = config.child("music").attribute("volume").as_int();
+	volumeFx = 50;
 
 	return ret;
 }

@@ -47,6 +47,7 @@ Slime::Slime(iPoint pos) : Enemy(pos)
 	this->alive = true;
 	this->moveRight = true;
 	this->path.Clear();
+	this->time = 0;
 }
 
 Slime::~Slime() {}
@@ -166,7 +167,7 @@ bool Slime::Move(float dt)
 			{
 				if (Collision("right") == false)
 				{
-					this->position.x += 125 * dt;
+					this->position.x += 100 * dt;
 				}
 				else
 					return false;
@@ -218,13 +219,13 @@ bool Slime::Sleep(float dt)
 	if (moveRight == true)
 	{
 		this->currentAnimation = &animRight;
-		this->position.x += 100 * dt;
+		this->position.x += 75 * dt;
 	}
 
 	else
 	{
 		this->currentAnimation = &animLeft;
-		this->position.x -= 75 * dt;
+		this->position.x -= 50 * dt;
 	}
 
 	//int range;
@@ -280,6 +281,7 @@ bool Slime::Load(pugi::xml_node& load)
 		this->state = (EnemyState)load.child("state").attribute("value").as_int();
 		this->lifes = load.child("lifes").attribute("value").as_int();
 	}
+	this->time = 0;
 
 	return true;
 }

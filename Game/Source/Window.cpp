@@ -64,6 +64,8 @@ bool Window::Awake(pugi::xml_node& config)
 		}
 	}
 
+	fullscreen = false;
+
 	return ret;
 }
 

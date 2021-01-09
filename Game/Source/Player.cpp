@@ -7,9 +7,9 @@
 #include "Entity.h"
 #include "Input.h"
 #include "Scene.h"
+#include "Map.h"
 #include "Animation.h"
 #include "Audio.h"
-#include "Map.h"
 #include "Log.h"
 #include "Fonts.h"
 
@@ -85,6 +85,8 @@ bool Player::Update(float dt)
 			else speedX /= 3;
 		}
 
+		if (app->input->GetKey(SDL_SCANCODE_F7) == KeyState::KEY_DOWN) MoveToCheckpoint();
+
 		SpeedAnimations(dt);
 
 		if (attackCooldown != 0) attackCooldown--;
@@ -158,7 +160,6 @@ bool Player::Update(float dt)
 
 		if (app->input->GetKey(SDL_SCANCODE_W) == KeyState::KEY_REPEAT && godMode == true)
 			position.y -= floor(speedX * dt);
-
 
 		if (app->input->GetKey(SDL_SCANCODE_S) == KeyState::KEY_REPEAT && godMode == true)
 			position.y += floor(speedX * dt);
@@ -272,13 +273,13 @@ bool Player::Update(float dt)
 
 	switch (attackCooldown)
 	{
-	case 3:
+	case 135:
 		cooldownAtk.Update();
 		break;
-	case 2:
+	case 90:
 		cooldownAtk.Update();
 		break;
-	case 1:
+	case 45:
 		cooldownAtk.Update();
 		break;
 	case 0:
@@ -616,6 +617,29 @@ void Player::LoadAnimations()
 	checkpointAnim.PushBack({ 312, 0, 78, 54 });
 
 	checkpointAnim.loop = false;
+}
+
+void Player::MoveToCheckpoint()
+{
+	switch (whatCheckpoint)
+	{
+	case 0:
+		position.x = position.x;
+		position.y = position.y;
+		break;
+	case 1:
+		position.x = 2828;
+		position.y = 232;
+		break;
+	case 2:
+		position.x = 2828;
+		position.y = 1033;
+		break;
+	case 3:
+		position.x = 2795;
+		position.y = 1467;
+		break;
+	}
 }
 
 void Player::SwordAttack(float dt)

@@ -9,3 +9,16 @@ email: rgsdev83@gmail.com
 License for Everyone. 
 Public domain and free to use on whatever you want, personal or commercial. Credit is not required but appreciated.
 Please, don't resell or redistribute this asset.
+
+- "intro_menu.png" & "pause.png"
+
+	Game icon pack by Kenney Vleugels (www.kenney.nl)
+
+			------------------------------
+
+			        License (CC0)
+	       http://creativecommons.org/publicdomain/zero/1.0/
+
+	You may use these graphics in personal and commercial projects.
+	Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
+

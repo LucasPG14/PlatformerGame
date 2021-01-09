@@ -58,6 +58,7 @@ private:
 	GuiSlider* fxVolumeSlider;
 	GuiCheckBox* fullscreenSting;
 	GuiCheckBox* vsyncSting;
+	GuiButton* backBtn;
 
 	SDL_Texture* guiTexture;
 

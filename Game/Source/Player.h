@@ -34,6 +34,7 @@ public:
 	void SwordAttack(float dt);
 	void SpeedAnimations(float dt);
 	void LoadAnimations();
+	void MoveToCheckpoint();
 
 	inline bool LevelFinished() { return levelFinished; }
 	inline bool IsDead() { return deadPlayer; }

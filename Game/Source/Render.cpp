@@ -62,6 +62,7 @@ bool Render::Start()
 	LOG("render start");
 	// back background
 	SDL_RenderGetViewport(renderer, &viewport);
+
 	return true;
 }
 
@@ -74,6 +75,9 @@ bool Render::PreUpdate()
 
 bool Render::Update(float dt)
 {
+	if (vsync) SDL_GL_SetSwapInterval(1);
+	else SDL_GL_SetSwapInterval(0);
+
 	return true;
 }
 

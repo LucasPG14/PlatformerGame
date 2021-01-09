@@ -51,67 +51,71 @@ Bat::Bat(iPoint pos) : Enemy(pos)
 	this->lifes = 2;
 	this->alive = true;
 	this->path.Clear();
+	this->time = 0;
 }
 
 Bat::~Bat() {}
 
 bool Bat::Update(float dt)
 {
-	this->animLeft.speed = 5.0f * dt;
-	this->animRight.speed = 5.0f * dt;
-	this->hitLeftAnim.speed = 7.0f * dt;
-	this->hitRightAnim.speed = 7.0f * dt;
-	this->deathAnim.speed = 5.0f * dt;
-
-	if (this->lifes == 0)
+	if (this->alive == true)
 	{
-		this->currentAnimation = &deathAnim;
+		this->animLeft.speed = 5.0f * dt;
+		this->animRight.speed = 5.0f * dt;
+		this->hitLeftAnim.speed = 7.0f * dt;
+		this->hitRightAnim.speed = 7.0f * dt;
+		this->deathAnim.speed = 5.0f * dt;
 
-		if (this->deathAnim.HasFinished())
+		if (this->lifes == 0)
 		{
-			app->entityManager->RemoveEntity(this);
+			this->currentAnimation = &deathAnim;
+
+			if (this->deathAnim.HasFinished())
+			{
+				app->entityManager->RemoveEntity(this);
+				app->audio->PlayFx(this->fx);
+			}
+		}
+
+		if (this->state == SLEEP && this->currentAnimation != &deathAnim)
+		{
+			if (Sleep(dt) == true)
+				this->state = AWAKE;
+		}
+
+		else if (this->state == AWAKE && this->currentAnimation != &deathAnim)
+		{
+			//if (FindGoal(app->player) == true)
+			//	this->state = ATTACK;
+			//else this->state = SLEEP;
+		}
+
+		else if (this->state == ATTACK && this->currentAnimation != &deathAnim)
+		{
+			if (Move(dt) == false)
+			{
+				this->state = SLEEP;
+				this->path.Clear();
+			}
+		}
+
+		if (hitLeftAnim.HasFinished())
+		{
+			this->currentAnimation = &animLeft;
+			this->hitLeftAnim.Reset();
 			app->audio->PlayFx(this->fx);
 		}
-	}
-
-	if (this->state == SLEEP && this->currentAnimation != &deathAnim)
-	{
-		if (Sleep(dt) == true)
-			this->state = AWAKE;
-	}
-
-	else if (this->state == AWAKE && this->currentAnimation != &deathAnim)
-	{
-		//if (FindGoal(app->player) == true)
-		//	this->state = ATTACK;
-		//else this->state = SLEEP;
-	}
-
-	else if (this->state == ATTACK && this->currentAnimation != &deathAnim)
-	{
-		if (Move(dt) == false)
+		else if (hitRightAnim.HasFinished())
 		{
-			this->state = SLEEP;
-			this->path.Clear();
+			this->currentAnimation = &animRight;
+			this->hitRightAnim.Reset();
+			app->audio->PlayFx(this->fx);
 		}
-	}
 
-	if (hitLeftAnim.HasFinished())
-	{
-		this->currentAnimation = &animLeft;
-		this->hitLeftAnim.Reset();
-		app->audio->PlayFx(this->fx);
-	}
-	else if (hitRightAnim.HasFinished())
-	{
-		this->currentAnimation = &animRight;
-		this->hitRightAnim.Reset();
-		app->audio->PlayFx(this->fx);
-	}
+		this->currentAnimation->Update();
 
-	this->currentAnimation->Update();
-
-	this->collider->SetPos(this->position.x + 6, this->position.y + 4, &collider->rect);
+		this->collider->SetPos(this->position.x + 6, this->position.y + 4, &collider->rect);
+	}
 
 	return true;
 }
@@ -163,7 +167,7 @@ bool Bat::Move(float dt)
 			{
 				if (Collision("right") == false)
 				{
-					this->position.x += 150 * dt;
+					this->position.x += 125 * dt;
 				}
 				else
 					return false;
@@ -239,7 +243,7 @@ bool Bat::Sleep(float dt)
 	if (this->moveRight == true)
 	{
 		this->currentAnimation = &animRight;
-		this->position.x += 125 * dt;
+		this->position.x += 100 * dt;
 	}
 	else
 	{
@@ -383,6 +387,7 @@ bool Bat::Load(pugi::xml_node& load)
 		this->state = (EnemyState)load.child("state").attribute("value").as_int();
 		this->lifes = load.child("lifes").attribute("value").as_int();
 	}
+	this->time = 0;
 
 	return true;
 }
