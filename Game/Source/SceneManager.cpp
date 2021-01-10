@@ -43,6 +43,7 @@ bool SceneManager::Start()
 	current = new SceneLogo();
 	current->Load();
 	guiDebug = false;
+	highScore = 0;
 
 	next = nullptr;
 
@@ -159,7 +160,7 @@ bool SceneManager::Update(float dt)
 	
 	//High Score Mechanism
 	lastScore = finalScore;
-	highScore = highScore < lastScore ? lastScore : highScore;
+	if (highScore < lastScore) highScore = lastScore;
 
 	return ret;
 }

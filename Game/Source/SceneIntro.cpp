@@ -226,6 +226,8 @@ bool SceneIntro::Draw()
 		fxVolumeSlider->guiDebug = true;
 		fullscreenSting->guiDebug = true;
 		vsyncSting->guiDebug = true;
+		backBtn->guiDebug = true;
+		backCreditsBtn->guiDebug = true;
 	}
 	else
 	{
@@ -238,8 +240,9 @@ bool SceneIntro::Draw()
 		fxVolumeSlider->guiDebug = false;
 		fullscreenSting->guiDebug = false;
 		vsyncSting->guiDebug = false;
+		backBtn->guiDebug = false;
+		backCreditsBtn->guiDebug = false;
 	}
-
 
 	return ret;
 }

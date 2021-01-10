@@ -8,16 +8,16 @@
   <pathfinding />
   <entities>
     <player>
-      <position x="2869" y="1035" />
+      <position x="10" y="600" />
     </player>
     <slime>
-      <position x="2494" y="732" />
+      <position x="2684" y="732" />
       <state value="0" />
       <alive value="true" />
       <lifes value="3" />
     </slime>
     <bat>
-      <position x="2058" y="1286" />
+      <position x="2308" y="1286" />
       <state value="0" />
       <alive value="true" />
       <lifes value="2" />
@@ -31,6 +31,21 @@
     <life>
       <alive value="true" />
     </life>
+    <life>
+      <alive value="true" />
+    </life>
+    <life>
+      <alive value="true" />
+    </life>
+    <star>
+      <alive value="true" />
+    </star>
+    <star>
+      <alive value="true" />
+    </star>
+    <star>
+      <alive value="true" />
+    </star>
     <star>
       <alive value="true" />
     </star>
@@ -42,13 +57,13 @@
     </star>
   </entities>
   <scenes>
-    <save value="true" />
+    <save value="false" />
     <score value="0" />
     <stars value="0" />
   </scenes>
   <fonts />
   <renderer>
-    <camera x="-2245" y="-675" />
-    <offset x="2246" y="675" />
+    <camera x="1" y="-240" />
+    <offset x="0" y="240" />
   </renderer>
 </save_status>

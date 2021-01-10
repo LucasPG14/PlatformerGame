@@ -321,6 +321,7 @@ bool Scene::Draw()
 		fxVolumeSlider->guiDebug = true;
 		fullscreenSting->guiDebug = true;
 		vsyncSting->guiDebug = true;
+		backBtn->guiDebug = true;
 	}
 	else
 	{
@@ -332,6 +333,7 @@ bool Scene::Draw()
 		fxVolumeSlider->guiDebug = false;
 		fullscreenSting->guiDebug = false;
 		vsyncSting->guiDebug = false;
+		backBtn->guiDebug = false;
 	}
 
 	return ret;
@@ -383,20 +385,24 @@ void Scene::LoadingEntities()
 	// Loading Player
 	player = (Player*)app->entityManager->AddEntity(iPoint(10, 600), EntityType::PLAYER);
 
-	//Load Enemies
+	// Load Enemies
 	app->entityManager->AddEntity(iPoint(2275, 667), EntityType::SLIME);
-
 	app->entityManager->AddEntity(iPoint(1798, 1286), EntityType::BAT);
 
 	// Add lifes
 	app->entityManager->AddEntity(iPoint(1222, 1401), EntityType::LIFE);
-	app->entityManager->AddEntity(iPoint(1572, 218), EntityType::LIFE);
+	app->entityManager->AddEntity(iPoint(1442, 229), EntityType::LIFE);
 	app->entityManager->AddEntity(iPoint(2080, 899), EntityType::LIFE);
+	app->entityManager->AddEntity(iPoint(3272, 139), EntityType::LIFE);
+	app->entityManager->AddEntity(iPoint(3827, 1323), EntityType::LIFE);
 
 	// Add stars
-	app->entityManager->AddEntity(iPoint(1200, 300), EntityType::STAR);
+	app->entityManager->AddEntity(iPoint(857, 351), EntityType::STAR);
 	app->entityManager->AddEntity(iPoint(1290, 955), EntityType::STAR);
 	app->entityManager->AddEntity(iPoint(505, 1025), EntityType::STAR);
+	app->entityManager->AddEntity(iPoint(2542, 505), EntityType::STAR);
+	app->entityManager->AddEntity(iPoint(3184, 798), EntityType::STAR);
+	app->entityManager->AddEntity(iPoint(5378, 925), EntityType::STAR);
 }
 
 void Scene::PlayerPosition()
