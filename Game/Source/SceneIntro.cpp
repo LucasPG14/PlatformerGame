@@ -302,11 +302,7 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 	case GuiControlType::CHECKBOX:
 	{
 		if (control->id == 8) app->win->fullscreen = !app->win->fullscreen;
-		else if (control->id == 9)
-		{
-			if (app->render->vsync) app->render->vsync = false;
-			else if (!app->render->vsync) app->render->vsync = true;
-		}
+		else if (control->id == 9) app->render->vsync = !app->render->vsync;
 	}
 	default: break;
 	}

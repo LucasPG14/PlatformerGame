@@ -41,6 +41,7 @@ public:
 	int lastScore;
 	int highScore;
 	int stars;
+	int timer;
 
 	bool onTransition;
 	bool fadeOutCompleted;

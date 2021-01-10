@@ -64,7 +64,7 @@ Scene::Scene() : Scenes()
 	backBtn->state = GuiControlState::DISABLED;
 	backBtn->section = { 516,315,40,40 };
 
-	timer = 0;
+	app->sceneManager->timer = 0;
 }
 
 // Destructor
@@ -131,6 +131,7 @@ bool Scene::Load()
 	app->sceneManager->continueClicked = false;
 
 	exit = false;
+	time = 0;
 
 	return true;
 }
@@ -146,7 +147,7 @@ bool Scene::Update(float dt)
 		if (time >= 1.0f)
 		{
 			time = 0;
-			timer++;
+			app->sceneManager->timer++;
 		}
 
 		if (player->godMode == false) app->colliderManager->Update(dt, player);
@@ -278,12 +279,12 @@ bool Scene::Draw()
 	//Stars in HUD
 	app->fonts->BlitText(1130, 10, yellowFont, "x");
 	app->fonts->BlitText(1170, 10, yellowFont, std::to_string(app->sceneManager->stars).c_str());
-	app->fonts->BlitText(450, 10, yellowFont, std::to_string(timer).c_str());
+	app->fonts->BlitText(450, 10, yellowFont, std::to_string(app->sceneManager->timer).c_str());
 	SDL_Rect rect = { 0,0,1280,50 };
 	app->render->DrawTexture(starTex, ((app->render->camera.x * -1) + app->render->camera.w - 69), (app->render->camera.y * -1) + 5);
 
 	// Score in HUD
-	app->fonts->BlitText(650, 10, yellowFont, std::to_string(app->sceneManager->score).c_str());
+	app->fonts->BlitText(700, 10, yellowFont, std::to_string(app->sceneManager->score).c_str());
 
 	for (int i = 0; i < player->lifes; i++)
 	{
@@ -434,7 +435,7 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 	case GuiControlType::CHECKBOX:
 	{
 		if (control->id == 7) app->win->fullscreen = !app->win->fullscreen;
-		else if (control->id == 8);
+		else if (control->id == 8) app->render->vsync = !app->render->vsync;
 	}
 	default: break;
 	}

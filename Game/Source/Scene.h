@@ -70,7 +70,6 @@ private:
 	bool exit;
 
 	float time;
-	int timer;
 
 	Player* player;
 };

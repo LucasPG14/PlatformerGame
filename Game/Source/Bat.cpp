@@ -64,8 +64,8 @@ bool Bat::Update(float dt)
 	{
 		this->animLeft.speed = 5.0f * dt;
 		this->animRight.speed = 5.0f * dt;
-		this->hitLeftAnim.speed = 7.0f * dt;
-		this->hitRightAnim.speed = 7.0f * dt;
+		this->hitLeftAnim.speed = 5.0f * dt;
+		this->hitRightAnim.speed = 5.0f * dt;
 		this->deathAnim.speed = 5.0f * dt;
 
 		if (this->lifes == 0)

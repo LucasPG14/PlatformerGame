@@ -183,6 +183,7 @@ bool SceneManager::LoadState(pugi::xml_node& load)
 	{
 		score = load.child("score").attribute("value").as_int();
 		stars = load.child("stars").attribute("value").as_int();
+		timer = load.child("time").attribute("value").as_int();
 	}
 
 	return true;
@@ -194,6 +195,7 @@ bool SceneManager::SaveState(pugi::xml_node& save) const
 
 	save.append_child("score").append_attribute("value").set_value(score);
 	save.append_child("stars").append_attribute("value").set_value(stars);
+	save.append_child("time").append_attribute("value").set_value(timer);
 
 	return true;
 }

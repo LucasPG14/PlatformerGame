@@ -93,6 +93,7 @@ bool EntityManager::EnemyLifes(Collider* coll)
 		{
 			Enemy* enemy = (Enemy*)entity->data;
 			enemy->Lifes();
+			enemy->Hit();
 			break;
 		}
 		entity = entity->next;

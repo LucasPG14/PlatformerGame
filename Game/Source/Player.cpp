@@ -443,9 +443,13 @@ bool Player::CheckCollisionType(int idTile, SString direction)
 	case 290:
 		lifes--;
 		app->audio->PlayFx(playerHurt);
-		if (lifes > 0) {
+		if (lifes > 0) 
+		{
 			deadPlayer = false;
 			playerChangePos = true;
+			app->sceneManager->timer = 0;
+			app->sceneManager->score = 0;
+			app->sceneManager->stars = 0;
 			app->render->ResetCam();
 		}
 		if (lifes == 0)
