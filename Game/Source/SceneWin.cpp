@@ -52,7 +52,7 @@ bool SceneWin::Update(float dt)
 		
 	winAnim.speed = 5.0f * dt;
 
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) TransitionToScene(SceneType::TITLE);
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KeyState::KEY_DOWN) TransitionToScene(SceneType::INTRO);
 
 	winAnim.Update();
 

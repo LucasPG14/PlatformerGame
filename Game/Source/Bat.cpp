@@ -58,7 +58,9 @@ Bat::~Bat() {}
 
 bool Bat::Update(float dt)
 {
-	if (this->alive == true)
+	if (time != 0) time--;
+
+	if (this->alive == true && time == 0)
 	{
 		this->animLeft.speed = 5.0f * dt;
 		this->animRight.speed = 5.0f * dt;
@@ -387,7 +389,7 @@ bool Bat::Load(pugi::xml_node& load)
 		this->state = (EnemyState)load.child("state").attribute("value").as_int();
 		this->lifes = load.child("lifes").attribute("value").as_int();
 	}
-	this->time = 0;
+	this->time = 120;
 
 	return true;
 }

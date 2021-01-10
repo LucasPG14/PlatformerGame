@@ -279,10 +279,10 @@ bool SceneIntro::OnGuiMouseClickEvent(GuiControl* control)
 	{
 	case GuiControlType::BUTTON:
 	{
-		if (control->id == 1) TransitionToScene(SceneType::GAMEPLAY);
+		if (control->id == 1) TransitionToScene(SceneType::LEVEL_1);
 		else if (control->id == 2)
 		{
-			TransitionToScene(SceneType::GAMEPLAY);
+			TransitionToScene(SceneType::LEVEL_1);
 			app->sceneManager->continueClicked = true;
 		}
 		else if (control->id == 3) settingsEnabled = !settingsEnabled;

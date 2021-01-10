@@ -127,7 +127,10 @@ bool Scene::Load()
 	app->sceneManager->stars = 0;
 
 	if (app->sceneManager->saved && app->sceneManager->continueClicked) app->LoadGameRequest();
-		app->sceneManager->continueClicked = false;
+		
+	app->sceneManager->continueClicked = false;
+
+	exit = false;
 
 	return true;
 }
@@ -157,7 +160,7 @@ bool Scene::Update(float dt)
 
 		if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN ||
 			app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-			TransitionToScene(SceneType::GAMEPLAY);
+			TransitionToScene(SceneType::LEVEL_1);
 
 		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		{
@@ -414,7 +417,7 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 			app->audio->MusicPause();
 		}
 		else if (control->id == 2) settingsEnabled = !settingsEnabled;
-		else if (control->id == 3) TransitionToScene(SceneType::TITLE);
+		else if (control->id == 3) TransitionToScene(SceneType::INTRO);
 		else if (control->id == 4) exit = true;
 		else if (control->id == 9) settingsEnabled = !settingsEnabled;
 	case GuiControlType::SLIDER:

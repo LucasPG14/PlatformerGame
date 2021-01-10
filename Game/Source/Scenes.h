@@ -10,8 +10,8 @@ class GuiControl;
 enum class SceneType
 {
 	LOGO,
-	TITLE,
-	GAMEPLAY,
+	INTRO,
+	LEVEL_1,
 	WIN,
 	LOSE
 };
