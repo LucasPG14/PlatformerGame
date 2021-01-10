@@ -388,7 +388,7 @@ void Scene::LoadingEntities()
 
 	// Load Enemies
 	app->entityManager->AddEntity(iPoint(2275, 667), EntityType::SLIME);
-	app->entityManager->AddEntity(iPoint(1798, 1286), EntityType::BAT);
+	app->entityManager->AddEntity(iPoint(1798, 1346), EntityType::BAT);
 
 	// Add lifes
 	app->entityManager->AddEntity(iPoint(1222, 1401), EntityType::LIFE);

@@ -106,9 +106,6 @@ void ColliderManagement::OnCollision(Collider* coll1, Collider* coll2, Player* p
 		if (player->lifes > 0) 
 		{
 			player->playerChangePos = true;
-			app->sceneManager->score = 0;
-			app->sceneManager->timer = 0;
-			app->sceneManager->stars = 0;
 			app->render->ResetCam();
 		}
 		if (player->lifes == 0)

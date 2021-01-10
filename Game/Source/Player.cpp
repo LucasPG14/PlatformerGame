@@ -447,9 +447,6 @@ bool Player::CheckCollisionType(int idTile, SString direction)
 		{
 			deadPlayer = false;
 			playerChangePos = true;
-			app->sceneManager->timer = 0;
-			app->sceneManager->score = 0;
-			app->sceneManager->stars = 0;
 			app->render->ResetCam();
 		}
 		if (lifes == 0)

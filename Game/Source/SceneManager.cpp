@@ -20,7 +20,7 @@ SceneManager::SceneManager() : Module()
 	onTransition = false;
 	fadeOutCompleted = false;
 	transitionAlpha = 0.0f;
-
+	lastScore = 0;
 	pause = false;
 	continueClicked = false;
 }
@@ -43,7 +43,6 @@ bool SceneManager::Start()
 	current = new SceneLogo();
 	current->Load();
 	guiDebug = false;
-	highScore = 0;
 
 	next = nullptr;
 
@@ -158,9 +157,8 @@ bool SceneManager::Update(float dt)
 		guiDebug = !guiDebug;
 	}
 	
-	//High Score Mechanism
+	//Score Mechanism
 	lastScore = finalScore;
-	if (highScore < lastScore) highScore = lastScore;
 
 	return ret;
 }

@@ -84,8 +84,6 @@ bool SceneDie::Draw()
 	
 	app->render->DrawTexture(starTex, 810,70, NULL);
 
-	app->fonts->BlitText(300, 145, redFont, "HIGH SCORE:");
-	app->fonts->BlitText(680, 145, redFont, std::to_string(app->sceneManager->highScore).c_str());
 
 
 	return true;
